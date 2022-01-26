@@ -10,11 +10,12 @@ class CategoryController extends Controller
     
     public function store(Request $request)
     {
-
-        Category::create([
-           'tittle' => $request->tittle,
-           'position' => $request->position
+        $valid_data = $request->validate([
+            'tittle' => 'required|max:255',
+            'position' => ''
         ]);
+
+        Category::create($valid_data);
 
     }
 }

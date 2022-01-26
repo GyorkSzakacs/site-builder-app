@@ -30,4 +30,20 @@ class CategoryManagementTest extends TestCase
 
         $this->assertCount(1, Category::all());
     }
+
+    /**
+     * Validate request data
+     *
+     * @return void
+     */
+    public function test_request_data_is_valid()
+    {
+        
+        $response = $this->post('/category',[
+            'tittle' => '',
+            'position' => 1
+        ]);
+
+        $response->assertSessionHasErrors('tittle');
+    }
 }
