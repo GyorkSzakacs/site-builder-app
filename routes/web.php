@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::post('/category', [CategoryController::class, 'store']);
+Route::patch('/category/{category}', [CategoryController::class, 'update']);

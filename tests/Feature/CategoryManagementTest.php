@@ -46,4 +46,31 @@ class CategoryManagementTest extends TestCase
 
         $response->assertSessionHasErrors('tittle');
     }
+
+    /**
+     * A category can be updated
+     *
+     * @return void
+     */
+    public function test_a_category_can_be_updated()
+    {
+        
+        $this->withoutExceptionHandling();
+
+        $this->post('/category',[
+            'tittle' => 'HOme',
+            'position' => 1
+        ]);
+
+        $category = Category::first();
+
+        $response = $this->patch('/category/'.$category->id,[
+            'tittle' => 'Contact',
+            'position' => 2
+        ]);
+
+
+        $this->assertEquals('Contact', Category::first()->tittle);
+        $this->assertEquals(2, Category::first()->position);
+    }
 }
