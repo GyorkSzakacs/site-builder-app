@@ -26,5 +26,12 @@ class CategoryController extends Controller
         $category->update($valid_data);
 
     }
+
+    public function destroy(Category $category)
+    {
+
+        $category->delete();
+        
+    }
     
 }

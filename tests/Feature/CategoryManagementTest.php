@@ -73,4 +73,28 @@ class CategoryManagementTest extends TestCase
         $this->assertEquals('Contact', Category::first()->tittle);
         $this->assertEquals(2, Category::first()->position);
     }
+
+    /**
+     * A category can be deleted
+     *
+     * @return void
+     */
+    public function test_a_category_can_be_deleted()
+    {
+        
+        $this->withoutExceptionHandling();
+
+        $this->post('/category',[
+            'tittle' => 'HOme',
+            'position' => 1
+        ]);
+
+        $category = Category::first();
+
+        $this->assertCount(1, Category::all());
+        
+        $response = $this->delete('/category/'.$category->id);
+
+       $this->assertCount(0, Category::all());
+    }
 }
