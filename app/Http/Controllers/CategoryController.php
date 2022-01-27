@@ -16,6 +16,8 @@ class CategoryController extends Controller
 
         Category::create($valid_data);
 
+        return redirect('/dashboard');
+
     }
 
     public function update(CategoryRequest $request, Category $category)
@@ -25,13 +27,17 @@ class CategoryController extends Controller
 
         $category->update($valid_data);
 
+        return redirect('/dashboard');
+
     }
 
     public function destroy(Category $category)
     {
 
         $category->delete();
-        
+
+        return redirect('/dashboard');
+
     }
     
 }

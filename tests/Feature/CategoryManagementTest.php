@@ -26,9 +26,9 @@ class CategoryManagementTest extends TestCase
             'position' => 1
         ]);
 
-        $response->assertOk();
-
         $this->assertCount(1, Category::all());
+        $response->assertRedirect('/dashboard');
+
     }
 
     /**
@@ -72,6 +72,9 @@ class CategoryManagementTest extends TestCase
 
         $this->assertEquals('Contact', Category::first()->tittle);
         $this->assertEquals(2, Category::first()->position);
+
+        $response->assertRedirect('/dashboard');
+
     }
 
     /**
@@ -96,5 +99,7 @@ class CategoryManagementTest extends TestCase
         $response = $this->delete('/category/'.$category->id);
 
        $this->assertCount(0, Category::all());
+       $response->assertRedirect('/dashboard');
+
     }
 }
