@@ -21,10 +21,7 @@ class CategoryManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->post('/category',[
-            'tittle' => 'Home',
-            'position' => 1
-        ]);
+        $response = $this->post('/category', $this->input());
 
         $this->assertCount(1, Category::all());
         $response->assertRedirect('/dashboard');
@@ -41,10 +38,11 @@ class CategoryManagementTest extends TestCase
         
         $response = $this->post('/category',[
             'tittle' => '',
-            'position' => 1
+            'position' => ''
         ]);
 
         $response->assertSessionHasErrors('tittle');
+        $response->assertSessionHasErrors('position');
     }
 
     /**
@@ -57,10 +55,7 @@ class CategoryManagementTest extends TestCase
         
         $this->withoutExceptionHandling();
 
-        $this->post('/category',[
-            'tittle' => 'HOme',
-            'position' => 1
-        ]);
+        $this->post('/category', $this->input());
 
         $category = Category::first();
 
@@ -87,10 +82,7 @@ class CategoryManagementTest extends TestCase
         
         $this->withoutExceptionHandling();
 
-        $this->post('/category',[
-            'tittle' => 'HOme',
-            'position' => 1
-        ]);
+        $this->post('/category', $this->input());
 
         $category = Category::first();
 
@@ -100,6 +92,21 @@ class CategoryManagementTest extends TestCase
 
        $this->assertCount(0, Category::all());
        $response->assertRedirect('/dashboard');
+
+    }
+
+    /**
+     * Return input data
+     * 
+     * @return array
+     */
+    protected function input()
+    {
+
+        return [
+            'tittle' => 'HOme',
+            'position' => 1
+        ];
 
     }
 }
