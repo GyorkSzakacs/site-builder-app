@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Page;
-use Illuminate\Support\Str;
+use App\Models\Category;
 
 class PageManagementTest extends TestCase
 {
@@ -33,5 +33,29 @@ class PageManagementTest extends TestCase
         $response->assertStatus(200);
         $this->assertCount(1, Page::all());
         $this->assertEquals('fooldal', Page::first()->slug);
+    }
+
+    /**
+     * A category can be atomatically added.
+     *
+     * @return void
+     */
+    public function test_a_category_can_be_atomatically_added()
+    {
+        //$this->withoutExceptionHandling();
+
+        $this->post('/page', [
+            'tittle' => 'Főoldal',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $page = Page::first();
+        $category = Category::first();
+
+        $this->assertCount(1, Category::all());
+        $this->assertEquals($category->id, $page->category_id);
     }
 }
