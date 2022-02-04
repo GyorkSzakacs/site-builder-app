@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Page;
+use Illuminate\Support\Str;
 
 class PageManagementTest extends TestCase
 {
@@ -23,7 +24,7 @@ class PageManagementTest extends TestCase
 
         $response = $this->post('/page', [
             'tittle' => 'Főoldal',
-            'slug' => 'fooldal',
+            'slug' => '',
             'tittle_visibility' => true,
             'position' => 1,
             'category_id' => 1
@@ -31,5 +32,6 @@ class PageManagementTest extends TestCase
 
         $response->assertStatus(200);
         $this->assertCount(1, Page::all());
+        $this->assertEquals('fooldal', Page::first()->slug);
     }
 }

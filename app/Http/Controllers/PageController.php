@@ -11,7 +11,7 @@ class PageController extends Controller
     {
         Page::create([
             'tittle' => $request->tittle,
-            'slug' => $request->slug,
+            'slug' => '',
             'tittle_visibility' => $request->tittle_visibility,
             'position' => $request->position,
             'category_id' => $request->category_id
