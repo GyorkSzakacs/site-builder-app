@@ -60,12 +60,12 @@ class CategoryManagementTest extends TestCase
         $category = Category::first();
 
         $response = $this->patch('/category/'.$category->id,[
-            'tittle' => 'Contact',
+            'tittle' => 'Kapcsolat',
             'position' => 2
         ]);
 
 
-        $this->assertEquals('Contact', Category::first()->tittle);
+        $this->assertEquals('Kapcsolat', Category::first()->tittle);
         $this->assertEquals(2, Category::first()->position);
 
         $response->assertRedirect('/dashboard');
@@ -104,7 +104,7 @@ class CategoryManagementTest extends TestCase
     {
 
         return [
-            'tittle' => 'HOme',
+            'tittle' => 'Főoldal',
             'position' => 1
         ];
 
