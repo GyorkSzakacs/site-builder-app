@@ -12,6 +12,21 @@ class Category extends Model
     protected $guarded = [];
 
     /**
+     * Set position attribute
+     * 
+     * @param int $position
+     * @return void
+     */
+    public function setPositionAttribute($position)
+    {
+        if($position == null){
+            $position = self::getNextPosition();
+        }
+
+        $this->attributes['position'] = $position;
+    }
+
+    /**
      * Get next position.
      * 
      * @return int $next

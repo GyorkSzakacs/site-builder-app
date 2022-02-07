@@ -24,6 +24,7 @@ class CategoryManagementTest extends TestCase
         $response = $this->post('/category', $this->input());
 
         $this->assertCount(1, Category::all());
+        $this->assertEquals(2, Category::first()->position);
         $response->assertRedirect('/dashboard');
 
     }
@@ -105,7 +106,7 @@ class CategoryManagementTest extends TestCase
 
         return [
             'tittle' => 'Főoldal',
-            'position' => 1
+            'position' => 2
         ];
 
     }

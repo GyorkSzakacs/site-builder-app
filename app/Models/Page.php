@@ -34,7 +34,7 @@ class Page extends Model
         if($category_id == null){
             $id = Category::create([
                 'tittle' => $this->tittle,
-                'position' => 1
+                'position' => ''
             ])->id;
         }
         else{
@@ -43,7 +43,7 @@ class Page extends Model
             if($category == null){
                 $id = Category::create([
                     'tittle' => $this->tittle,
-                    'position' => 1
+                    'position' => ''
                 ])->id;
             }
             else{

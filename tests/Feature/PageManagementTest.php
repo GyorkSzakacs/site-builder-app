@@ -86,5 +86,6 @@ class PageManagementTest extends TestCase
         $this->assertCount(1, Category::all());
         $this->assertEquals($category->id, $page->category_id);
         $this->assertEquals($category->tittle, $page->tittle);
+        $this->assertEquals(1, $category->position);
     }
 }
