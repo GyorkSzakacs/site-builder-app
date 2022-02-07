@@ -22,4 +22,35 @@ class Page extends Model
     {
         $this->attributes['slug'] = Str::slug($this->tittle, '-');
     }
+
+    /**
+     * Set category_id attribute
+     * 
+     * @param int $category_id
+     * @return void
+     */
+    public function setCategoryIdAttribute($category_id)
+    {
+        if($category_id == null){
+            $id = Category::create([
+                'tittle' => $this->tittle,
+                'position' => 1
+            ])->id;
+        }
+        else{
+            $category = Category::all()->find($category_id);
+
+            if($category == null){
+                $id = Category::create([
+                    'tittle' => $this->tittle,
+                    'position' => 1
+                ])->id;
+            }
+            else{
+                $id = $category->id;
+            }
+        }
+
+        $this->attributes['category_id'] = $id;
+    }
 }
