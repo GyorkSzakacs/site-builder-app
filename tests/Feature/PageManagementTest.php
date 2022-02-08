@@ -22,13 +22,7 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->post('/page', [
-            'tittle' => 'Főoldal',
-            'slug' => '',
-            'tittle_visibility' => true,
-            'position' => 1,
-            'category_id' => 1
-        ]);
+        $response = $this->post('/page', $this->input());
 
         $response->assertStatus(200);
         $this->assertCount(1, Page::all());
@@ -87,5 +81,52 @@ class PageManagementTest extends TestCase
         $this->assertEquals($category->id, $page->category_id);
         $this->assertEquals($category->tittle, $page->tittle);
         $this->assertEquals(1, $category->position);
+    }
+
+    /**
+     * Test a page can be updated.
+     * 
+     * @return void
+     */
+    public function test_a_page_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', $this->input());
+
+        $page = Page::first();
+
+        $this->patch('/page/'.$page->id, [
+            'tittle' => 'Elérhetőségeink',
+            'slug' => '',
+            'tittle_visibility' => false,
+            'position' => 2,
+            'category_id' => 2
+        ]);
+
+        $this->assertCount(1, Page::all());
+        $this->assertEquals('Elérhetőségeink', Page::first()->tittle);
+        $this->assertEquals('elerhetosegeink', Page::first()->slug);
+        $this->assertEquals(0, Page::first()->tittle_visibility);
+        $this->assertEquals(2, Page::first()->position);
+        $this->assertEquals(2, Page::first()->category_id);
+        $this->assertEquals(2, Category::all()->count());
+        $this->assertEquals(Page::first()->category_id, Category::all()->find(2)->id);
+    }
+
+    /**
+     * Return input datas.
+     * 
+     * @return array $input
+     */
+    protected function input()
+    {
+        return [
+            'tittle' => 'Főoldal',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ];
     }
 }
