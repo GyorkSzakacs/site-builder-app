@@ -41,4 +41,15 @@ class PageController extends Controller
             'category_id' => $request->category_id
         ]);
     }
+
+    /**
+     * Delet the selected page.
+     * 
+     * @param Page $page
+     * @return void
+     */
+    public function destroy(Page $page)
+    {
+        $page->delete();
+    }
 }

@@ -14,6 +14,22 @@ class PageManagementTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Return input datas.
+     * 
+     * @return array $input
+     */
+    protected function input()
+    {
+        return [
+            'tittle' => 'Főoldal',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ];
+    }
+    
+    /**
      * A user can create a page.
      *
      * @return void
@@ -115,18 +131,22 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * Return input datas.
+     * Test a page can be deleted.
      * 
-     * @return array $input
+     * @return void
      */
-    protected function input()
+    public function test_a_page_can_be_deleted()
     {
-        return [
-            'tittle' => 'Főoldal',
-            'slug' => '',
-            'tittle_visibility' => true,
-            'position' => 1,
-            'category_id' => 1
-        ];
+        $this->withoutExceptionHandling();
+
+        $this->post('page', $this->input());
+
+        $page = Page::first();
+
+        $this->assertCount(1, Page::all());
+
+        $this->delete('page/'.$page->id);
+
+        $this->assertCount(0, Page::all());
     }
 }

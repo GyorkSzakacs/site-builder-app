@@ -25,3 +25,4 @@ Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
 
 Route::post('/page', [PageController::class, 'store']);
 Route::patch('/page/{page}', [PageController::class, 'update']);
+Route::delete('/page/{page}', [PageController::class, 'destroy']);
