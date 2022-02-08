@@ -97,6 +97,19 @@ class CategoryManagementTest extends TestCase
     }
 
     /**
+     * Get next category position test.
+     *
+     * @return void
+     */
+    public function test_get_next_category_position()
+    {
+        
+        $next = Category::getNextPosition();
+
+        $this->assertEquals(1, $next);
+    }
+
+    /**
      * Return input data
      * 
      * @return array

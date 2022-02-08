@@ -37,5 +37,35 @@ class Category extends Model
         
         return $next;
     }
-    
+
+    /**
+     * Select by ID or create a category.
+     * 
+     * @param int $category_id
+     * @param string $tittle
+     * @return int $id
+     */
+    public static function selectOrCreate($category_id, $tittle)
+    {
+        if($category_id == null){
+            $id = self::create([
+                'tittle' => $tittle,
+                'position' => ''
+            ])->id;
+        }
+        else{
+            $category = Category::all()->find($category_id);
+
+            if($category == null){
+                $id = self::create([
+                    'tittle' => $tittle,
+                    'position' => ''
+                ])->id;
+            }
+            else{
+                $id = $category->id;
+            }
+        }
+        return $id;
+    }
 }

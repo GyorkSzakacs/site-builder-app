@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use App\Services\CategoryServices;
 
 class Page extends Model
 {
@@ -32,8 +31,7 @@ class Page extends Model
      */
     public function setCategoryIdAttribute($category_id)
     {
-        $category = new CategoryServices;
-        $id = $category->selectOrCreate($category_id, $this->tittle);
+        $id = Category::selectOrCreate($category_id, $this->tittle);
 
         $this->attributes['category_id'] = $id;
     }
