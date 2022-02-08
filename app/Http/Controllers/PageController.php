@@ -4,42 +4,35 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Page;
+use App\Http\Requests\PageRequest;
 
 class PageController extends Controller
 {
     /**
      * Create new page
      * 
-     * @param Requiest $request
+     * @param PageRequiest $request
      * @return void
      */
-    public function store(Request $request)
+    public function store(PageRequest $request)
     {
-        Page::create([
-            'tittle' => $request->tittle,
-            'slug' => '',
-            'tittle_visibility' => $request->tittle_visibility,
-            'position' => $request->position,
-            'category_id' => $request->category_id
-        ]);
+        $valid_data = $request->validated();
+
+        Page::create($valid_data);
     }
 
     /**
      * Update the selected page details
      * 
-     * @param Request $request
+     * @param PageRequest $request
      * @param Page $page
      * @return void
      */
-    public function update(Request $request, Page $page)
+    public function update(PageRequest $request, Page $page)
     {
-        $page->update([
-            'tittle' => $request->tittle,
-            'slug' => '',
-            'tittle_visibility' => $request->tittle_visibility,
-            'position' => $request->position,
-            'category_id' => $request->category_id
-        ]);
+        $valid_data = $request->validated();
+        
+        $page->update($valid_data);
     }
 
     /**

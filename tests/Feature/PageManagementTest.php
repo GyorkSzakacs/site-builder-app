@@ -28,7 +28,7 @@ class PageManagementTest extends TestCase
             'category_id' => 1
         ];
     }
-    
+
     /**
      * A user can create a page.
      *
@@ -148,5 +148,24 @@ class PageManagementTest extends TestCase
         $this->delete('page/'.$page->id);
 
         $this->assertCount(0, Page::all());
+    }
+
+    /**
+     * Test input datas are valaid.
+     * 
+     * @return void
+     */
+    public function test_input_data_are_valid()
+    {
+        $response = $this->post('page', [
+            'tittle' => '',
+            'slug' => '',
+            'tittle_visibility' => '',
+            'position' => '',
+            'category_id' => ''
+        ]);
+
+        $response->assertSessionHasErrors('tittle');
+        $response->assertSessionHasErrors('tittle_visibility');
     }
 }

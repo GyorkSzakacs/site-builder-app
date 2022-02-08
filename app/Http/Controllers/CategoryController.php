@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     
+    /**
+     * Create a new category.
+     * 
+     * @param CategoryRequest $request
+     * @return void
+     */
     public function store(CategoryRequest $request)
     {
 
@@ -20,6 +26,13 @@ class CategoryController extends Controller
 
     }
 
+    /**
+     * Update the selected category.
+     * 
+     * @param CategoryRequest $request
+     * @param Category $category
+     * @return void
+     */
     public function update(CategoryRequest $request, Category $category)
     {
         
@@ -31,6 +44,11 @@ class CategoryController extends Controller
 
     }
 
+    /**
+     * Delete the selected category.
+     * 
+     * @param Category $category
+     */
     public function destroy(Category $category)
     {
 

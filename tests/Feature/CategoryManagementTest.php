@@ -13,6 +13,21 @@ class CategoryManagementTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Return input data
+     * 
+     * @return array
+     */
+    protected function input()
+    {
+
+        return [
+            'tittle' => 'Főoldal',
+            'position' => 2
+        ];
+
+    }
+
+    /**
      * Can a User create a Category
      *
      * @return void
@@ -43,7 +58,6 @@ class CategoryManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('tittle');
-        $response->assertSessionHasErrors('position');
     }
 
     /**
@@ -107,20 +121,5 @@ class CategoryManagementTest extends TestCase
         $next = Category::getNextPosition();
 
         $this->assertEquals(1, $next);
-    }
-
-    /**
-     * Return input data
-     * 
-     * @return array
-     */
-    protected function input()
-    {
-
-        return [
-            'tittle' => 'Főoldal',
-            'position' => 2
-        ];
-
     }
 }
