@@ -35,4 +35,16 @@ class Page extends Model
 
         $this->attributes['category_id'] = $id;
     }
+
+    /**
+     * Get next position.
+     * 
+     * @return int $next
+     */
+    public static function getNextPosition()
+    {
+        $next = Page::all()->max('position') + 1;
+
+        return $next;
+    }
 }

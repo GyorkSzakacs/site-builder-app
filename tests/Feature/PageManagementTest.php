@@ -173,4 +173,16 @@ class PageManagementTest extends TestCase
         $response->assertSessionHasErrors('tittle');
         $response->assertSessionHasErrors('tittle_visibility');
     }
+
+    /**
+     * Test get next page position.
+     * 
+     * @return void
+     */
+    public function test_get_next_page_position()
+    {
+        $next = Page::getNextPosition();
+
+        $this->assertEquals(1, $next);
+    }
 }
