@@ -33,7 +33,7 @@ class Category extends Model
      */
     public static function getNextPosition()
     {
-        $next = self::all()->max('position') + 1;
+        $next = self::max('position') + 1;
         
         return $next;
     }
@@ -54,7 +54,7 @@ class Category extends Model
             ])->id;
         }
         else{
-            $category = Category::all()->find($category_id);
+            $category = Category::find($category_id);
 
             if($category == null){
                 $id = self::create([
@@ -67,5 +67,15 @@ class Category extends Model
             }
         }
         return $id;
+    }
+
+    /**
+     * Get pages for a category.
+     * 
+     * @return array $pages
+     */
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
     }
 }

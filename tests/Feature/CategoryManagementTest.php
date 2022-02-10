@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Category;
+use App\Models\Page;
 
 class CategoryManagementTest extends TestCase
 {
@@ -121,5 +122,44 @@ class CategoryManagementTest extends TestCase
         $next = Category::getNextPosition();
 
         $this->assertEquals(1, $next);
+    }
+
+     /**
+     * Test get category of the page.
+     * 
+     * @return void
+     */
+    public function test_get_category_of_the_page()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/category', [
+            'tittle' => 'Szolgáltatások',
+            'position' => 1
+        ]);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás1',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => '',
+            'category_id' => 1
+        ]);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás2',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => '',
+            'category_id' => 1
+        ]);
+
+        $this->assertCount(1, Category::all());
+        $this->assertCount(2, Page::all());
+
+        $category1 = Page::find(1)->category;
+        $category2 = Page::find(2)->category;
+
+        $this->assertEquals($category1->id, $category2->id);
     }
 }

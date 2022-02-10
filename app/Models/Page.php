@@ -62,8 +62,18 @@ class Page extends Model
      */
     public static function getNextPosition()
     {
-        $next = self::all()->max('position') + 1;
+        $next = self::max('position') + 1;
 
         return $next;
+    }
+
+    /**
+     * Get the category of the page.
+     * 
+     * @return Category $category
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

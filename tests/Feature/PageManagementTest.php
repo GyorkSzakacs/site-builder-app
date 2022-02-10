@@ -221,4 +221,45 @@ class PageManagementTest extends TestCase
 
         $this->assertEquals(1, Page::first()->tittle_visibility);
     }
+
+    /**
+     * Test get all pages for a category.
+     * 
+     * @return void
+     */
+    public function test_get_all_pages_for_a_category()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/category', [
+            'tittle' => 'Szolgáltatások',
+            'position' => 1
+        ]);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás1',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => '',
+            'category_id' => 1
+        ]);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás2',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => '',
+            'category_id' => 1
+        ]);
+
+        $this->assertCount(1, Category::all());
+        $this->assertCount(2, Page::all());
+        $this->assertEquals('Szolgáltatás2', Page::find(2)->tittle);
+
+        $pages = Category::find(1)->pages;
+
+        $this->assertEquals(2, $pages->count());
+        $this->assertEquals('Szolgáltatás1', $pages->find(1)->tittle);
+        $this->assertEquals('Szolgáltatás2', $pages->find(2)->tittle);
+    }
 }
