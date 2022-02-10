@@ -185,4 +185,22 @@ class PageManagementTest extends TestCase
 
         $this->assertEquals(1, $next);
     }
+
+    /**
+     * Testset next position.
+     * 
+     * @return void
+     */
+    public function test_set_next_page_position()
+    {
+        $this->post('page', [
+            'tittle' => 'Főoldal',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => '',
+            'category_id' => 1
+        ]);
+
+        $this->assertEquals(1, Page::first()->position);
+    }
 }

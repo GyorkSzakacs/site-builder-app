@@ -24,6 +24,21 @@ class Page extends Model
     }
 
     /**
+     * Set position attribute
+     * 
+     * @param int $position
+     * @return void
+     */
+    public function setPositionAttribute($position)
+    {
+        if($position == null){
+            $position = self::getNextPosition();
+        }
+
+        $this->attributes['position'] = $position;
+    }
+
+    /**
      * Set category_id attribute
      * 
      * @param int $category_id
