@@ -12,6 +12,10 @@ class Page extends Model
 
     protected $guarded = [];
 
+    protected $attributes = [
+        'tittle_visibility' => true
+    ];
+
     /**
      * Set slug attribute.
      * 
@@ -58,7 +62,7 @@ class Page extends Model
      */
     public static function getNextPosition()
     {
-        $next = Page::all()->max('position') + 1;
+        $next = self::all()->max('position') + 1;
 
         return $next;
     }

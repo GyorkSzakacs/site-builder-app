@@ -26,7 +26,7 @@ class PageRequest extends FormRequest
         return [
             'tittle' => 'required|string|max:25',
             'slug' => '',
-            'tittle_visibility' => 'required',
+            'tittle_visibility' => '',
             'position' => '',
             'category_id' => ''
         ];

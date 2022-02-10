@@ -142,7 +142,7 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('page', $this->input());
+        $this->post('/page', $this->input());
 
         $page = Page::first();
 
@@ -162,7 +162,7 @@ class PageManagementTest extends TestCase
      */
     public function test_input_data_are_valid()
     {
-        $response = $this->post('page', [
+        $response = $this->post('/page', [
             'tittle' => '',
             'slug' => '',
             'tittle_visibility' => '',
@@ -171,7 +171,6 @@ class PageManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('tittle');
-        $response->assertSessionHasErrors('tittle_visibility');
     }
 
     /**
@@ -193,7 +192,7 @@ class PageManagementTest extends TestCase
      */
     public function test_set_next_page_position()
     {
-        $this->post('page', [
+        $this->post('/page', [
             'tittle' => 'Főoldal',
             'slug' => '',
             'tittle_visibility' => true,
@@ -202,5 +201,24 @@ class PageManagementTest extends TestCase
         ]);
 
         $this->assertEquals(1, Page::first()->position);
+    }
+
+    /**
+     * Testset default tittle visibility
+     * 
+     * @return void
+     */
+    public function test_set_default_tittle_visibility()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'tittle' => 'Főoldal',
+            'slug' => '',
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $this->assertEquals(1, Page::first()->tittle_visibility);
     }
 }
