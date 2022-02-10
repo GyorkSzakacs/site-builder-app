@@ -19,6 +19,8 @@ class PageController extends Controller
         $valid_data = $request->validated();
 
         Page::create($valid_data);
+
+        return redirect('/dashboard');
     }
 
     /**
@@ -33,10 +35,12 @@ class PageController extends Controller
         $valid_data = $request->validated();
         
         $page->update($valid_data);
+
+        return redirect('/dashboard');
     }
 
     /**
-     * Delet the selected page.
+     * Delete the selected page.
      * 
      * @param Page $page
      * @return void
@@ -44,5 +48,7 @@ class PageController extends Controller
     public function destroy(Page $page)
     {
         $page->delete();
+
+        return redirect('/dashboard');
     }
 }

@@ -40,9 +40,10 @@ class PageManagementTest extends TestCase
 
         $response = $this->post('/page', $this->input());
 
-        $response->assertStatus(200);
         $this->assertCount(1, Page::all());
         $this->assertEquals('fooldal', Page::first()->slug);
+
+        $response->assertRedirect('/dashboard');
     }
 
     /**
@@ -112,7 +113,7 @@ class PageManagementTest extends TestCase
 
         $page = Page::first();
 
-        $this->patch('/page/'.$page->id, [
+        $response = $this->patch('/page/'.$page->id, [
             'tittle' => 'Elérhetőségeink',
             'slug' => '',
             'tittle_visibility' => false,
@@ -128,6 +129,8 @@ class PageManagementTest extends TestCase
         $this->assertEquals(2, Page::first()->category_id);
         $this->assertEquals(2, Category::all()->count());
         $this->assertEquals(Page::first()->category_id, Category::all()->find(2)->id);
+
+        $response->assertRedirect('/dashboard');
     }
 
     /**
@@ -145,9 +148,11 @@ class PageManagementTest extends TestCase
 
         $this->assertCount(1, Page::all());
 
-        $this->delete('page/'.$page->id);
+        $response = $this->delete('page/'.$page->id);
 
         $this->assertCount(0, Page::all());
+
+        $response->assertRedirect('/dashboard');
     }
 
     /**
