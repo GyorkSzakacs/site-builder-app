@@ -85,4 +85,22 @@ class SectionManagementTest extends TestCase
         $response->assertOk();
         $this->assertCount(0, Section::all());
     }
+
+    /**
+     * Test validation of input data.
+     * 
+     * @return void
+     */
+    public function test_section_input_data_validation()
+    {
+        $response = $this->post('/section', [
+            'tittle' => '',
+            'tittle_visibility' => 'data',
+            'position' => 'data',
+            'page_id' => '2'
+        ]);
+
+        $response->assertSessionHasErrors('tittle');
+        $response->assertSessionHasErrors('tittle_visibility');
+    }
 }

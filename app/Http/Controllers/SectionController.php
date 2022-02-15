@@ -15,13 +15,15 @@ class SectionController extends Controller
      */
     public function store(Request $request)
     {
-        Section::create([
-            'tittle' => $request->tittle,
-            'tittle_visibility' => $request->tittle_visibility,
+        $validData = $request->validate([
+            'tittle' => 'required',
+            'tittle_visibility' => 'boolean',
             'slug' => '',
-            'position' => $request->position,
-            'page_id' => $request->page_id
+            'position' => '',
+            'page_id' => ''
         ]);
+        
+        Section::create($validData);
     }
 
     /**
