@@ -45,6 +45,7 @@ class Category extends Model
      * Retool positions if the requested has been already occupied.
      * 
      * @param int $position
+     * @param int $id
      * @return void
      */
     public static function retoolPositions($position, $id)

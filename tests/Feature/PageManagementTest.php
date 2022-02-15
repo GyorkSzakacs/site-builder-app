@@ -262,4 +262,63 @@ class PageManagementTest extends TestCase
         $this->assertEquals('Szolgáltatás1', $pages->find(1)->tittle);
         $this->assertEquals('Szolgáltatás2', $pages->find(2)->tittle);
     }
+
+    /**
+     * Test retool positions if the request input position already exists.
+     * 
+     * @return void
+     */
+    public function test_retool_page_positions()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás1',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás2',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás3',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 3,
+            'category_id' => 1
+        ]);
+
+        $occupied = Page::where('position', 2)->first();
+        $this->assertNotNull($occupied);
+
+        $occupiedItems = Page::where('position', '>=', 2)->get();
+        $this->assertCount(2, $occupiedItems);
+
+        $this->post('/page', [
+            'tittle' => 'Szolgáltatás4',
+            'slug' => '',
+            'tittle_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
+
+        $first = Page::first();
+        $third = Page::find(2);
+        $forth = Page::find(3);
+        $second = Page::find(4);
+
+        $this->assertCount(4, Page::all());
+        $this->assertEquals(1, $first->position);
+        $this->assertEquals(2, $second->position);
+        $this->assertEquals(3, $third->position);
+        $this->assertEquals(4, $forth->position);
+    }
 }
