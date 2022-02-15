@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,10 +20,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Category management routes
 Route::post('/category', [CategoryController::class, 'store']);
 Route::patch('/category/{category}', [CategoryController::class, 'update']);
 Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
 
+//Page menegement routes
 Route::post('/page', [PageController::class, 'store']);
 Route::patch('/page/{page}', [PageController::class, 'update']);
 Route::delete('/page/{page}', [PageController::class, 'destroy']);
+
+//Section management routes
+Route::post('/section', [SectionController::class, 'store']);
