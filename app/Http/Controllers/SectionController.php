@@ -23,4 +23,22 @@ class SectionController extends Controller
             'page_id' => $request->page_id
         ]);
     }
+
+    /**
+     * Update the selected section.
+     * 
+     * @param Request $request
+     * @param Section $section
+     * @return void
+     */
+    public function update(Request $request, Section $section)
+    {
+        $section->update([
+            'tittle' => $request->tittle,
+            'tittle_visibility' => $request->tittle_visibility,
+            'slug' => '',
+            'position' => $request->position,
+            'page_id' => $request->page_id
+        ]);
+    }
 }
