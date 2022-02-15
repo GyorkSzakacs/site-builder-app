@@ -22,6 +22,9 @@ class Category extends Model
         if($position == null){
             $position = self::getNextPosition();
         }
+        else{
+            self::retoolPositions($position, $this->id);
+        }
 
         $this->attributes['position'] = $position;
     }
@@ -36,6 +39,29 @@ class Category extends Model
         $next = self::max('position') + 1;
         
         return $next;
+    }
+
+    /**
+     * Retool positions if the requested has been already occupied.
+     * 
+     * @param int $position
+     * @return void
+     */
+    public static function retoolPositions($position, $id)
+    {
+        $occupied = self::where('position', $position)->first();
+
+        if($occupied != null && $occupied->id != $id){
+            $items = self::where('position', '>=', $position)->get();
+
+            foreach($items as $item){
+                $newPosition = $item->position + 1;
+
+                $item->update([
+                    'position' => $newPosition
+                ]);
+            }
+        }
     }
 
     /**

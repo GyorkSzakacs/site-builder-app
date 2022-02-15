@@ -162,4 +162,51 @@ class CategoryManagementTest extends TestCase
 
         $this->assertEquals($category1->id, $category2->id);
     }
+
+    /**
+     * Test retool positions if the request input position already exists.
+     * 
+     * @return void
+     */
+    public function test_retool_positions()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/category', [
+            'tittle' => 'Főoldal',
+            'position' => 1
+        ]);
+
+        $this->post('/category', [
+            'tittle' => 'Rólunk',
+            'position' => 2
+        ]);
+
+        $this->post('/category', [
+            'tittle' => 'Szolgáltatások',
+            'position' => 3
+        ]);
+
+        $occupied = Category::where('position', 2)->first();
+        $this->assertNotNull($occupied);
+
+        $occupiedItems = Category::where('position', '>=', 2)->get();
+        $this->assertCount(2, $occupiedItems);
+
+        $this->post('/category', [
+            'tittle' => 'Kapcsolat',
+            'position' => 2
+        ]);
+
+        $first = Category::first();
+        $third = Category::find(2);
+        $forth = Category::find(3);
+        $second = Category::find(4);
+
+        $this->assertCount(4, Category::all());
+        $this->assertEquals(1, $first->position);
+        $this->assertEquals(2, $second->position);
+        //$this->assertEquals(3, $third->position);
+        //$this->assertEquals(4, $forth->position);
+    }
 }
