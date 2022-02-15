@@ -66,4 +66,23 @@ class SectionManagementTest extends TestCase
         $this->assertCount(1, Section::all());
         $this->assertEquals('Érdekességek', Section::first()->tittle);
     }
+
+     /**
+     * Test a section can be deleted.
+     *
+     * @return void
+     */
+    public function test_a_section_can_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->post('/section', $this->input());
+
+        $section = Section::first();
+
+        $response = $this->delete('/section/'.$section->id);
+
+        $response->assertOk();
+        $this->assertCount(0, Section::all());
+    }
 }

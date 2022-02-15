@@ -33,3 +33,4 @@ Route::delete('/page/{page}', [PageController::class, 'destroy']);
 //Section management routes
 Route::post('/section', [SectionController::class, 'store']);
 Route::patch('/section/{section}', [SectionController::class, 'update']);
+Route::delete('/section/{section}', [SectionController::class, 'destroy']);

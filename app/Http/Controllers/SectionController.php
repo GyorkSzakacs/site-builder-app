@@ -41,4 +41,15 @@ class SectionController extends Controller
             'page_id' => $request->page_id
         ]);
     }
+
+    /**
+     * Delete the selected section.
+     * 
+     * @param Selction $section
+     * @return void
+     */
+    public function destroy(Section $section)
+    {
+        $section->delete();
+    }
 }
