@@ -156,7 +156,7 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * Test input datas are valaid.
+     * Test input data are valaid.
      * 
      * @return void
      */

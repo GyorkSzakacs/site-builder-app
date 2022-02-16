@@ -21,6 +21,7 @@ class SectionManagementTest extends TestCase
         return [
             'tittle' => 'Hírek',
             'tittle_visibility' => true,
+            'slug' => '',
             'position' => 1,
             'page_id' => 1
         ];
@@ -58,6 +59,7 @@ class SectionManagementTest extends TestCase
         $response = $this->patch('/section/'.$section->id, [
             'tittle' => 'Érdekességek',
             'tittle_visibility' => true,
+            'slug' => '',
             'position' => 1,
             'page_id' => 1
         ]);
@@ -65,6 +67,7 @@ class SectionManagementTest extends TestCase
         $response->assertOk();
         $this->assertCount(1, Section::all());
         $this->assertEquals('Érdekességek', Section::first()->tittle);
+        $this->assertEquals('erdekessegek', Section::first()->slug);
     }
 
      /**
@@ -96,11 +99,14 @@ class SectionManagementTest extends TestCase
         $response = $this->post('/section', [
             'tittle' => '',
             'tittle_visibility' => 'data',
+            'slug' => '',
             'position' => 'data',
-            'page_id' => '2'
+            'page_id' => 'two'
         ]);
 
         $response->assertSessionHasErrors('tittle');
         $response->assertSessionHasErrors('tittle_visibility');
+        $response->assertSessionHasErrors('position');
+        $response->assertSessionHasErrors('page_id');
     }
 }
