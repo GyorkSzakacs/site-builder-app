@@ -171,6 +171,8 @@ class PageManagementTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('tittle');
+        $response->assertSessionHasErrors('tittle_visibility');
+        $response->assertSessionHasErrors('position');
     }
 
     /**
@@ -196,7 +198,7 @@ class PageManagementTest extends TestCase
             'tittle' => 'Főoldal',
             'slug' => '',
             'tittle_visibility' => true,
-            'position' => '',
+            'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
@@ -240,7 +242,7 @@ class PageManagementTest extends TestCase
             'tittle' => 'Szolgáltatás1',
             'slug' => '',
             'tittle_visibility' => true,
-            'position' => '',
+            'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
@@ -248,7 +250,7 @@ class PageManagementTest extends TestCase
             'tittle' => 'Szolgáltatás2',
             'slug' => '',
             'tittle_visibility' => true,
-            'position' => '',
+            'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 

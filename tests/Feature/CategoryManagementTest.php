@@ -143,7 +143,7 @@ class CategoryManagementTest extends TestCase
             'tittle' => 'Szolgáltatás1',
             'slug' => '',
             'tittle_visibility' => true,
-            'position' => '',
+            'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
@@ -151,7 +151,7 @@ class CategoryManagementTest extends TestCase
             'tittle' => 'Szolgáltatás2',
             'slug' => '',
             'tittle_visibility' => true,
-            'position' => '',
+            'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 

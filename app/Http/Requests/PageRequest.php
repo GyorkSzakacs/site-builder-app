@@ -26,8 +26,8 @@ class PageRequest extends FormRequest
         return [
             'tittle' => 'required|string|max:25',
             'slug' => '',
-            'tittle_visibility' => '',
-            'position' => '',
+            'tittle_visibility' => 'boolean',
+            'position' => 'integer',
             'category_id' => ''
         ];
     }
