@@ -58,7 +58,7 @@ class SectionManagementTest extends TestCase
 
         $response = $this->patch('/section/'.$section->id, [
             'tittle' => 'Érdekességek',
-            'tittle_visibility' => true,
+            'tittle_visibility' => false,
             'slug' => '',
             'position' => 1,
             'page_id' => 1
@@ -68,6 +68,7 @@ class SectionManagementTest extends TestCase
         $this->assertCount(1, Section::all());
         $this->assertEquals('Érdekességek', Section::first()->tittle);
         $this->assertEquals('erdekessegek', Section::first()->slug);
+        $this->assertEquals(0, Section::first()->tittle_visibility);
     }
 
      /**

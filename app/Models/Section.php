@@ -12,6 +12,10 @@ class Section extends Model
 
     protected $guarded = [];
 
+    protected $attributes = [
+        'tittle_visibility' => true
+    ];
+    
     /**
      * Set slug attribute.
      * 
