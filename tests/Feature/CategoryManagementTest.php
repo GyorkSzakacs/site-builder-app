@@ -55,10 +55,11 @@ class CategoryManagementTest extends TestCase
         
         $response = $this->post('/category',[
             'tittle' => '',
-            'position' => ''
+            'position' => 'data'
         ]);
 
         $response->assertSessionHasErrors('tittle');
+        $response->assertSessionHasErrors('position');
     }
 
     /**
@@ -206,7 +207,7 @@ class CategoryManagementTest extends TestCase
         $this->assertCount(4, Category::all());
         $this->assertEquals(1, $first->position);
         $this->assertEquals(2, $second->position);
-        //$this->assertEquals(3, $third->position);
-        //$this->assertEquals(4, $forth->position);
+        $this->assertEquals(3, $third->position);
+        $this->assertEquals(4, $forth->position);
     }
 }

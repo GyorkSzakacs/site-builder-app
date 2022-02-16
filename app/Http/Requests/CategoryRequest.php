@@ -25,7 +25,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'tittle' => 'required|string|max:25',
-            'position' => ''
+            'position' => 'integer'
         ];
 
     }
