@@ -13,7 +13,7 @@ class Section extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'tittle_visibility' => true
+        'title_visibility' => true
     ];
     
     /**
@@ -24,6 +24,6 @@ class Section extends Model
      */
     public function setSlugAttribute($slug)
     {
-        $this->attributes['slug'] = Str::slug($this->tittle, '-');
+        $this->attributes['slug'] = Str::slug($this->title, '-');
     }
 }

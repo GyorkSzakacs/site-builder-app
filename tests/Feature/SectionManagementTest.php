@@ -19,9 +19,8 @@ class SectionManagementTest extends TestCase
     protected function input()
     {
         return [
-            'tittle' => 'Hírek',
-            'tittle_visibility' => true,
-            'slug' => '',
+            'title' => 'Hírek',
+            'title_visibility' => true,
             'position' => 1,
             'page_id' => 1
         ];
@@ -40,7 +39,7 @@ class SectionManagementTest extends TestCase
 
         $response->assertOk();
         $this->assertCount(1, Section::all());
-        $this->assertEquals('Hírek', Section::first()->tittle);
+        $this->assertEquals('Hírek', Section::first()->title);
     }
 
     /**
@@ -57,18 +56,17 @@ class SectionManagementTest extends TestCase
         $section = Section::first();
 
         $response = $this->patch('/section/'.$section->id, [
-            'tittle' => 'Érdekességek',
-            'tittle_visibility' => false,
-            'slug' => '',
+            'title' => 'Érdekességek',
+            'title_visibility' => false,
             'position' => 1,
             'page_id' => 1
         ]);
 
         $response->assertOk();
         $this->assertCount(1, Section::all());
-        $this->assertEquals('Érdekességek', Section::first()->tittle);
+        $this->assertEquals('Érdekességek', Section::first()->title);
         $this->assertEquals('erdekessegek', Section::first()->slug);
-        $this->assertEquals(0, Section::first()->tittle_visibility);
+        $this->assertEquals(0, Section::first()->title_visibility);
     }
 
      /**
@@ -98,15 +96,14 @@ class SectionManagementTest extends TestCase
     public function test_section_input_data_validation()
     {
         $response = $this->post('/section', [
-            'tittle' => '',
-            'tittle_visibility' => 'data',
-            'slug' => '',
+            'title' => '',
+            'title_visibility' => 'data',
             'position' => 'data',
             'page_id' => 'two'
         ]);
 
-        $response->assertSessionHasErrors('tittle');
-        $response->assertSessionHasErrors('tittle_visibility');
+        $response->assertSessionHasErrors('title');
+        $response->assertSessionHasErrors('title_visibility');
         $response->assertSessionHasErrors('position');
         $response->assertSessionHasErrors('page_id');
     }

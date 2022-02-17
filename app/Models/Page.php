@@ -13,7 +13,7 @@ class Page extends Model
     protected $guarded = [];
 
     protected $attributes = [
-        'tittle_visibility' => true
+        'title_visibility' => true
     ];
 
     /**
@@ -24,7 +24,7 @@ class Page extends Model
      */
     public function setSlugAttribute($slug)
     {
-        $this->attributes['slug'] = Str::slug($this->tittle, '-');
+        $this->attributes['slug'] = Str::slug($this->title, '-');
     }
 
     /**
@@ -53,7 +53,7 @@ class Page extends Model
      */
     public function setCategoryIdAttribute($category_id)
     {
-        $id = Category::selectOrCreate($category_id, $this->tittle);
+        $id = Category::selectOrCreate($category_id, $this->title);
 
         $this->attributes['category_id'] = $id;
     }

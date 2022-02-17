@@ -22,7 +22,7 @@ class CategoryManagementTest extends TestCase
     {
 
         return [
-            'tittle' => 'Főoldal',
+            'title' => 'Főoldal',
             'position' => 2
         ];
 
@@ -54,12 +54,13 @@ class CategoryManagementTest extends TestCase
     {
         
         $response = $this->post('/category',[
-            'tittle' => '',
+            'title' => '',
             'position' => 'data'
         ]);
 
-        $response->assertSessionHasErrors('tittle');
+        $response->assertSessionHasErrors('title');
         $response->assertSessionHasErrors('position');
+        $response->assertRedirect('/dashboard');
     }
 
     /**
@@ -77,12 +78,12 @@ class CategoryManagementTest extends TestCase
         $category = Category::first();
 
         $response = $this->patch('/category/'.$category->id,[
-            'tittle' => 'Kapcsolat',
+            'title' => 'Kapcsolat',
             'position' => 2
         ]);
 
 
-        $this->assertEquals('Kapcsolat', Category::first()->tittle);
+        $this->assertEquals('Kapcsolat', Category::first()->title);
         $this->assertEquals(2, Category::first()->position);
 
         $response->assertRedirect('/dashboard');
@@ -135,22 +136,20 @@ class CategoryManagementTest extends TestCase
         $this->withoutExceptionHandling();
         
         $this->post('/category', [
-            'tittle' => 'Szolgáltatások',
+            'title' => 'Szolgáltatások',
             'position' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás1',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás1',
+            'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás2',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás2',
+            'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
@@ -174,17 +173,17 @@ class CategoryManagementTest extends TestCase
         $this->withoutExceptionHandling();
         
         $this->post('/category', [
-            'tittle' => 'Főoldal',
+            'title' => 'Főoldal',
             'position' => 1
         ]);
 
         $this->post('/category', [
-            'tittle' => 'Rólunk',
+            'title' => 'Rólunk',
             'position' => 2
         ]);
 
         $this->post('/category', [
-            'tittle' => 'Szolgáltatások',
+            'title' => 'Szolgáltatások',
             'position' => 3
         ]);
 
@@ -195,7 +194,7 @@ class CategoryManagementTest extends TestCase
         $this->assertCount(2, $occupiedItems);
 
         $this->post('/category', [
-            'tittle' => 'Kapcsolat',
+            'title' => 'Kapcsolat',
             'position' => 2
         ]);
 

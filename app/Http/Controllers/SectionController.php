@@ -16,9 +16,7 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
-        $validData = $request->validated();
-        
-        Section::create($validData);
+        Section::create($this->getValidData($request));
     }
 
     /**
@@ -30,9 +28,7 @@ class SectionController extends Controller
      */
     public function update(SectionRequest $request, Section $section)
     {
-        $validData = $request->validated();
-        
-        $section->update($validData);
+        $section->update($this->getValidData($request));
     }
 
     /**
@@ -44,5 +40,16 @@ class SectionController extends Controller
     public function destroy(Section $section)
     {
         $section->delete();
+    }
+
+    /**
+     * Get validated input data.
+     * 
+     * @param SectionRequest $request
+     * @return array
+     */
+    protected function getValidData(SectionRequest $request)
+    {
+        return $request->safe()->merge(['slug' => ''])->all();
     }
 }

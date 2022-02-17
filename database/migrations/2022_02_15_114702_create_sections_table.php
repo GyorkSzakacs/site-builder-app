@@ -15,9 +15,9 @@ class CreateSectionsTable extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
-            $table->string('tittle');
+            $table->string('title');
             $table->string('slug');
-            $table->boolean('tittle_visibility');
+            $table->boolean('title_visibility');
             $table->integer('position');
             $table->foreignId('page_id');
             $table->timestamps();

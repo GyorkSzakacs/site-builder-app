@@ -21,9 +21,8 @@ class PageManagementTest extends TestCase
     protected function input()
     {
         return [
-            'tittle' => 'Főoldal',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Főoldal',
+            'title_visibility' => true,
             'position' => 1,
             'category_id' => 1
         ];
@@ -56,14 +55,13 @@ class PageManagementTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->post('/category', [
-            'tittle' => 'Főoldal',
+            'title' => 'Főoldal',
             'position' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Főoldal',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Főoldal',
+            'title_visibility' => true,
             'position' => 1,
             'category_id' => 1
         ]);
@@ -84,9 +82,8 @@ class PageManagementTest extends TestCase
         $this->withoutExceptionHandling();
 
         $this->post('/page', [
-            'tittle' => 'Főoldal',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Főoldal',
+            'title_visibility' => true,
             'position' => 1,
             'category_id' => ''
         ]);
@@ -96,7 +93,7 @@ class PageManagementTest extends TestCase
 
         $this->assertCount(1, Category::all());
         $this->assertEquals($category->id, $page->category_id);
-        $this->assertEquals($category->tittle, $page->tittle);
+        $this->assertEquals($category->title, $page->title);
         $this->assertEquals(1, $category->position);
     }
 
@@ -114,17 +111,16 @@ class PageManagementTest extends TestCase
         $page = Page::first();
 
         $response = $this->patch('/page/'.$page->id, [
-            'tittle' => 'Elérhetőségeink',
-            'slug' => '',
-            'tittle_visibility' => false,
+            'title' => 'Elérhetőségeink',
+            'title_visibility' => false,
             'position' => 2,
             'category_id' => 2
         ]);
 
         $this->assertCount(1, Page::all());
-        $this->assertEquals('Elérhetőségeink', Page::first()->tittle);
+        $this->assertEquals('Elérhetőségeink', Page::first()->title);
         $this->assertEquals('elerhetosegeink', Page::first()->slug);
-        $this->assertEquals(0, Page::first()->tittle_visibility);
+        $this->assertEquals(0, Page::first()->title_visibility);
         $this->assertEquals(2, Page::first()->position);
         $this->assertEquals(2, Page::first()->category_id);
         $this->assertEquals(2, Category::all()->count());
@@ -163,16 +159,31 @@ class PageManagementTest extends TestCase
     public function test_input_data_are_valid()
     {
         $response = $this->post('/page', [
-            'tittle' => '',
-            'slug' => '',
-            'tittle_visibility' => '',
+            'title' => '',
+            'title_visibility' => '',
             'position' => '',
             'category_id' => ''
         ]);
 
-        $response->assertSessionHasErrors('tittle');
-        $response->assertSessionHasErrors('tittle_visibility');
+        $response->assertSessionHasErrors('title');
+        $response->assertSessionHasErrors('title_visibility');
         $response->assertSessionHasErrors('position');
+        $response->assertRedirect('/dashboard');
+    }
+
+    /**
+     * Test a page title must be unique.
+     * 
+     * @return void
+     */
+    public function test_a_page_title_must_be_unique()
+    {
+        $this->post('/page', $this->input());
+
+        $response = $this->post('/page', $this->input());
+
+        $this->assertCount(1, Page::all());
+        $response->assertSessionHasErrors('title');
     }
 
     /**
@@ -195,9 +206,8 @@ class PageManagementTest extends TestCase
     public function test_set_next_page_position()
     {
         $this->post('/page', [
-            'tittle' => 'Főoldal',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Főoldal',
+            'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
@@ -206,22 +216,21 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * Testset default tittle visibility
+     * Test set default title visibility
      * 
      * @return void
      */
-    public function test_set_default_tittle_visibility()
+    public function test_set_default_title_visibility()
     {
         $this->withoutExceptionHandling();
         
         $this->post('/page', [
-            'tittle' => 'Főoldal',
-            'slug' => '',
+            'title' => 'Főoldal',
             'position' => 1,
             'category_id' => 1
         ]);
 
-        $this->assertEquals(1, Page::first()->tittle_visibility);
+        $this->assertEquals(1, Page::first()->title_visibility);
     }
 
     /**
@@ -234,35 +243,33 @@ class PageManagementTest extends TestCase
         $this->withoutExceptionHandling();
         
         $this->post('/category', [
-            'tittle' => 'Szolgáltatások',
+            'title' => 'Szolgáltatások',
             'position' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás1',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás1',
+            'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás2',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás2',
+            'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
         $this->assertCount(1, Category::all());
         $this->assertCount(2, Page::all());
-        $this->assertEquals('Szolgáltatás2', Page::find(2)->tittle);
+        $this->assertEquals('Szolgáltatás2', Page::find(2)->title);
 
         $pages = Category::find(1)->pages;
 
         $this->assertEquals(2, $pages->count());
-        $this->assertEquals('Szolgáltatás1', $pages->find(1)->tittle);
-        $this->assertEquals('Szolgáltatás2', $pages->find(2)->tittle);
+        $this->assertEquals('Szolgáltatás1', $pages->find(1)->title);
+        $this->assertEquals('Szolgáltatás2', $pages->find(2)->title);
     }
 
     /**
@@ -275,25 +282,22 @@ class PageManagementTest extends TestCase
         $this->withoutExceptionHandling();
         
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás1',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás1',
+            'title_visibility' => true,
             'position' => 1,
             'category_id' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás2',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás2',
+            'title_visibility' => true,
             'position' => 2,
             'category_id' => 1
         ]);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás3',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás3',
+            'title_visibility' => true,
             'position' => 3,
             'category_id' => 1
         ]);
@@ -305,9 +309,8 @@ class PageManagementTest extends TestCase
         $this->assertCount(2, $occupiedItems);
 
         $this->post('/page', [
-            'tittle' => 'Szolgáltatás4',
-            'slug' => '',
-            'tittle_visibility' => true,
+            'title' => 'Szolgáltatás4',
+            'title_visibility' => true,
             'position' => 2,
             'category_id' => 1
         ]);

@@ -17,13 +17,9 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-
-        $valid_data = $request->validated();
-
-        Category::create($valid_data);
+        Category::create($this->getValidData($request));
 
         return redirect('/dashboard');
-
     }
 
     /**
@@ -35,13 +31,9 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        
-        $valid_data = $request->validated();
-
-        $category->update($valid_data);
+        $category->update($this->getValidData($request));
 
         return redirect('/dashboard');
-
     }
 
     /**
@@ -51,11 +43,19 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-
         $category->delete();
 
         return redirect('/dashboard');
-
     }
     
+    /**
+     * Get valid input data.
+     * 
+     * @param CategoryRequest $request
+     * @return array
+     */
+    protected function getValidData(CategoryRequest $request)
+    {
+        return $request->validated();
+    }
 }

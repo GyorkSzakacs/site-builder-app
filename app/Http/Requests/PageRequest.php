@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PageRequest extends FormRequest
 {
+    protected $redirect = '/dashboard';
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,9 +26,8 @@ class PageRequest extends FormRequest
     public function rules()
     {
         return [
-            'tittle' => 'required|string|max:25',
-            'slug' => '',
-            'tittle_visibility' => 'boolean',
+            'title' => 'required|string|max:25|unique:pages',
+            'title_visibility' => 'boolean',
             'position' => 'integer',
             'category_id' => ''
         ];

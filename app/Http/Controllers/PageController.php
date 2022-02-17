@@ -16,9 +16,7 @@ class PageController extends Controller
      */
     public function store(PageRequest $request)
     {
-        $valid_data = $request->validated();
-
-        Page::create($valid_data);
+        Page::create($this->getValidData($request));
 
         return redirect('/dashboard');
     }
@@ -32,9 +30,7 @@ class PageController extends Controller
      */
     public function update(PageRequest $request, Page $page)
     {
-        $valid_data = $request->validated();
-        
-        $page->update($valid_data);
+        $page->update($this->getValidData($request));
 
         return redirect('/dashboard');
     }
@@ -50,5 +46,16 @@ class PageController extends Controller
         $page->delete();
 
         return redirect('/dashboard');
+    }
+
+    /**
+     * Get valid input data.
+     * 
+     * @param PageRequest $request
+     * @return array
+     */
+    protected function getValidData(PageRequest $request)
+    {
+        return $request->safe()->merge(['slug' => ''])->all();
     }
 }

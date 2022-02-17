@@ -69,14 +69,14 @@ class Category extends Model
      * Select by ID or create a category.
      * 
      * @param int $category_id
-     * @param string $tittle
+     * @param string $title
      * @return int $id
      */
-    public static function selectOrCreate($category_id, $tittle)
+    public static function selectOrCreate($category_id, $title)
     {
         if($category_id == null){
             $id = self::create([
-                'tittle' => $tittle,
+                'title' => $title,
                 'position' => ''
             ])->id;
         }
@@ -85,7 +85,7 @@ class Category extends Model
 
             if($category == null){
                 $id = self::create([
-                    'tittle' => $tittle,
+                    'title' => $title,
                     'position' => ''
                 ])->id;
             }

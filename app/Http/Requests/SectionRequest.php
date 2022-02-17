@@ -24,9 +24,8 @@ class SectionRequest extends FormRequest
     public function rules()
     {
         return [
-            'tittle' => 'required|max:25',
-            'tittle_visibility' => 'boolean',
-            'slug' => '',
+            'title' => 'required|max:25',
+            'title_visibility' => 'boolean',
             'position' => 'integer',
             'page_id' => 'integer'
         ];
