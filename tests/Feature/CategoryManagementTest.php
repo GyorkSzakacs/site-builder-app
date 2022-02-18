@@ -114,6 +114,21 @@ class CategoryManagementTest extends TestCase
     }
 
     /**
+     * Test set next position if position attribute is null.
+     * 
+     * @return void
+     */
+    public function test_category_position_is_null()
+    {
+        Category::create([
+            'title' => 'Főoldal',
+            'position' => ''
+        ]);
+
+        $this->assertEquals(1, Category::first()->position);
+    }
+
+    /**
      * Get next category position test.
      *
      * @return void

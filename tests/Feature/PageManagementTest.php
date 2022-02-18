@@ -199,7 +199,7 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * Testset next position.
+     * Test set next position.
      * 
      * @return void
      */
@@ -209,6 +209,24 @@ class PageManagementTest extends TestCase
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->assertEquals(1, Page::first()->position);
+    }
+
+    /**
+     * Test set next position if position attribute is null.
+     * 
+     * @return void
+     */
+    public function test_page_position_is_null()
+    {
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => '',
             'category_id' => 1
         ]);
 
