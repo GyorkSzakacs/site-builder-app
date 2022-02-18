@@ -36,11 +36,18 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
         $response = $this->post('/section', $this->input());
 
-        $response->assertOk();
         $this->assertCount(1, Section::all());
         $this->assertEquals('Hírek', Section::first()->title);
+        $response->assertRedirect('/fooldal');
     }
 
     /**
@@ -51,6 +58,13 @@ class SectionManagementTest extends TestCase
     public function test_a_section_can_be_updated()
     {
         $this->withoutExceptionHandling();
+
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
 
         $this->post('/section', $this->input());
 
@@ -63,11 +77,11 @@ class SectionManagementTest extends TestCase
             'page_id' => 1
         ]);
 
-        $response->assertOk();
         $this->assertCount(1, Section::all());
         $this->assertEquals('Érdekességek', Section::first()->title);
         $this->assertEquals('erdekessegek', Section::first()->slug);
         $this->assertEquals(0, Section::first()->title_visibility);
+        $response->assertRedirect('/fooldal');
     }
 
      /**
@@ -79,14 +93,21 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
         $this->post('/section', $this->input());
 
         $section = Section::first();
 
         $response = $this->delete('/section/'.$section->id);
 
-        $response->assertOk();
         $this->assertCount(0, Section::all());
+        $response->assertRedirect('/fooldal');
     }
 
     /**
@@ -149,6 +170,13 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+        
         $this->post('/section', [
             'title' => 'Hírek',
             'position' => 1,
@@ -184,6 +212,13 @@ class SectionManagementTest extends TestCase
     public function test_retool_section_positions()
     {
         $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
         
         $this->post('/section', [
             'title' => 'Szkció1',

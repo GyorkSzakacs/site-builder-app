@@ -16,7 +16,9 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
-        Section::create($this->getValidData($request));
+        $newSection = Section::create($this->getValidData($request));
+
+        return $this->redirectToPage($newSection);
     }
 
     /**
@@ -29,6 +31,8 @@ class SectionController extends Controller
     public function update(SectionRequest $request, Section $section)
     {
         $section->update($this->getValidData($request));
+
+        return $this->redirectToPage($section);
     }
 
     /**
@@ -40,6 +44,8 @@ class SectionController extends Controller
     public function destroy(Section $section)
     {
         $section->delete();
+
+        return $this->redirectToPage($section);
     }
 
     /**
@@ -51,5 +57,17 @@ class SectionController extends Controller
     protected function getValidData(SectionRequest $request)
     {
         return $request->safe()->merge(['slug' => ''])->all();
+    }
+
+    /**
+     * Redirect to page of the section.
+     * 
+     * @param Section $section
+     */
+    protected function redirectToPage($section)
+    {
+        $pageSlug = $section->page->slug;
+
+        return redirect('/'.$pageSlug);
     }
 }
