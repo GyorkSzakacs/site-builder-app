@@ -117,7 +117,7 @@ class SectionManagementTest extends TestCase
      */
     public function test_section_input_data_validation()
     {
-        $response = $this->post('/section', [
+        $response = $this->from('/fooldal')->post('/section', [
             'title' => '',
             'title_visibility' => 'data',
             'position' => 'data',
@@ -128,6 +128,7 @@ class SectionManagementTest extends TestCase
         $response->assertSessionHasErrors('title_visibility');
         $response->assertSessionHasErrors('position');
         $response->assertSessionHasErrors('page_id');
+        $response->assertRedirect('/fooldal');
     }
 
     /**
