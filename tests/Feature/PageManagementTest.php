@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Page;
 use App\Models\Category;
+use App\Models\Section;
 
 class PageManagementTest extends TestCase
 {
@@ -343,5 +344,44 @@ class PageManagementTest extends TestCase
         $this->assertEquals(2, $second->position);
         $this->assertEquals(3, $third->position);
         $this->assertEquals(4, $forth->position);
+    }
+
+    /**
+     * Test get page of the section.
+     * 
+     * @return void
+     */
+    public function test_get_page_of_the_section()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'title' => 'Fpoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció1',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció2',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->assertCount(1, Page::all());
+        $this->assertCount(2, Section::all());
+
+        $page1 = Section::find(1)->page;
+        $page2 = Section::find(2)->page;
+
+        $this->assertEquals($page1->id, $page2->id);
     }
 }

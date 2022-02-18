@@ -80,4 +80,14 @@ class Section extends Model
             }
         }
     }
+
+    /**
+     * Get the page of the section.
+     * 
+     * @return Page $page
+     */
+    public function page()
+    {
+        return $this->belongsTo(Page::class);
+    }
 }

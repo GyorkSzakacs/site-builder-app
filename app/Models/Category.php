@@ -99,7 +99,7 @@ class Category extends Model
     /**
      * Get pages for a category.
      * 
-     * @return array $pages
+     * @return Page[]
      */
     public function pages()
     {

@@ -103,4 +103,14 @@ class Page extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * Get all sections for a page.
+     * 
+     * @return Section[]
+     */
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Section;
+use App\Models\Page;
 
 class SectionManagementTest extends TestCase
 {
@@ -228,5 +229,45 @@ class SectionManagementTest extends TestCase
         $this->assertEquals(2, $second->position);
         $this->assertEquals(3, $third->position);
         $this->assertEquals(4, $forth->position);
+    }
+
+     /**
+     * Test get all sections for a page.
+     * 
+     * @return void
+     */
+    public function test_get_all_sections_for_a_page()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció1',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció2',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->assertCount(1, Page::all());
+        $this->assertCount(2, Section::all());
+
+        $sections = Page::find(1)->sections;
+
+        $this->assertEquals(2, $sections->count());
+        $this->assertEquals('Szekció1', $sections->find(1)->title);
+        $this->assertEquals('Szekció2', $sections->find(2)->title);
     }
 }
