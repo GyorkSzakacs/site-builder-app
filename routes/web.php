@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,6 @@ Route::delete('/page/{page}', [PageController::class, 'destroy']);
 Route::post('/section', [SectionController::class, 'store']);
 Route::patch('/section/{section}', [SectionController::class, 'update']);
 Route::delete('/section/{section}', [SectionController::class, 'destroy']);
+
+//Post management routes
+Route::post('/post', [PostController::class, 'store']);
