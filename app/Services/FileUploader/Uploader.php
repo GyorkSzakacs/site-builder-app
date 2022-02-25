@@ -4,7 +4,7 @@ namespace App\Services\FileUploader;
 
 Class Uploader
 {
-    public static $acceptedExtensions = [ 'jpg', 'png', 'gif'];
+    public static $acceptedExtensions = [ 'jpg', 'jpeg', 'png', 'gif'];
 
     public static $maxSize = 100000;
 
@@ -20,6 +20,14 @@ Class Uploader
      * 
      * @var int
      */
+    private $size;
+
+    /**
+     * Validation error message.
+     * 
+     * @var array
+     */
+    private $errorMessage = [];
 
     public function __construct($file)
     {
@@ -34,11 +42,14 @@ Class Uploader
      */
     public function validateExtension()
     {
-       if(in_array($this->extension, self::$acceptedExtensions)){
-            return true;
+       if(!in_array($this->extension, self::$acceptedExtensions)){
+            array_push(
+                $this->errorMessage,
+                'Nem megfelelő kiterjesztésű fájl! Támogatott fájlkiterjesztések: jpg, jpeg, png, gif'    
+            );
         }
         
-        return false;
+        return $this;
     }
 
     /**
@@ -48,11 +59,14 @@ Class Uploader
      */
     public function validateSize()
     {
-       if($this->size < self::$maxSize){
-            return true;
+       if($this->size > self::$maxSize){
+            array_push(
+                $this->errorMessage,
+                'Túl nagy a fájl mérete!'    
+            );
         }
         
-        return false;
+        return $this;
     }
 
     /**
@@ -77,5 +91,19 @@ Class Uploader
     private function setSize($file)
     {
         $this->size = $file->getSize();
+    }
+
+    /**
+     * Get validation error message.
+     * 
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        if(!empty($this->errorMessage)){
+            return $this->errorMessage[0];
+        }
+
+        return '';
     }
 }

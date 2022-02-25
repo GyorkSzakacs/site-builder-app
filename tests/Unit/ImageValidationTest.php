@@ -21,8 +21,14 @@ class ImageValidationTest extends TestCase
         $uploader1 = new Uploader($okExtension);
         $uploader2 = new Uploader($wrongExtension);
 
-        $this->assertTrue($uploader1->validateExtension());
-        $this->assertFalse($uploader2->validateExtension());
+        $uploader1->validateExtension();
+        $uploader2->validateExtension();
+
+        $this->assertEquals('', $uploader1->getErrorMessage());
+        $this->assertEquals(
+            'Nem megfelelő kiterjesztésű fájl! Támogatott fájlkiterjesztések: jpg, jpeg, png, gif',
+            $uploader2->getErrorMessage()
+        );
     }
 
     /**
@@ -32,13 +38,19 @@ class ImageValidationTest extends TestCase
      */
     public function test_validation_of_sie()
     {
-        $okSize = UploadedFile::fake()->image('image.jpg')->size(95);
+        $okSize = UploadedFile::fake()->image('image.jpg')->size(97);
         $wrongSize = UploadedFile::fake()->image('image.jpg')->size(101);
         
         $uploader1 = new Uploader($okSize);
         $uploader2 = new Uploader($wrongSize);
 
-        $this->assertTrue($uploader1->validateSize());
-        $this->assertFalse($uploader2->validateSize());
+        $uploader1->validateSize();
+        $uploader2->validateSize();
+
+        $this->assertEquals('', $uploader1->getErrorMessage());
+        $this->assertEquals(
+            'Túl nagy a fájl mérete!',
+            $uploader2->getErrorMessage()
+        );
     }
 }
