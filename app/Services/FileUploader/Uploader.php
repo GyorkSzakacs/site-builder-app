@@ -6,6 +6,8 @@ Class Uploader
 {
     public static $acceptedExtensions = [ 'jpg', 'png', 'gif'];
 
+    public static $maxSize = 100000;
+
     /**
      * Extension of uploaded file.
      * 
@@ -13,9 +15,16 @@ Class Uploader
      */
     private $extension;
 
+    /**
+     * Size of uploaded file.
+     * 
+     * @var int
+     */
+
     public function __construct($file)
     {
         $this->setExtension($file);
+        $this->setSize($file);
     }
     
     /**
@@ -33,14 +42,40 @@ Class Uploader
     }
 
     /**
+     * Validate file size.
+     * 
+     * @return boolean
+     */
+    public function validateSize()
+    {
+       if($this->size < self::$maxSize){
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
      * Set extension.
      * 
-     * @param string $extension
+     * @param object $file
      * 
      * @return void
      */
     private function setExtension($file)
     {
         $this->extension = $file->getClientOriginalExtension();
+    }
+
+    /**
+     * Set size.
+     * 
+     * @param object $file
+     * 
+     * @return void
+     */
+    private function setSize($file)
+    {
+        $this->size = $file->getSize();
     }
 }

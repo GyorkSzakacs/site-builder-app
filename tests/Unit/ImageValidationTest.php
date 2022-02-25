@@ -24,4 +24,21 @@ class ImageValidationTest extends TestCase
         $this->assertTrue($uploader1->validateExtension());
         $this->assertFalse($uploader2->validateExtension());
     }
+
+    /**
+     * Test the validation of size.
+     *
+     * @return void
+     */
+    public function test_validation_of_sie()
+    {
+        $okSize = UploadedFile::fake()->image('image.jpg')->size(95);
+        $wrongSize = UploadedFile::fake()->image('image.jpg')->size(101);
+        
+        $uploader1 = new Uploader($okSize);
+        $uploader2 = new Uploader($wrongSize);
+
+        $this->assertTrue($uploader1->validateSize());
+        $this->assertFalse($uploader2->validateSize());
+    }
 }
