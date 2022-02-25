@@ -3,7 +3,8 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use App\Services\ImageUploadService;
+use Illuminate\Http\UploadedFile;
+use App\Services\FileUploader\Uploader;
 
 class ImageValidationTest extends TestCase
 {
@@ -14,11 +15,13 @@ class ImageValidationTest extends TestCase
      */
     public function test_validation_of_extension()
     {
-        $upload = new ImageUploadService;
-        $okExtension = 'jpg';
-        $wrongExtension = 'docx';
+        $okExtension = UploadedFile::fake()->image('image.jpg');
+        $wrongExtension = UploadedFile::fake()->create('document.pdf');
         
-        $this->assertTrue($upload->validateExtension($okExtension));
-        $this->assertFalse($upload->validateExtension($wrongExtension));
+        $uploader1 = new Uploader($okExtension);
+        $uploader2 = new Uploader($wrongExtension);
+
+        $this->assertTrue($uploader1->validateExtension());
+        $this->assertFalse($uploader2->validateExtension());
     }
 }
