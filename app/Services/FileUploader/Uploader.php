@@ -6,7 +6,7 @@ Class Uploader
 {
     public static $acceptedExtensions = [ 'jpg', 'jpeg', 'png', 'gif'];
 
-    public static $maxSize = 100000;
+    public static $maxSize = 102400;
 
     /**
      * Extension of uploaded file.
@@ -33,6 +33,26 @@ Class Uploader
     {
         $this->setExtension($file);
         $this->setSize($file);
+    }
+
+    /**
+     * Validate the uploaded file.
+     * 
+     * @return boolean
+     */
+    public function validateFile()
+    {
+        $this->validateExtension();
+
+        $this->validateSize();
+
+        $validationErrors = $this->getErrorMessage();
+
+        if(empty($validationErrors)){
+            return true;
+        }
+
+        return false;
     }
     
     /**

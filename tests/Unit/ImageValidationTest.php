@@ -38,7 +38,7 @@ class ImageValidationTest extends TestCase
      */
     public function test_validation_of_sie()
     {
-        $okSize = UploadedFile::fake()->image('image.jpg')->size(97);
+        $okSize = UploadedFile::fake()->image('image.jpg')->size(100);
         $wrongSize = UploadedFile::fake()->image('image.jpg')->size(101);
         
         $uploader1 = new Uploader($okSize);
@@ -52,5 +52,34 @@ class ImageValidationTest extends TestCase
             'Túl nagy a fájl mérete!',
             $uploader2->getErrorMessage()
         );
+    }
+
+    /**
+     * Test the validation of uploaded file.
+     *
+     * @return void
+     */
+    public function test_validation_of_uploaded_file()
+    {
+        $okExtension = UploadedFile::fake()->image('image.jpg');
+        $wrongExtension = UploadedFile::fake()->create('document.pdf');
+        $okSize = UploadedFile::fake()->image('image.jpg')->size(100);
+        $wrongSize = UploadedFile::fake()->image('image.jpg')->size(101);
+        
+        $uploader1 = new Uploader($okExtension);
+        $uploader2 = new Uploader($wrongExtension);
+        $uploader3 = new Uploader($okSize);
+        $uploader4 = new Uploader($wrongSize);
+
+
+        $validated1 = $uploader1->validateFile();
+        $validated2 = $uploader2->validateFile();
+        $validated3 = $uploader3->validateFile();
+        $validated4 = $uploader4->validateFile();
+
+        $this->assertTrue($validated1);
+        $this->assertFalse($validated2);
+        $this->assertTrue($validated3);
+        $this->assertFalse($validated4);
     }
 }
