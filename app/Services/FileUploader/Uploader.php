@@ -9,6 +9,13 @@ Class Uploader
     public static $maxSize = 102400;
 
     /**
+     * Uploaded file.
+     * 
+     * @var object
+     */
+    private $file;
+
+    /**
      * Extension of uploaded file.
      * 
      * @var string
@@ -31,8 +38,21 @@ Class Uploader
 
     public function __construct($file)
     {
-        $this->setExtension($file);
-        $this->setSize($file);
+        $this->file = $file;
+        $this->setExtension();
+        $this->setSize();
+    }
+
+    /**
+     * Store uploaded file.
+     * 
+     * @return string $path
+     */
+    public function upload()
+    {
+        $path = $this->file->store('images');
+
+        return $path;
     }
 
     /**
@@ -96,9 +116,9 @@ Class Uploader
      * 
      * @return void
      */
-    private function setExtension($file)
+    private function setExtension()
     {
-        $this->extension = $file->getClientOriginalExtension();
+        $this->extension = $this->file->getClientOriginalExtension();
     }
 
     /**
@@ -108,9 +128,9 @@ Class Uploader
      * 
      * @return void
      */
-    private function setSize($file)
+    private function setSize()
     {
-        $this->size = $file->getSize();
+        $this->size = $this->file->getSize();
     }
 
     /**
