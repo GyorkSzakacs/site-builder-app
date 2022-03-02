@@ -4,7 +4,19 @@ namespace App\Services\FileUploader;
 
 Class Uploader
 {
-    public static $acceptedExtensions = [ 'jpg', 'jpeg', 'png', 'gif'];
+    /**
+     * Object of file's onstraints.
+     * 
+     * @var object
+     */
+    private $fileConstraints;
+    
+    /**
+     * The accepted extensions for uploaded file.
+     * 
+     * @var array
+     */
+    private $acceptedExtensions = [];
 
     public static $maxSize = 102400;
 
@@ -36,11 +48,15 @@ Class Uploader
      */
     private $errorMessage = [];
 
-    public function __construct($file)
+    public function __construct($file, FileConstraints $fileConstraints)
     {
         $this->file = $file;
         $this->setExtension();
         $this->setSize();
+
+        $this->fileConstraints = $fileConstraints;
+
+        $this->acceptedExtensions = $this->fileConstraints->getAcceptedExtensions();
     }
 
     /**
@@ -82,7 +98,7 @@ Class Uploader
      */
     public function validateExtension()
     {
-       if(!in_array($this->extension, self::$acceptedExtensions)){
+       if(!in_array($this->extension, $this->acceptedExtensions)){
             array_push(
                 $this->errorMessage,
                 'Nem megfelelő kiterjesztésű fájl! Támogatott fájlkiterjesztések: jpg, jpeg, png, gif'    

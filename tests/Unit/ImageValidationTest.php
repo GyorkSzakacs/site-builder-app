@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Illuminate\Http\UploadedFile;
 use App\Services\FileUploader\Uploader;
+use App\Services\FileUploader\ImageConstraints;
 
 class ImageValidationTest extends TestCase
 {
@@ -18,8 +19,8 @@ class ImageValidationTest extends TestCase
         $okExtension = UploadedFile::fake()->image('image.jpg');
         $wrongExtension = UploadedFile::fake()->create('document.pdf');
         
-        $uploader1 = new Uploader($okExtension);
-        $uploader2 = new Uploader($wrongExtension);
+        $uploader1 = new Uploader($okExtension, new ImageConstraints());
+        $uploader2 = new Uploader($wrongExtension, new ImageConstraints());
 
         $uploader1->validateExtension();
         $uploader2->validateExtension();

@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-//use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Services\FileUploader\Uploader;
