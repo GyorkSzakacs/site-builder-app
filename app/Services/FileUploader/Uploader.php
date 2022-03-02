@@ -5,20 +5,25 @@ namespace App\Services\FileUploader;
 Class Uploader
 {
     /**
-     * Object of file's onstraints.
-     * 
-     * @var object
-     */
-    private $fileConstraints;
-    
-    /**
      * The accepted extensions for uploaded file.
      * 
      * @var array
      */
     private $acceptedExtensions = [];
 
-    public static $maxSize = 102400;
+    /**
+     * The maximum size for valid uploaded file.
+     * 
+     * @var int
+     */
+    private $maxSize;
+
+    /**
+     * The name of the directory to where uploaded file should be moved.
+     * 
+     * @var string
+     */
+    private $directory;
 
     /**
      * Uploaded file.
@@ -54,9 +59,9 @@ Class Uploader
         $this->setExtension();
         $this->setSize();
 
-        $this->fileConstraints = $fileConstraints;
-
-        $this->acceptedExtensions = $this->fileConstraints->getAcceptedExtensions();
+        $this->acceptedExtensions = $fileConstraints->getAcceptedExtensions();
+        $this->maxSize = $fileConstraints->getMaxSize();
+        $this->directory = $fileConstraints->getDirectory();
     }
 
     /**
@@ -66,7 +71,7 @@ Class Uploader
      */
     public function upload()
     {
-        $path = $this->file->store('images');
+        $path = $this->file->store($this->directory);
 
         return $path;
     }
@@ -101,7 +106,7 @@ Class Uploader
        if(!in_array($this->extension, $this->acceptedExtensions)){
             array_push(
                 $this->errorMessage,
-                'Nem megfelelő kiterjesztésű fájl! Támogatott fájlkiterjesztések: jpg, jpeg, png, gif'    
+                'Nem megfelelő kiterjesztésű fájl! Támogatott: '.$this->getExtensionsString()
             );
         }
         
@@ -115,7 +120,7 @@ Class Uploader
      */
     public function validateSize()
     {
-       if($this->size > self::$maxSize){
+       if($this->size > $this->maxSize){
             array_push(
                 $this->errorMessage,
                 'Túl nagy a fájl mérete!'    
@@ -135,6 +140,22 @@ Class Uploader
     private function setExtension()
     {
         $this->extension = $this->file->getClientOriginalExtension();
+    }
+
+    /**
+     * Convert accepted extensions to string.
+     * 
+     * @return string $extensions
+     */
+    public function getExtensionsString()
+    {
+        $extensions = '';
+
+        foreach($this->acceptedExtensions as $acceptedExtension){
+            $extensions .= $acceptedExtension.' ';
+        }
+
+        return $extensions;
     }
 
     /**

@@ -23,7 +23,7 @@ class ImageConstraints implements FileConstraints
      */
     public function getMaxSize()
     {
-
+        return 102400;
     }
 
     /**

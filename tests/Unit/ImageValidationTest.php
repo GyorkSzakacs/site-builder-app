@@ -27,7 +27,7 @@ class ImageValidationTest extends TestCase
 
         $this->assertEquals('', $uploader1->getErrorMessage());
         $this->assertEquals(
-            'Nem megfelelő kiterjesztésű fájl! Támogatott fájlkiterjesztések: jpg, jpeg, png, gif',
+            'Nem megfelelő kiterjesztésű fájl! Támogatott: jpg jpeg png gif ',
             $uploader2->getErrorMessage()
         );
     }
@@ -42,8 +42,8 @@ class ImageValidationTest extends TestCase
         $okSize = UploadedFile::fake()->image('image.jpg')->size(100);
         $wrongSize = UploadedFile::fake()->image('image.jpg')->size(101);
         
-        $uploader1 = new Uploader($okSize);
-        $uploader2 = new Uploader($wrongSize);
+        $uploader1 = new Uploader($okSize, new ImageConstraints());
+        $uploader2 = new Uploader($wrongSize, new ImageConstraints());
 
         $uploader1->validateSize();
         $uploader2->validateSize();
@@ -67,10 +67,10 @@ class ImageValidationTest extends TestCase
         $okSize = UploadedFile::fake()->image('image.jpg')->size(100);
         $wrongSize = UploadedFile::fake()->image('image.jpg')->size(101);
         
-        $uploader1 = new Uploader($okExtension);
-        $uploader2 = new Uploader($wrongExtension);
-        $uploader3 = new Uploader($okSize);
-        $uploader4 = new Uploader($wrongSize);
+        $uploader1 = new Uploader($okExtension, new ImageConstraints());
+        $uploader2 = new Uploader($wrongExtension, new ImageConstraints());
+        $uploader3 = new Uploader($okSize, new ImageConstraints());
+        $uploader4 = new Uploader($wrongSize, new ImageConstraints());
 
 
         $validated1 = $uploader1->validateFile();

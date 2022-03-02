@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Services\FileUploader\Uploader;
+use App\Services\FileUploader\ImageConstraints;
 
 class ImageUploadTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ImageUploadTest extends TestCase
     {
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $uploader = new Uploader($image);
+        $uploader = new Uploader($image, new ImageConstraints());
 
         $path = $uploader->upload();
         
