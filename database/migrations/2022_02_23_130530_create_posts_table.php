@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->boolean('title_visibility');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->longText('content');
             $table->string('post_image');
             $table->integer('position');

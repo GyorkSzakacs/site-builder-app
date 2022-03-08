@@ -17,21 +17,39 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $uploadedImage = $request->file('post_image');
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'title_visibility' => 'boolean',
+            'description' => 'nullable|string|max:255',
+            'content' => 'required|string',
+            'post_image' => 'nullable|file',
+            'position' => 'integer',
+            'section_id' => 'integer'
+        ]);
+        
+        $path = '';
+        $uploadedImage = $validated['post_image'];
 
-        $uploader = new Uploader($uploadedImage, new ImageConstraints());
+        if($uploadedImage != null)
+        {
+            $uploader = new Uploader($uploadedImage, new ImageConstraints());
 
-        $path = $uploader->upload();
+            if(!$uploader->validateFile()){
+                return back()->withErrors(['post_image' => $uploader->getErrorMessage()])->withInput();
+            }
+
+            $path = $uploader->upload();
+        }
         
         Post::create([
-            'title' => $request->title,
-            'slug' => $request->slug,
-            'title_visibility' => $request->title_visibility,
-            'description' => $request->description,
-            'content' => $request->content,
+            'title' => $validated['title'],
+            'slug' => '',
+            'title_visibility' => $validated['title_visibility'],
+            'description' => $validated['description'],
+            'content' => $validated['content'],
             'post_image' => $path,
-            'position' => $request->position,
-            'section_id' => $request->section_id
+            'position' => $validated['position'],
+            'section_id' => $validated['section_id']
         ]);
     }
 }
