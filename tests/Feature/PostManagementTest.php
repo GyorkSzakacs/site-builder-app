@@ -157,4 +157,72 @@ class PostManagementTest extends TestCase
         
         $this->assertCount(0, Post::all());
     }
+
+    /**
+     * Test a post can be updated.
+     * 
+     * @return void
+     */
+    public function test_a_post_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+        
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => $image,
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $post = Post::first();
+
+        $this->patch('/post/'.$post->id, [
+            'title' => 'Első frissített cikkem',
+            'title_visibility' => false,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első frissített cikkem.',
+            'post_image' => '',
+            'position' => 2,
+            'section_id' => 1
+        ]);
+
+        $this->assertCount(1, Post::all());
+
+        $this->assertEquals('Első frissített cikkem', Post::first()->title);
+        $this->assertEquals(0, Post::first()->title_visibility);
+        $this->assertEquals('elso-frissitett-cikkem', Post::first()->slug);
+        $this->assertEquals('Az első cikkem.', Post::first()->description);
+        $this->assertEquals('Ez az első frissített cikkem.', Post::first()->content);
+        $this->assertEquals('images/'.$image->hashName(), Post::first()->post_image);
+        $this->assertEquals(2, Post::first()->position);
+        $this->assertEquals(1, Post::first()->section_id);
+
+        $newImage = UploadedFile::fake()->image('newImage.jpg');
+
+        $this->patch('/post/'.$post->id, [
+            'title' => 'Első cikkem második frissítés',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Ez az első cikkem második frissítése.',
+            'post_image' => $newImage,
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        Storage::disk('local')->assertExists('images/'.$newImage->hashName());
+        $this->assertEquals('Első cikkem második frissítés', Post::first()->title);
+        $this->assertEquals(1, Post::first()->title_visibility);
+        $this->assertEquals('elso-cikkem-masodik-frissites', Post::first()->slug);
+        $this->assertEquals('', Post::first()->description);
+        $this->assertEquals('Ez az első cikkem második frissítése.', Post::first()->content);
+        $this->assertEquals('images/'.$newImage->hashName(), Post::first()->post_image);
+        $this->assertEquals(1, Post::first()->position);
+        $this->assertEquals(1, Post::first()->section_id);
+
+    }
 }
