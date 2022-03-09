@@ -251,4 +251,168 @@ class PostManagementTest extends TestCase
         $response->assertStatus(200);
         $this->assertCount(0, Post::all());
     }
+
+    /**
+     * Test get next post position.
+     * 
+     * @return void
+     */
+    public function test_get_next_post_position()
+    {
+        $next = Post::getNextPosition();
+
+        $this->assertEquals(1, $next);
+    }
+
+    /**
+     * Test set next position.
+     * 
+     * @return void
+     */
+    public function test_set_next_post_position()
+    {
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+        
+        $this->post('/post', [
+            'title' => 'Post2',
+            'title_visibility' => true,
+            'description' => 'Leírás',
+            'content' => 'Tartalom2',
+            'post_image' => '',
+            'position' => Post::getNextPosition(),
+            'section_id' => 1
+        ]);
+
+        $this->assertEquals(2, Post::find(2)->position);
+    }
+
+    /**
+     * Test set default title visibility
+     * 
+     * @return void
+     */
+    public function test_set_default_post_title_visibility()
+    {
+        $this->withoutExceptionHandling();
+        
+        Post::create([
+            'title' => 'Post',
+            'slug' => '',
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $this->assertEquals(1, Post::first()->title_visibility);
+    }
+
+    /**
+     * Test set post position if the value of the input data is nul.
+     * 
+     * @return void
+     */
+    public function test_set_post_position_if_null()
+    {
+        $this->withoutExceptionHandling();
+        
+        Post::create([
+            'title' => 'Post',
+            'slug' => '',
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => '',
+            'section_id' => 1
+        ]);
+
+        Post::create([
+            'title' => 'Post',
+            'slug' => '',
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 3,
+            'section_id' => 1
+        ]);
+
+        $this->assertEquals(1, Post::first()->position);
+        $this->assertEquals(3, Post::find(2)->position);
+    }
+
+    /**
+     * Test retool positions if the request input position already exists.
+     * 
+     * @return void
+     */
+    public function test_retool_post_positions()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 2,
+            'section_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 3,
+            'section_id' => 1
+        ]);
+
+        $occupied = Post::where('position', 2)->first();
+        $this->assertNotNull($occupied);
+
+        $occupiedItems = Post::where('position', '>=', 2)->get();
+        $this->assertCount(2, $occupiedItems);
+
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 2,
+            'section_id' => 1
+        ]);
+
+        $first = Post::first();
+        $third = Post::find(2);
+        $forth = Post::find(3);
+        $second = Post::find(4);
+
+        $this->assertCount(4, Post::all());
+        $this->assertEquals(1, $first->position);
+        $this->assertEquals(2, $second->position);
+        $this->assertEquals(3, $third->position);
+        $this->assertEquals(4, $forth->position);
+    }
 }
