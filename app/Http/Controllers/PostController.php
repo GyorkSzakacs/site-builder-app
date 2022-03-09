@@ -113,4 +113,15 @@ class PostController extends Controller
             ]);
         }
     }
+
+    /**
+     * Delete the selected post.
+     * 
+     * @param Post $post
+     * @return void
+     */
+    public function destroy(Post $post)
+    {
+        $post->delete();
+    }
 }

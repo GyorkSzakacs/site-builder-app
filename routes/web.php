@@ -39,3 +39,4 @@ Route::delete('/section/{section}', [SectionController::class, 'destroy']);
 //Post management routes
 Route::post('/post', [PostController::class, 'store']);
 Route::patch('/post/{post}', [PostController::class, 'update']);
+Route::delete('/post/{post}', [PostController::class, 'destroy']);

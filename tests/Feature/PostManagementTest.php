@@ -223,6 +223,32 @@ class PostManagementTest extends TestCase
         $this->assertEquals('images/'.$newImage->hashName(), Post::first()->post_image);
         $this->assertEquals(1, Post::first()->position);
         $this->assertEquals(1, Post::first()->section_id);
+    }
 
+    /**
+     * Test a post can be deleted.
+     * 
+     * @return void
+     */
+    public function test_a_post_can_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $post = Post::first();
+
+        $response = $this->delete('/post/'.$post->id);
+
+        $response->assertStatus(200);
+        $this->assertCount(0, Post::all());
     }
 }
