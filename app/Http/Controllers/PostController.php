@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Services\FileUploader\Uploader;
 use App\Services\FileUploader\ImageConstraints;
@@ -12,79 +13,37 @@ class PostController extends Controller
     /**
      * Store post data.
      * 
-     * @param Request $request
+     * @param PostRequest $request
      * @return void
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'title_visibility' => 'boolean',
-            'description' => 'nullable|string|max:255',
-            'content' => 'required|string',
-            'post_image' => 'nullable|file',
-            'position' => 'integer',
-            'section_id' => 'integer'
-        ]);
+        $validated = $request->validated();
         
-        $path = '';
-        $uploadedImage = $validated['post_image'];
+        $path = $this->storeImage($validated['post_image']);
 
-        if($uploadedImage != null)
-        {
-            $uploader = new Uploader($uploadedImage, new ImageConstraints());
-
-            if(!$uploader->validateFile()){
-                return back()->withErrors(['post_image' => $uploader->getErrorMessage()])->withInput();
-            }
-
-            $path = $uploader->upload();
+        if(is_a($path, $this->getClassName())){
+            return $path;
         }
         
-        Post::create([
-            'title' => $validated['title'],
-            'slug' => '',
-            'title_visibility' => $validated['title_visibility'],
-            'description' => $validated['description'],
-            'content' => $validated['content'],
-            'post_image' => $path,
-            'position' => $validated['position'],
-            'section_id' => $validated['section_id']
-        ]);
+        Post::create($this->getValidData($validated, $path));
     }
 
     /**
      * Update the selected post data.
      * 
-     * @param Request $request
+     * @param PostRequest $request
      * @param Post $post
      * @return void
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'title_visibility' => 'boolean',
-            'description' => 'nullable|string|max:255',
-            'content' => 'required|string',
-            'post_image' => 'nullable|file',
-            'position' => 'integer',
-            'section_id' => 'integer'
-        ]);
+        $validated = $request->validated();
         
-        $path = '';
+        $path = $this->storeImage($validated['post_image']);
 
-        $uploadedImage = $validated['post_image'];
-
-        if($uploadedImage != null)
-        {
-            $uploader = new Uploader($uploadedImage, new ImageConstraints());
-
-            if(!$uploader->validateFile()){
-                return back()->withErrors(['post_image' => $uploader->getErrorMessage()])->withInput();
-            }
-
-            $path = $uploader->upload();
+        if(is_a($path, $this->getClassName())){
+            return $path;
         }
         
         if(empty($path))
@@ -101,16 +60,7 @@ class PostController extends Controller
         }
         else
         {
-            $post->update([
-                'title' => $validated['title'],
-                'slug' => '',
-                'title_visibility' => $validated['title_visibility'],
-                'description' => $validated['description'],
-                'content' => $validated['content'],
-                'post_image' => $path,
-                'position' => $validated['position'],
-                'section_id' => $validated['section_id']
-            ]);
+            $post->update($this->getValidData($validated, $path));
         }
     }
 
@@ -123,5 +73,60 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
+    }
+
+    /**
+     * Validate and store uploaded image.
+     * 
+     * @param object $uploadedImage
+     * @return string $path
+     */
+    protected function storeImage($uploadedImage)
+    {
+        $path = '';
+
+        if($uploadedImage != null)
+        {
+            $uploader = new Uploader($uploadedImage, new ImageConstraints());
+
+            if(!$uploader->validateFile()){
+                return back()->withErrors(['post_image' => $uploader->getErrorMessage()])->withInput();
+            }
+
+            $path = $uploader->upload();
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get the class name of the required response ofject if the uploaded image is invalid.
+     * 
+     * @return string
+     */
+    protected function getClassName()
+    {
+        return 'Illuminate\Http\RedirectResponse';
+    }
+
+    /**
+     * Get the validated post data to store.
+     * 
+     * @param object $validated
+     * @param string $path
+     * @return array
+     */
+    protected function getValidData($validated, $path)
+    {
+        return [
+            'title' => $validated['title'],
+            'slug' => '',
+            'title_visibility' => $validated['title_visibility'],
+            'description' => $validated['description'],
+            'content' => $validated['content'],
+            'post_image' => $path,
+            'position' => $validated['position'],
+            'section_id' => $validated['section_id']
+        ];
     }
 }
