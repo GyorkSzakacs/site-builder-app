@@ -41,6 +41,7 @@ class PostManagementTest extends TestCase
         $this->assertEquals('images/'.$image->hashName(), Post::first()->post_image);
 
         $this->assertEquals('elso-cikkem', Post::first()->slug);
+        $this->assertEquals(1, Post::first()->section_id);
     }
 
     /**
@@ -404,12 +405,24 @@ class PostManagementTest extends TestCase
             'section_id' => 1
         ]);
 
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 2
+        ]);
+
         $first = Post::first();
         $third = Post::find(2);
         $forth = Post::find(3);
         $second = Post::find(4);
+        $firstAtSecond = Post::find(5);
 
-        $this->assertCount(4, Post::all());
+        $this->assertCount(5, Post::all());
+        $this->assertEquals(1, $firstAtSecond->position);
         $this->assertEquals(1, $first->position);
         $this->assertEquals(2, $second->position);
         $this->assertEquals(3, $third->position);

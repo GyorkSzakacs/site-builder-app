@@ -54,8 +54,8 @@ class PostController extends Controller
                 'title_visibility' => $validated['title_visibility'],
                 'description' => $validated['description'],
                 'content' => $validated['content'],
-                'position' => $validated['position'],
-                'section_id' => $validated['section_id']
+                'section_id' => $validated['section_id'],
+                'position' => $validated['position']
             ]);
         }
         else
@@ -125,8 +125,8 @@ class PostController extends Controller
             'description' => $validated['description'],
             'content' => $validated['content'],
             'post_image' => $path,
-            'position' => $validated['position'],
-            'section_id' => $validated['section_id']
+            'section_id' => $validated['section_id'],
+            'position' => $validated['position']
         ];
     }
 }

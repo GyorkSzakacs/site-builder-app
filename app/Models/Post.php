@@ -39,7 +39,7 @@ class Post extends Model
             $position = self::getNextPosition();
         }
         else{
-            self::retoolPositions($position, $this->id);
+            self::retoolPositions($position, $this->id, $this->section_id);
         }
 
         $this->attributes['position'] = $position;
@@ -62,14 +62,23 @@ class Post extends Model
      * 
      * @param int $position
      * @param int $id
+     * @param int $parentId
      * @return void
      */
-    public static function retoolPositions($position, $id)
+    public static function retoolPositions($position, $id, $parentId)
     {
-        $occupied = self::where('position', $position)->first();
+        $parentIdColumnName = self::getParentIdColumnName();
 
-        if($occupied != null && $occupied->id != $id){
-            $items = self::where('position', '>=', $position)->get();
+        $occupied = self::where([
+                            [$parentIdColumnName, $parentId],
+                            ['position', $position]
+                        ])->first();
+        if($occupied != null && $occupied->id != $id)
+        {
+            $items = self::where([
+                            [$parentIdColumnName, $parentId],
+                            ['position', '>=', $position]
+                        ])->get();
 
             foreach($items as $item){
                 $newPosition = $item->position + 1;
@@ -79,5 +88,15 @@ class Post extends Model
                 ]);
             }
         }
+    }
+
+    /**
+     * Get the foreignkey column name.
+     * 
+     * @return string
+     */
+    protected static function getParentIdColumnName()
+    {
+        return 'section_id';
     }
 }
