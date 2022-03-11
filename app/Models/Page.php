@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Traits\PositionManagger;
+use App\Traits\AttributeSetter;
 
 class Page extends Model
 {
-    use HasFactory;
-    use PositionManagger;
+    use HasFactory,
+        PositionManagger,
+        AttributeSetter;
 
     /**
      * The guarded attributes.
@@ -38,35 +39,6 @@ class Page extends Model
     ];
 
     /**
-     * Set slug attribute.
-     * 
-     * @param string $slug
-     * @return void
-     */
-    public function setSlugAttribute($slug)
-    {
-        $this->attributes['slug'] = Str::slug($this->title, '-');
-    }
-
-    /**
-     * Set position attribute
-     * 
-     * @param int $position
-     * @return void
-     */
-    public function setPositionAttribute($position)
-    {
-        if($position == null){
-            $position = self::getNextPosition();
-        }
-        else{
-            self::retoolPositions($position, $this->id, $this->category_id);
-        }
-
-        $this->attributes['position'] = $position;
-    }
-
-    /**
      * Set category_id attribute
      * 
      * @param int $category_id
@@ -87,6 +59,16 @@ class Page extends Model
     protected static function getParentIdColumnName()
     {
         return 'category_id';
+    }
+
+    /**
+     * Get the foreignkey column value.
+     * 
+     * @return string
+     */
+    protected function getParentIdColumnValue()
+    {
+        return $this->category_id;
     }
 
     /**

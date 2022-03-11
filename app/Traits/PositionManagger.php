@@ -20,12 +20,13 @@ trait PositionManagger
      * Retool positions if the requested has been already occupied.
      * 
      * @param int $position
-     * @param int $id
-     * @param int $parentId
      * @return void
      */
-    public static function retoolPositions($position, $id, $parentId)
+    public function retoolPositions($position)
     {
+        $id = $this->id;
+        $parentId = $this->getParentIdColumnValue();
+
         $parentIdColumnName = self::getParentIdColumnName();
 
         $occupied = self::where([

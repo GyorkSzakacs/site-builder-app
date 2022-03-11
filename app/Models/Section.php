@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Traits\PositionManagger;
+use App\Traits\AttributeSetter;
 
 class Section extends Model
 {
-    use HasFactory;
-    use PositionManagger;
+    use HasFactory,
+        PositionManagger,
+        AttributeSetter;
 
     /**
      * The guarded attributes.
@@ -38,35 +39,6 @@ class Section extends Model
     ];
     
     /**
-     * Set slug attribute.
-     * 
-     * @param string $slug
-     * @return void
-     */
-    public function setSlugAttribute($slug)
-    {
-        $this->attributes['slug'] = Str::slug($this->title, '-');
-    }
-
-    /**
-     * Set position attribute.
-     * 
-     * @param int  $position
-     * @return void
-     */
-    public function setPositionAttribute($position)
-    {
-        if($position == null){
-            $position = self::getNextPosition();
-        }
-        else{
-            self::retoolPositions($position, $this->id, $this->page_id);
-        }
-
-        $this->attributes['position'] = $position;
-    }
-
-    /**
      * Get the foreignkey column name.
      * 
      * @return string
@@ -74,6 +46,16 @@ class Section extends Model
     protected static function getParentIdColumnName()
     {
         return 'page_id';
+    }
+
+    /**
+     * Get the foreignkey column value.
+     * 
+     * @return string
+     */
+    protected function getParentIdColumnValue()
+    {
+        return $this->page_id;
     }
 
     /**

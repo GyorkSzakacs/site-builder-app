@@ -5,41 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\PositionManagger;
+use App\Traits\AttributeSetter;
 
 class Category extends Model
 {
-    use HasFactory;
-    use PositionManagger;
-
-    protected $guarded = [];
+    use HasFactory,
+        PositionManagger,
+        AttributeSetter;
 
     /**
-     * Set position attribute
+     * The guarded attributes.
      * 
-     * @param int $position
-     * @return void
+     * @var array
      */
-    public function setPositionAttribute($position)
-    {
-        if($position == null){
-            $position = self::getNextPosition();
-        }
-        else{
-            self::retoolPositions($position, $this->id);
-        }
-
-        $this->attributes['position'] = $position;
-    }
+    protected $guarded = [];
 
     /**
      * Retool positions if the requested has been already occupied.
      * 
      * @param int $position
-     * @param int $id
      * @return void
      */
-    public static function retoolPositions($position, $id)
+    public function retoolPositions($position)
     {
+        $id = $this->id;
+        
         $occupied = self::where('position', $position)->first();
 
         if($occupied != null && $occupied->id != $id){
