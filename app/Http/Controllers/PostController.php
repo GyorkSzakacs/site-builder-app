@@ -26,7 +26,9 @@ class PostController extends Controller
             return $path;
         }
         
-        Post::create($this->getValidData($validated, $path));
+        $newPost = Post::create($this->getValidData($validated, $path));
+
+        return $this->redirectToPost($newPost);
     }
 
     /**
@@ -62,6 +64,8 @@ class PostController extends Controller
         {
             $post->update($this->getValidData($validated, $path));
         }
+
+        return $this->redirectToPost($post);
     }
 
     /**
@@ -73,6 +77,8 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
+
+        return redirect('/'.$post->section->page->slug);
     }
 
     /**
@@ -128,5 +134,20 @@ class PostController extends Controller
             'section_id' => $validated['section_id'],
             'position' => $validated['position']
         ];
+    }
+
+    /**
+     * Redirect to current post.
+     * 
+     * @param Post $post
+     * @return RedirectResponse
+     */
+    protected function redirectToPost(Post $post)
+    {
+        $postSection = $post->section;
+        $postSectionSlug = $postSection->slug;
+        $postPageSlug = $postSection->page->slug;
+
+        return redirect('/'.$postPageSlug.'/'.$postSectionSlug.'/'.$post->slug);
     }
 }

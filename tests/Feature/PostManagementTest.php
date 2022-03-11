@@ -16,6 +16,28 @@ class PostManagementTest extends TestCase
     use RefreshDatabase;
     
     /**
+     * Create parent builder parts for a post.
+     * 
+     * @return void
+     */
+    protected function createParents()
+    {
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+    }
+
+    /**
      * Test a post can be created.
      *
      * @return void
@@ -25,6 +47,8 @@ class PostManagementTest extends TestCase
         $this->withoutExceptionHandling();
         
         $image = UploadedFile::fake()->image('image.jpg');
+
+        $this->createParents();
 
         $response = $this->post('/post', [
             'title' => 'Első cikkem',
@@ -36,7 +60,6 @@ class PostManagementTest extends TestCase
             'section_id' => 1
         ]);
 
-        $response->assertStatus(200);
         $this->assertCount(1, Post::all());
 
         Storage::disk('local')->assertExists('images/'.$image->hashName());
@@ -44,6 +67,8 @@ class PostManagementTest extends TestCase
 
         $this->assertEquals('elso-cikkem', Post::first()->slug);
         $this->assertEquals(1, Post::first()->section_id);
+
+        $response->assertRedirect('/fooldal/szekcio/elso-cikkem');
     }
 
     /**
@@ -105,6 +130,8 @@ class PostManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
+        $this->createParents();
+
         $response = $this->post('/post', [
             'title' => 'Első cikkem',
             'title_visibility' => true,
@@ -115,7 +142,6 @@ class PostManagementTest extends TestCase
             'section_id' => 1
         ]);
 
-        $response->assertStatus(200);
         $this->assertCount(1, Post::all());
 
         $this->assertEquals('', Post::first()->post_image);
@@ -172,6 +198,8 @@ class PostManagementTest extends TestCase
         
         $image = UploadedFile::fake()->image('image.jpg');
 
+        $this->createParents();
+
         $this->post('/post', [
             'title' => 'Első cikkem',
             'title_visibility' => true,
@@ -184,7 +212,7 @@ class PostManagementTest extends TestCase
 
         $post = Post::first();
 
-        $this->patch('/post/'.$post->id, [
+        $response1 = $this->patch('/post/'.$post->id, [
             'title' => 'Első frissített cikkem',
             'title_visibility' => false,
             'description' => 'Az első cikkem.',
@@ -207,7 +235,7 @@ class PostManagementTest extends TestCase
 
         $newImage = UploadedFile::fake()->image('newImage.jpg');
 
-        $this->patch('/post/'.$post->id, [
+        $response2 = $this->patch('/post/'.$post->id, [
             'title' => 'Első cikkem második frissítés',
             'title_visibility' => true,
             'description' => '',
@@ -226,6 +254,9 @@ class PostManagementTest extends TestCase
         $this->assertEquals('images/'.$newImage->hashName(), Post::first()->post_image);
         $this->assertEquals(1, Post::first()->position);
         $this->assertEquals(1, Post::first()->section_id);
+
+        $response1->assertRedirect('/fooldal/szekcio/elso-frissitett-cikkem');
+        $response2->assertRedirect('/fooldal/szekcio/elso-cikkem-masodik-frissites');
     }
 
     /**
@@ -237,6 +268,8 @@ class PostManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
+        $this->createParents();
+
         $this->post('/post', [
             'title' => 'Első cikkem',
             'title_visibility' => true,
@@ -251,8 +284,8 @@ class PostManagementTest extends TestCase
 
         $response = $this->delete('/post/'.$post->id);
 
-        $response->assertStatus(200);
         $this->assertCount(0, Post::all());
+        $response->assertRedirect('/fooldal');
     }
 
     /**
@@ -361,6 +394,15 @@ class PostManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
+        $this->createParents();
+
+        $this->post('/section', [
+            'title' => 'Szekció2',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
         $this->post('/post', [
             'title' => 'Post',
             'title_visibility' => true,
@@ -440,15 +482,10 @@ class PostManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/page', [
-            'title' => 'Főoldal',
-            'title_visibility' => true,
-            'position' => Page::getNextPosition(),
-            'category_id' => 1
-        ]);
+        $this->createParents();
 
         $this->post('/section', [
-            'title' => 'Szekció',
+            'title' => 'Szekció2',
             'title_visibility' => true,
             'position' => Section::getNextPosition(),
             'page_id' => 1
@@ -484,7 +521,7 @@ class PostManagementTest extends TestCase
             'section_id' => 2
         ]);
 
-        $this->assertCount(1, Section::all());
+        $this->assertCount(2, Section::all());
         $this->assertCount(3, Post::all());
 
         $posts = Section::find(1)->posts;
