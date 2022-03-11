@@ -56,7 +56,15 @@ class SectionController extends Controller
      */
     protected function getValidData(SectionRequest $request)
     {
-        return $request->safe()->merge(['slug' => ''])->all();
+        $validated = $request->validated();
+
+        return [
+            'title' => $validated['title'],
+            'slug' => '',
+            'title_visibility' => $validated['title_visibility'],
+            'page_id' => $validated['page_id'],
+            'position' => $validated['position']
+        ];
     }
 
     /**

@@ -56,6 +56,14 @@ class PageController extends Controller
      */
     protected function getValidData(PageRequest $request)
     {
-        return $request->safe()->merge(['slug' => ''])->all();
+        $validated = $request->validated();
+
+        return [
+            'title' => $validated['title'],
+            'slug' => '',
+            'title_visibility' => $validated['title_visibility'],
+            'category_id' => isset($validated['category_id']) ? $validated['category_id'] : '',
+            'position' => $validated['position']
+        ];
     }
 }

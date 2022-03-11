@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\PositionManagger;
 
 class Category extends Model
 {
     use HasFactory;
+    use PositionManagger;
 
     protected $guarded = [];
 
@@ -27,18 +29,6 @@ class Category extends Model
         }
 
         $this->attributes['position'] = $position;
-    }
-
-    /**
-     * Get next position.
-     * 
-     * @return int $next
-     */
-    public static function getNextPosition()
-    {
-        $next = self::max('position') + 1;
-        
-        return $next;
     }
 
     /**

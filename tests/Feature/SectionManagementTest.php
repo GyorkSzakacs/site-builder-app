@@ -170,16 +170,9 @@ class SectionManagementTest extends TestCase
     public function test_set_default_section_title_visibility()
     {
         $this->withoutExceptionHandling();
-        
-        $this->post('/page', [
-            'title' => 'Főoldal',
-            'title_visibility' => true,
-            'position' => Page::getNextPosition(),
-            'category_id' => 1
-        ]);
-        
-        $this->post('/section', [
+        Section::create([
             'title' => 'Hírek',
+            'slug' => '',
             'position' => 1,
             'page_id' => 1
         ]);
@@ -220,6 +213,13 @@ class SectionManagementTest extends TestCase
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
+
+        $this->post('/page', [
+            'title' => 'Kapcsolat',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 2
+        ]);
         
         $this->post('/section', [
             'title' => 'Szkció1',
@@ -255,12 +255,21 @@ class SectionManagementTest extends TestCase
             'page_id' => 1
         ]);
 
+        $this->post('/section', [
+            'title' => 'Szekció1',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 2
+        ]);
+
         $first = Section::first();
         $third = Section::find(2);
         $forth = Section::find(3);
         $second = Section::find(4);
+        $firstAtSecond = Section::find(5);
 
-        $this->assertCount(4, Section::all());
+        $this->assertCount(5, Section::all());
+        $this->assertEquals(1, $firstAtSecond->position);
         $this->assertEquals(1, $first->position);
         $this->assertEquals(2, $second->position);
         $this->assertEquals(3, $third->position);

@@ -243,10 +243,11 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/page', [
+        Page::create([
             'title' => 'Főoldal',
-            'position' => 1,
-            'category_id' => 1
+            'slug' => '',
+            'category_id' => 1,
+            'position' => 1
         ]);
 
         $this->assertEquals(1, Page::first()->title_visibility);
@@ -334,12 +335,21 @@ class PageManagementTest extends TestCase
             'category_id' => 1
         ]);
 
+        $this->post('/page', [
+            'title' => 'Szolgáltatás5',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 2
+        ]);
+
         $first = Page::first();
         $third = Page::find(2);
         $forth = Page::find(3);
         $second = Page::find(4);
+        $firstAtSecond = Page::find(5);
 
-        $this->assertCount(4, Page::all());
+        $this->assertCount(5, Page::all());
+        $this->assertEquals(1, $firstAtSecond->position);
         $this->assertEquals(1, $first->position);
         $this->assertEquals(2, $second->position);
         $this->assertEquals(3, $third->position);
