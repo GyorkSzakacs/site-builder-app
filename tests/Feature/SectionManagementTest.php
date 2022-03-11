@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Section;
 use App\Models\Page;
+use App\Models\Post;
 
 class SectionManagementTest extends TestCase
 {
@@ -314,5 +315,55 @@ class SectionManagementTest extends TestCase
         $this->assertEquals(2, $sections->count());
         $this->assertEquals('Szekció1', $sections->find(1)->title);
         $this->assertEquals('Szekció2', $sections->find(2)->title);
+    }
+
+    /**
+     * Test get section of the post.
+     * 
+     * @return void
+     */
+    public function test_get_section_of_the_post()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'title' => 'Fpoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció1',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció2',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Post1',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 2
+        ]);
+
+        $this->assertCount(1, Page::all());
+        $this->assertCount(2, Section::all());
+        $this->assertCount(1, Post::all());
+
+        $section2 = Post::first()->section;
+        
+        $this->assertEquals('Szekció2', $section2->title);
+        $this->assertNotEquals($section2->id, Section::first()->id);
     }
 }

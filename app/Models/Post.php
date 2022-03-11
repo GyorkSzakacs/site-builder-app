@@ -46,10 +46,7 @@ class Post extends Model
 
         $this->attributes['position'] = $position;
     }
-
-    
-
-   
+  
     /**
      * Get the foreignkey column name.
      * 
@@ -58,5 +55,15 @@ class Post extends Model
     protected static function getParentIdColumnName()
     {
         return 'section_id';
+    }
+
+    /**
+     * Get the section of the post.
+     * 
+     * @return Section
+     */
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
     }
 }

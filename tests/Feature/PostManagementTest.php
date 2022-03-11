@@ -8,6 +8,8 @@ use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Post;
+use App\Models\Page;
+use App\Models\Section;
 
 class PostManagementTest extends TestCase
 {
@@ -427,5 +429,68 @@ class PostManagementTest extends TestCase
         $this->assertEquals(2, $second->position);
         $this->assertEquals(3, $third->position);
         $this->assertEquals(4, $forth->position);
+    }
+
+    /**
+     * Test get all posts for a section.
+     * 
+     * @return void
+     */
+    public function test_get_all_posts_for_a_section()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció',
+            'title_visibility' => true,
+            'position' => Section::getNextPosition(),
+            'page_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Post1',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Post2',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 2,
+            'section_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Post',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Tartalom',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 2
+        ]);
+
+        $this->assertCount(1, Section::all());
+        $this->assertCount(3, Post::all());
+
+        $posts = Section::find(1)->posts;
+
+        $this->assertEquals(2, $posts->count());
+        $this->assertEquals('Post1', $posts->find(1)->title);
+        $this->assertEquals('Post2', $posts->find(2)->title);
     }
 }

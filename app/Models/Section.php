@@ -66,4 +66,14 @@ class Section extends Model
     {
         return $this->belongsTo(Page::class);
     }
+
+    /**
+     * Get all posts for a section.
+     * 
+     * @return Post[]
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }
