@@ -12,10 +12,29 @@ class Section extends Model
     use HasFactory;
     use PositionManagger;
 
+    /**
+     * The guarded attributes.
+     * 
+     * @var array
+     */
     protected $guarded = [];
 
+    /**
+     * Set default values of attributes.
+     * 
+     * @var array
+     */
     protected $attributes = [
         'title_visibility' => true
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'title_visibility' => 'boolean',
     ];
     
     /**

@@ -81,7 +81,7 @@ class SectionManagementTest extends TestCase
         $this->assertCount(1, Section::all());
         $this->assertEquals('Érdekességek', Section::first()->title);
         $this->assertEquals('erdekessegek', Section::first()->slug);
-        $this->assertEquals(0, Section::first()->title_visibility);
+        $this->assertFalse(Section::first()->title_visibility);
         $response->assertRedirect('/fooldal');
     }
 

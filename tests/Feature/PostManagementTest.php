@@ -67,6 +67,7 @@ class PostManagementTest extends TestCase
 
         $this->assertEquals('elso-cikkem', Post::first()->slug);
         $this->assertEquals(1, Post::first()->section_id);
+        $this->assertTrue(Post::first()->title_visibility);
 
         $response->assertRedirect('/fooldal/szekcio/elso-cikkem');
     }

@@ -42,6 +42,7 @@ class PageManagementTest extends TestCase
 
         $this->assertCount(1, Page::all());
         $this->assertEquals('fooldal', Page::first()->slug);
+        $this->assertTrue(Page::first()->title_visibility);
 
         $response->assertRedirect('/dashboard');
     }
