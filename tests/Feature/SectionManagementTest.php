@@ -366,4 +366,29 @@ class SectionManagementTest extends TestCase
         $this->assertEquals('Szekció2', $section2->title);
         $this->assertNotEquals($section2->id, Section::first()->id);
     }
+
+    /**
+     * Test the section title is unique on page.
+     * 
+     * @return void
+     */
+    public function test_title_is_unique_on_page()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->post('/page', [
+            'title' => 'Fpoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', $this->input());
+
+        $response = $this->post('/section', $this->input());
+
+        $this->assertCount(1, Section::all());
+
+        $response->assertSessionHasErrors('title');
+    }
 }

@@ -16,7 +16,14 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
-        $newSection = Section::create($this->getValidData($request));
+        $validData = $this->getValidData($request);
+        
+        if($validData == null)
+        {
+            return back()->withErrors(['title' => 'Ezzel a címmel már létezik szekció ezen az oldalon!'])->withInput();
+        }
+
+        $newSection = Section::create($validData);
 
         return $this->redirectToPage($newSection);
     }
@@ -58,6 +65,16 @@ class SectionController extends Controller
     {
         $validated = $request->validated();
 
+        $titleOnPage = Section::where([
+                                        ['title', $validated['title']],
+                                        ['page_id', $validated['page_id']]
+                                    ])->get();
+
+        if($titleOnPage->count() > 0 )
+        {
+            return;
+        }
+        
         return [
             'title' => $validated['title'],
             'slug' => '',
