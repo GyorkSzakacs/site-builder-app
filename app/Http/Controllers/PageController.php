@@ -89,9 +89,9 @@ class PageController extends Controller
      */
     protected function isPageTitleUniqueForStoring($title)
     {
-        $titleCount = Page::Where('title', $title)->get();
+        $sameTitle = Page::Where('title', $title)->get();
 
-        if($titleCount->count() > 0)
+        if($sameTitle->count() > 0)
         {
             return false;
         }
@@ -108,12 +108,12 @@ class PageController extends Controller
      */
     protected function isPageTitleUniqueForUpdating($title, $id)
     {
-        $titleCount = Page::Where([
+        $sameTitle = Page::Where([
                                     ['id', '<>', $id],
                                     ['title', $title]
                                 ])->get();
 
-        if($titleCount->count() > 0)
+        if($sameTitle->count() > 0)
         {
             return false;
         }

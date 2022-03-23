@@ -415,7 +415,7 @@ class PostManagementTest extends TestCase
         ]);
 
         $this->post('/post', [
-            'title' => 'Post',
+            'title' => 'Post2',
             'title_visibility' => true,
             'description' => '',
             'content' => 'Tartalom',
@@ -425,7 +425,7 @@ class PostManagementTest extends TestCase
         ]);
 
         $this->post('/post', [
-            'title' => 'Post',
+            'title' => 'Post3',
             'title_visibility' => true,
             'description' => '',
             'content' => 'Tartalom',
@@ -441,7 +441,7 @@ class PostManagementTest extends TestCase
         $this->assertCount(2, $occupiedItems);
 
         $this->post('/post', [
-            'title' => 'Post',
+            'title' => 'Post4',
             'title_visibility' => true,
             'description' => '',
             'content' => 'Tartalom',
@@ -530,5 +530,88 @@ class PostManagementTest extends TestCase
         $this->assertEquals(2, $posts->count());
         $this->assertEquals('Post1', $posts->find(1)->title);
         $this->assertEquals('Post2', $posts->find(2)->title);
+    }
+
+    /**
+     * Test the post title is unique in section while storing.
+     *
+     * @return void
+     */
+    public function test_post_title_is_unique_in_section_while_storing()
+    {
+        $this->withoutExceptionHandling();
+    
+        $this->createParents();
+
+        $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $response = $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem címe egyedi.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $this->assertCount(1, Post::all());
+        $response->assertSessionHasErrors('title');
+    }
+
+     /**
+     * Test the postn title is unique in this section while updating.
+     * 
+     * @return void
+     */
+    public function test_post_title_is_unique_while_updating()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->createParents();
+
+        $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $post = Post::first();
+
+        $this->post('/post', [
+            'title' => 'Poszt2',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => '',
+            'position' => 2,
+            'section_id' => 1
+        ]);
+
+        $response = $this->patch('/post/'.$post->id, [
+            'title' => 'Poszt2',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $this->assertCount(2, Post::all());
+        $this->assertEquals('Első cikkem', Post::first()->title);
+        $response->assertSessionHasErrors('title');
     }
 }

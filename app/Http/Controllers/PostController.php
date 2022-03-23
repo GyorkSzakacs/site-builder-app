@@ -22,11 +22,19 @@ class PostController extends Controller
         
         $path = $this->storeImage($validated['post_image']);
 
-        if(is_a($path, $this->getClassName())){
+        if(is_a($path, $this->getClassName()))
+        {
             return $path;
         }
+
+        $validData = $this->getValidData($validated, $path);
         
-        $newPost = Post::create($this->getValidData($validated, $path));
+        if(!$this->isTitleUniqueInSectionForStoring($validData['title'], $validData['section_id']))
+        {
+            return $this->redirectBackWithTitleError();
+        }
+
+        $newPost = Post::create($validData);
 
         return $this->redirectToPost($newPost);
     }
@@ -47,22 +55,30 @@ class PostController extends Controller
         if(is_a($path, $this->getClassName())){
             return $path;
         }
+
+        $validData = $this->getValidData($validated, $path);
+        
+        if(!$this->isTitleUniqueInSectionForUpdating($validData['title'], $validData['section_id'], $post->id))
+        {
+            return $this->redirectBackWithTitleError();
+        }
+
         
         if(empty($path))
         {
             $post->update([
-                'title' => $validated['title'],
+                'title' => $validData['title'],
                 'slug' => '',
-                'title_visibility' => $validated['title_visibility'],
-                'description' => $validated['description'],
-                'content' => $validated['content'],
-                'section_id' => $validated['section_id'],
-                'position' => $validated['position']
+                'title_visibility' => $validData['title_visibility'],
+                'description' => $validData['description'],
+                'content' => $validData['content'],
+                'section_id' => $validData['section_id'],
+                'position' => $validData['position']
             ]);
         }
         else
         {
-            $post->update($this->getValidData($validated, $path));
+            $post->update($validData);
         }
 
         return $this->redirectToPost($post);
@@ -135,6 +151,63 @@ class PostController extends Controller
             'position' => $validated['position']
         ];
     }
+
+    /**
+     * Check the title is unique in this section while storing.
+     * 
+     * @param string $title
+     * @param int $section_id
+     * @return boolean
+     */
+    protected function isTitleUniqueInSectionForStoring($title, $section_id)
+    {
+        $titleInSection = Post::where([
+                                        ['title', $title],
+                                        ['section_id', $section_id]
+                                    ])->get();
+
+        if($titleInSection->count() > 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check the title is unique in this section while updating.
+     * 
+     * @param string $title
+     * @param int $section_id
+     * @param int $id
+     * @return boolean
+     */
+    protected function isTitleUniqueInSectionForUpdating($title, $section_id,  $id)
+    {
+        $titleInSection = Post::where([
+                                        ['id', '<>', $id],
+                                        ['title', $title],
+                                        ['section_id', $section_id]
+                                    ])->get();
+
+        if($titleInSection->count() > 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Redirect back with error for title.
+     * 
+     * @return void
+     */
+    protected function redirectBackWithTitleError()
+    {
+        return back()->withErrors(['title' => 'Ezzel a címmel már létezik poszt ebben a szekcióban!'])->withInput();
+    }
+
 
     /**
      * Redirect to current post.
