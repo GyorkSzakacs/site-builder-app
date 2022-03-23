@@ -20,7 +20,7 @@ class PageController extends Controller
 
         if(!$this->isPageTitleUniqueForStoring($validData['title']))
         {
-            return back()->withErrors(['title' => 'Ezzel a címmel már létezik oldal!'])->withInput();
+            return $this->redirectBackWithTitleError();
         }
 
         Page::create($validData);
@@ -41,7 +41,7 @@ class PageController extends Controller
 
         if(!$this->isPageTitleUniqueForUpdating($validData['title'], $page->id))
         {
-            return back()->withErrors(['title' => 'Ezzel a címmel már létezik oldal!'])->withInput();
+            return $this->redirectBackWithTitleError();
         }
 
         $page->update($validData);
@@ -119,5 +119,15 @@ class PageController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Redirect back with error for title.
+     * 
+     * @return void
+     */
+    protected function redirectBackWithTitleError()
+    {
+        return back()->withErrors(['title' => 'Ezzel a címmel már létezik oldal!'])->withInput();
     }
 }

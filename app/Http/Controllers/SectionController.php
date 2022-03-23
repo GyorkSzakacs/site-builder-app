@@ -18,7 +18,7 @@ class SectionController extends Controller
     {
         $validData = $this->getValidData($request);
         
-        if(!$this->uniqueOnPageWhileStoring($validData['title'], $validData['page_id']))
+        if(!$this->isTitleUniqueOnPageForStoring($validData['title'], $validData['page_id']))
         {
             return $this->redirectBackWithTitleError();
         }
@@ -39,7 +39,7 @@ class SectionController extends Controller
     {
         $validData = $this->getValidData($request);
         
-        if(!$this->uniqueOnPageWhileUpdating($validData['title'], $validData['page_id'], $section->id))
+        if(!$this->isTitleUniqueOnPageForUpdating($validData['title'], $validData['page_id'], $section->id))
         {
             return $this->redirectBackWithTitleError();
         }
@@ -88,7 +88,7 @@ class SectionController extends Controller
      * @param int $page_id
      * @return boolean
      */
-    protected function uniqueOnPageWhileStoring($title, $page_id)
+    protected function isTitleUniqueOnPageForStoring($title, $page_id)
     {
         $titleOnPage = Section::where([
                                         ['title', $title],
@@ -111,7 +111,7 @@ class SectionController extends Controller
      * @param int $id
      * @return boolean
      */
-    protected function uniqueOnPageWhileUpdating($title, $page_id,  $id)
+    protected function isTitleUniqueOnPageForUpdating($title, $page_id,  $id)
     {
         $titleOnPage = Section::where([
                                         ['id', '<>', $id],
