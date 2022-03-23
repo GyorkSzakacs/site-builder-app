@@ -368,11 +368,11 @@ class SectionManagementTest extends TestCase
     }
 
     /**
-     * Test the section title is unique on page.
+     * Test the section title is unique on page while storing.
      * 
      * @return void
      */
-    public function test_title_is_unique_on_page()
+    public function test_title_is_unique_on_page_while_stroing()
     {
         $this->withoutExceptionHandling();
 
@@ -389,6 +389,56 @@ class SectionManagementTest extends TestCase
 
         $this->assertCount(1, Section::all());
 
+        $response->assertSessionHasErrors('title');
+    }
+
+    /**
+     * Test the section title is unique on page while updating.
+     * 
+     * @return void
+     */
+    public function test_title_is_unique_on_page_while_updating()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', $this->input());
+
+        $section = Section::first();
+
+        $this->patch('/section/'.$section->id, [
+            'title' => 'Hírek',
+            'title_visibility' => false,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
+        $this->assertCount(1, Section::all());
+        $this->assertFalse(Section::first()->title_visibility);
+
+        $this->post('/section', [
+            'title' => 'Rólunk',
+            'title_visibility' => false,
+            'position' => 2,
+            'page_id' => 1
+        ]);
+
+        $response = $this->patch('/section/'.$section->id, [
+            'title' => 'Rólunk',
+            'title_visibility' => false,
+            'position' => 2,
+            'page_id' => 1
+        ]);
+
+        $this->assertCount(2, Section::all());
+        $this->assertEquals('Hírek', Section::first()->title);
+        $this->assertEquals(1, Section::first()->position);
         $response->assertSessionHasErrors('title');
     }
 }

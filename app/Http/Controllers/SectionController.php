@@ -18,9 +18,9 @@ class SectionController extends Controller
     {
         $validData = $this->getValidData($request);
         
-        if($validData == null)
+        if(!$this->uniqueOnPageWhileStoring($validData['title'], $validData['page_id']))
         {
-            return back()->withErrors(['title' => 'Ezzel a címmel már létezik szekció ezen az oldalon!'])->withInput();
+            return $this->redirectBackWithTitleError();
         }
 
         $newSection = Section::create($validData);
@@ -37,7 +37,14 @@ class SectionController extends Controller
      */
     public function update(SectionRequest $request, Section $section)
     {
-        $section->update($this->getValidData($request));
+        $validData = $this->getValidData($request);
+        
+        if(!$this->uniqueOnPageWhileUpdating($validData['title'], $validData['page_id'], $section->id))
+        {
+            return $this->redirectBackWithTitleError();
+        }
+
+        $section->update($validData);
 
         return $this->redirectToPage($section);
     }
@@ -64,16 +71,6 @@ class SectionController extends Controller
     protected function getValidData(SectionRequest $request)
     {
         $validated = $request->validated();
-
-        $titleOnPage = Section::where([
-                                        ['title', $validated['title']],
-                                        ['page_id', $validated['page_id']]
-                                    ])->get();
-
-        if($titleOnPage->count() > 0 )
-        {
-            return;
-        }
         
         return [
             'title' => $validated['title'],
@@ -82,6 +79,62 @@ class SectionController extends Controller
             'page_id' => $validated['page_id'],
             'position' => $validated['position']
         ];
+    }
+
+    /**
+     * Check the title is unique on this page while storing.
+     * 
+     * @param string $title
+     * @param int $page_id
+     * @return boolean
+     */
+    protected function uniqueOnPageWhileStoring($title, $page_id)
+    {
+        $titleOnPage = Section::where([
+                                        ['title', $title],
+                                        ['page_id', $page_id]
+                                    ])->get();
+
+        if($titleOnPage->count() > 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check the title is unique on this page while updating.
+     * 
+     * @param string $title
+     * @param int $page_id
+     * @param int $id
+     * @return boolean
+     */
+    protected function uniqueOnPageWhileUpdating($title, $page_id,  $id)
+    {
+        $titleOnPage = Section::where([
+                                        ['id', '<>', $id],
+                                        ['title', $title],
+                                        ['page_id', $page_id]
+                                    ])->get();
+
+        if($titleOnPage->count() > 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Redirect back with error for title.
+     * 
+     * @return void
+     */
+    protected function redirectBackWithTitleError()
+    {
+        return back()->withErrors(['title' => 'Ezzel a címmel már létezik szekció ezen az oldalon!'])->withInput();
     }
 
     /**
