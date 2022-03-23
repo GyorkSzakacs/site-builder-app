@@ -16,7 +16,14 @@ class PageController extends Controller
      */
     public function store(PageRequest $request)
     {
-        Page::create($this->getValidData($request));
+        $validData = $this->getValidData($request);
+
+        if(!$this->isPageTitleUniqueForStoring($validData['title']))
+        {
+            return back()->withErrors(['title' => 'Ezzel a címmel már létezik oldal!'])->withInput();
+        }
+
+        Page::create($validData);
 
         return redirect('/dashboard');
     }
@@ -30,7 +37,14 @@ class PageController extends Controller
      */
     public function update(PageRequest $request, Page $page)
     {
-        $page->update($this->getValidData($request));
+        $validData = $this->getValidData($request);
+
+        if(!$this->isPageTitleUniqueForUpdating($validData['title'], $page->id))
+        {
+            return back()->withErrors(['title' => 'Ezzel a címmel már létezik oldal!'])->withInput();
+        }
+
+        $page->update($validData);
 
         return redirect('/dashboard');
     }
@@ -65,5 +79,45 @@ class PageController extends Controller
             'category_id' => isset($validated['category_id']) ? $validated['category_id'] : '',
             'position' => $validated['position']
         ];
+    }
+
+    /**
+     * Check that given title is unique for storing.
+     * 
+     * @param string $title
+     * @return boolean
+     */
+    protected function isPageTitleUniqueForStoring($title)
+    {
+        $titleCount = Page::Where('title', $title)->get();
+
+        if($titleCount->count() > 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check that given title is unique for storing.
+     * 
+     * @param string $title
+     * @param int $id
+     * @return boolean
+     */
+    protected function isPageTitleUniqueForUpdating($title, $id)
+    {
+        $titleCount = Page::Where([
+                                    ['id', '<>', $id],
+                                    ['title', $title]
+                                ])->get();
+
+        if($titleCount->count() > 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

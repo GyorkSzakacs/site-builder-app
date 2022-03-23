@@ -26,7 +26,7 @@ class PageRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:25|unique:pages',
+            'title' => 'required|string|max:25',
             'title_visibility' => 'boolean',
             'position' => 'integer',
             'category_id' => ''

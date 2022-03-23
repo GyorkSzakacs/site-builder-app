@@ -395,4 +395,64 @@ class PageManagementTest extends TestCase
 
         $this->assertEquals($page1->id, $page2->id);
     }
+
+    /**
+     * Test a page is unique while storing.
+     * 
+     * @return void
+     */
+    public function test_page_is_unique_while_storing()
+    {
+        $this->withoutExceptionHandling();
+        
+        $this->post('/page', $this->input());
+        
+        $response = $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => false,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+        
+        $this->assertCount(1, Page::all());
+        $response->assertSessionHasErrors('title');
+    }
+
+    /**
+     * Test a page is unique while updating.
+     * 
+     * @return void
+     */
+    public function test_page_is_unique_while_updating()
+    {
+        $this->post('/page', $this->input());
+
+        $page = Page::first();
+
+        $this->patch('/page/'.$page->id, [
+            'title' => 'Főoldal',
+            'title_visibility' => false,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $this->assertFalse(Page::first()->title_visibility);
+        
+        $this->post('/page', [
+            'title' => 'Rólunk',
+            'title_visibility' => false,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $response = $this->patch('/page/'.$page->id, [
+            'title' => 'Rólunk',
+            'title_visibility' => false,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+        
+        $this->assertEquals('Főoldal', Page::first()->title);
+        $response->assertSessionHasErrors('title');
+    }
 }
