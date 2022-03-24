@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Page;
 use App\Http\Requests\PageRequest;
+use App\Services\TitleValidator\TitleValidator;
 
 class PageController extends Controller
 {
@@ -12,15 +13,16 @@ class PageController extends Controller
      * Create new page
      * 
      * @param PageRequiest $request
+     * @param TitleValidator $validator
      * @return void
      */
-    public function store(PageRequest $request)
+    public function store(PageRequest $request, TitleValidator $validator)
     {
-        $validData = $this->getValidData($request);
+        $validData = $validator->getValidDataFromRequest($request);
 
-        if(!$this->isPageTitleUniqueForStoring($validData['title']))
+        if(!$validator->isTitleUniqueForStoring($validData['title']))
         {
-            return $this->redirectBackWithTitleError();
+            return $this->redirectBackWithTitleError($validator->getErrorMessage());
         }
 
         Page::create($validData);
@@ -32,16 +34,17 @@ class PageController extends Controller
      * Update the selected page details
      * 
      * @param PageRequest $request
+     * @param TitleValidator $validator
      * @param Page $page
      * @return void
      */
-    public function update(PageRequest $request, Page $page)
+    public function update(PageRequest $request, TitleValidator $validator, Page $page)
     {
-        $validData = $this->getValidData($request);
+        $validData = $validator->getValidDataFromRequest($request);
 
-        if(!$this->isPageTitleUniqueForUpdating($validData['title'], $page->id))
+        if(!$validator->isTitleUniqueForUpdating($validData['title'], $page->id))
         {
-            return $this->redirectBackWithTitleError();
+            return $this->redirectBackWithTitleError($validator->getErrorMessage());
         }
 
         $page->update($validData);
@@ -63,71 +66,13 @@ class PageController extends Controller
     }
 
     /**
-     * Get valid input data.
-     * 
-     * @param PageRequest $request
-     * @return array
-     */
-    protected function getValidData(PageRequest $request)
-    {
-        $validated = $request->validated();
-
-        return [
-            'title' => $validated['title'],
-            'slug' => '',
-            'title_visibility' => $validated['title_visibility'],
-            'category_id' => isset($validated['category_id']) ? $validated['category_id'] : '',
-            'position' => $validated['position']
-        ];
-    }
-
-    /**
-     * Check that given title is unique for storing.
-     * 
-     * @param string $title
-     * @return boolean
-     */
-    protected function isPageTitleUniqueForStoring($title)
-    {
-        $sameTitle = Page::Where('title', $title)->get();
-
-        if($sameTitle->count() > 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check that given title is unique for storing.
-     * 
-     * @param string $title
-     * @param int $id
-     * @return boolean
-     */
-    protected function isPageTitleUniqueForUpdating($title, $id)
-    {
-        $sameTitle = Page::Where([
-                                    ['id', '<>', $id],
-                                    ['title', $title]
-                                ])->get();
-
-        if($sameTitle->count() > 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Redirect back with error for title.
      * 
+     * @param string $errorMessage
      * @return void
      */
-    protected function redirectBackWithTitleError()
+    protected function redirectBackWithTitleError($errorMessage)
     {
-        return back()->withErrors(['title' => 'Ezzel a címmel már létezik oldal!'])->withInput();
+        return back()->withErrors(['title' => $errorMessage])->withInput();
     }
 }
