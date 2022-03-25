@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Http\Requests\SectionRequest;
 use App\Services\TitleValidator\TitleValidator;
+use App\Traits\BackRedirector;
 
 class SectionController extends Controller
 {
+    use BackRedirector;
+
     /**
      * SectionTitleValidator instace.
      * 
@@ -39,7 +42,7 @@ class SectionController extends Controller
         
         if(!$this->validator->isTitleUniqueForStoring())
         {
-            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
+            return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
         $newSection = Section::create($this->getOrderedValidData());
@@ -60,7 +63,7 @@ class SectionController extends Controller
         
         if(!$this->validator->isTitleUniqueForUpdating($section->id))
         {
-            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
+            return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
         $section->update($this->getOrderedValidData());
@@ -95,17 +98,6 @@ class SectionController extends Controller
             'page_id' => $this->validator->validData['page_id'],
             'position' => $this->validator->validData['position']
         ];
-    }
-
-    /**
-     * Redirect back with error for title.
-     * 
-     * @param string $errorMessage
-     * @return void
-     */
-    protected function redirectBackWithTitleError($errorMessage)
-    {
-        return back()->withErrors(['title' => $errorMessage])->withInput();
     }
 
     /**

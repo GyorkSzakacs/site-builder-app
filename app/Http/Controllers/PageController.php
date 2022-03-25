@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Page;
 use App\Http\Requests\PageRequest;
 use App\Services\TitleValidator\TitleValidator;
+use App\Traits\BackRedirector;
 
 class PageController extends Controller
 {
+    use BackRedirector;
+
     /**
      * PageTitleValidator instace.
      * 
@@ -39,7 +42,7 @@ class PageController extends Controller
 
         if(!$this->validator->isTitleUniqueForStoring())
         {
-            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
+            return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
         Page::create($this->getOrderedValidData());
@@ -60,7 +63,7 @@ class PageController extends Controller
 
         if(!$this->validator->isTitleUniqueForUpdating($page->id))
         {
-            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
+            return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
         $page->update($this->getOrderedValidData());
@@ -95,16 +98,5 @@ class PageController extends Controller
             'category_id' => isset($this->validator->validData['category_id']) ? $this->validator->validData['category_id'] : '',
             'position' => $this->validator->validData['position']
         ];
-    }
-
-    /**
-     * Redirect back with error for title.
-     * 
-     * @param string $errorMessage
-     * @return void
-     */
-    protected function redirectBackWithTitleError($errorMessage)
-    {
-        return back()->withErrors(['title' => $errorMessage])->withInput();
     }
 }

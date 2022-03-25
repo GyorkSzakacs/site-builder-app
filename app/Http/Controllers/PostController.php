@@ -8,9 +8,12 @@ use App\Models\Post;
 use App\Services\FileUploader\Uploader;
 use App\Services\FileUploader\ImageConstraints;
 use App\Services\TitleValidator\TitleValidator;
+use App\Traits\BackRedirector;
 
 class PostController extends Controller
 {
+    use BackRedirector;
+    
     /**
      * PostTitleValidator instace.
      * 
@@ -48,7 +51,7 @@ class PostController extends Controller
 
         if(!$this->validator->isTitleUniqueForStoring())
         {
-            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
+            return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
         $newPost = Post::create($this->getOrderedValidData($path));
@@ -75,7 +78,7 @@ class PostController extends Controller
 
         if(!$this->validator->isTitleUniqueForUpdating($post->id))
         {
-            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
+            return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
         
@@ -127,7 +130,7 @@ class PostController extends Controller
             $uploader = new Uploader($uploadedImage, new ImageConstraints());
 
             if(!$uploader->validateFile()){
-                return back()->withErrors(['post_image' => $uploader->getErrorMessage()])->withInput();
+                return $this->redirectBackWithError('post_image', $uploader->getErrorMessage());
             }
 
             $path = $uploader->upload();
@@ -165,64 +168,6 @@ class PostController extends Controller
             'position' => $this->validator->validData['position']
         ];
     }
-
-    /**
-     * Check the title is unique in this section while storing.
-     * 
-     * @param string $title
-     * @param int $section_id
-     * @return boolean
-     */
-    protected function isTitleUniqueInSectionForStoring($title, $section_id)
-    {
-        $titleInSection = Post::where([
-                                        ['title', $title],
-                                        ['section_id', $section_id]
-                                    ])->get();
-
-        if($titleInSection->count() > 0 )
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check the title is unique in this section while updating.
-     * 
-     * @param string $title
-     * @param int $section_id
-     * @param int $id
-     * @return boolean
-     */
-    protected function isTitleUniqueInSectionForUpdating($title, $section_id,  $id)
-    {
-        $titleInSection = Post::where([
-                                        ['id', '<>', $id],
-                                        ['title', $title],
-                                        ['section_id', $section_id]
-                                    ])->get();
-
-        if($titleInSection->count() > 0 )
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Redirect back with error for title.
-     * 
-     * @param string $errorMessage
-     * @return void
-     */
-    protected function redirectBackWithTitleError($errorMessage)
-    {
-        return back()->withErrors(['title' => $errorMessage])->withInput();
-    }
-
 
     /**
      * Redirect to current post.
