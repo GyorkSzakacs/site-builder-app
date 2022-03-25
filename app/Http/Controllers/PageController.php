@@ -10,22 +10,39 @@ use App\Services\TitleValidator\TitleValidator;
 class PageController extends Controller
 {
     /**
-     * Create new page
+     * PageTitleValidator instace.
      * 
-     * @param PageRequiest $request
+     * @var object
+     */
+    private $validator;
+
+    /**
+     * Create a new class instance.
+     * 
      * @param TitleValidator $validator
      * @return void
      */
-    public function store(PageRequest $request, TitleValidator $validator)
+    public function __construct(TitleValidator $validator)
     {
-        $validData = $validator->getValidDataFromRequest($request);
+        $this->validator = $validator;
+    }
 
-        if(!$validator->isTitleUniqueForStoring($validData['title']))
+    /**
+     * Create new page
+     * 
+     * @param PageRequiest $request
+     * @return void
+     */
+    public function store(PageRequest $request)
+    {
+        $this->validator->setValidDataFromRequest($request);
+
+        if(!$this->validator->isTitleUniqueForStoring())
         {
-            return $this->redirectBackWithTitleError($validator->getErrorMessage());
+            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
         }
 
-        Page::create($validData);
+        Page::create($this->getOrderedValidData());
 
         return redirect('/dashboard');
     }
@@ -34,20 +51,19 @@ class PageController extends Controller
      * Update the selected page details
      * 
      * @param PageRequest $request
-     * @param TitleValidator $validator
      * @param Page $page
      * @return void
      */
-    public function update(PageRequest $request, TitleValidator $validator, Page $page)
+    public function update(PageRequest $request, Page $page)
     {
-        $validData = $validator->getValidDataFromRequest($request);
+        $this->validator->setValidDataFromRequest($request);
 
-        if(!$validator->isTitleUniqueForUpdating($validData['title'], $page->id))
+        if(!$this->validator->isTitleUniqueForUpdating($page->id))
         {
-            return $this->redirectBackWithTitleError($validator->getErrorMessage());
+            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
         }
 
-        $page->update($validData);
+        $page->update($this->getOrderedValidData());
 
         return redirect('/dashboard');
     }
@@ -63,6 +79,22 @@ class PageController extends Controller
         $page->delete();
 
         return redirect('/dashboard');
+    }
+
+    /**
+     * Get ordered valid data for storing process.
+     * 
+     * @return array
+     */
+    protected function getOrderedValidData()
+    {
+        return [
+            'title' => $this->validator->validData['title'],
+            'slug' => '',
+            'title_visibility' => $this->validator->validData['title_visibility'],
+            'category_id' => isset($this->validator->validData['category_id']) ? $this->validator->validData['category_id'] : '',
+            'position' => $this->validator->validData['position']
+        ];
     }
 
     /**

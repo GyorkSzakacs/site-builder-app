@@ -5,9 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Http\Requests\SectionRequest;
+use App\Services\TitleValidator\TitleValidator;
 
 class SectionController extends Controller
 {
+    /**
+     * SectionTitleValidator instace.
+     * 
+     * @var object
+     */
+    private $validator;
+
+    /**
+     * Create a new class instance.
+     * 
+     * @param TitleValidator $validator
+     * @return void
+     */
+    public function __construct(TitleValidator $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * Create a new section.
      * 
@@ -16,14 +35,14 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
-        $validData = $this->getValidData($request);
+        $this->validator->setValidDataFromRequest($request);
         
-        if(!$this->isTitleUniqueOnPageForStoring($validData['title'], $validData['page_id']))
+        if(!$this->validator->isTitleUniqueForStoring())
         {
-            return $this->redirectBackWithTitleError();
+            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
         }
 
-        $newSection = Section::create($validData);
+        $newSection = Section::create($this->getOrderedValidData());
 
         return $this->redirectToPage($newSection);
     }
@@ -37,14 +56,14 @@ class SectionController extends Controller
      */
     public function update(SectionRequest $request, Section $section)
     {
-        $validData = $this->getValidData($request);
+        $this->validator->setValidDataFromRequest($request);
         
-        if(!$this->isTitleUniqueOnPageForUpdating($validData['title'], $validData['page_id'], $section->id))
+        if(!$this->validator->isTitleUniqueForUpdating($section->id))
         {
-            return $this->redirectBackWithTitleError();
+            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
         }
 
-        $section->update($validData);
+        $section->update($this->getOrderedValidData());
 
         return $this->redirectToPage($section);
     }
@@ -63,78 +82,30 @@ class SectionController extends Controller
     }
 
     /**
-     * Get validated input data.
+     * Get ordered valid data for storing process.
      * 
-     * @param SectionRequest $request
      * @return array
      */
-    protected function getValidData(SectionRequest $request)
+    protected function getOrderedValidData()
     {
-        $validated = $request->validated();
-        
         return [
-            'title' => $validated['title'],
+            'title' => $this->validator->validData['title'],
             'slug' => '',
-            'title_visibility' => $validated['title_visibility'],
-            'page_id' => $validated['page_id'],
-            'position' => $validated['position']
+            'title_visibility' => $this->validator->validData['title_visibility'],
+            'page_id' => $this->validator->validData['page_id'],
+            'position' => $this->validator->validData['position']
         ];
-    }
-
-    /**
-     * Check the title is unique on this page while storing.
-     * 
-     * @param string $title
-     * @param int $page_id
-     * @return boolean
-     */
-    protected function isTitleUniqueOnPageForStoring($title, $page_id)
-    {
-        $titleOnPage = Section::where([
-                                        ['title', $title],
-                                        ['page_id', $page_id]
-                                    ])->get();
-
-        if($titleOnPage->count() > 0 )
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check the title is unique on this page while updating.
-     * 
-     * @param string $title
-     * @param int $page_id
-     * @param int $id
-     * @return boolean
-     */
-    protected function isTitleUniqueOnPageForUpdating($title, $page_id,  $id)
-    {
-        $titleOnPage = Section::where([
-                                        ['id', '<>', $id],
-                                        ['title', $title],
-                                        ['page_id', $page_id]
-                                    ])->get();
-
-        if($titleOnPage->count() > 0 )
-        {
-            return false;
-        }
-
-        return true;
     }
 
     /**
      * Redirect back with error for title.
      * 
+     * @param string $errorMessage
      * @return void
      */
-    protected function redirectBackWithTitleError()
+    protected function redirectBackWithTitleError($errorMessage)
     {
-        return back()->withErrors(['title' => 'Ezzel a címmel már létezik szekció ezen az oldalon!'])->withInput();
+        return back()->withErrors(['title' => $errorMessage])->withInput();
     }
 
     /**

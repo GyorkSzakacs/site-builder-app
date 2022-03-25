@@ -4,8 +4,9 @@ namespace App\Services\TitleValidator;
 
 interface TitleValidator
 {
-    public function getValidDataFromRequest(object $request);
-    public function isTitleUniqueForStoring(string $title);
-    public function isTitleUniqueForUpdating(string $title, int $id);
+    public function setValidDataFromRequest(object $request);
+    public function getValidData();
+    public function isTitleUniqueForStoring();
+    public function isTitleUniqueForUpdating(int $id);
     public function getErrorMessage();
 }

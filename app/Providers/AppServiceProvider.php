@@ -5,6 +5,11 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\TitleValidator\TitleValidator;
 use App\Services\TitleValidator\PageTitleValidator;
+use App\Services\TitleValidator\SectionTitleValidator;
+use App\Services\TitleValidator\PostTitleValidator;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\PostController;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +20,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(TitleValidator::class, PageTitleValidator::class);
+        $this->app->when(PageController::class)
+                    ->needs(TitleValidator::class)
+                    ->give(function(){
+                        return new PageTitleValidator();
+                    });
+
+        $this->app->when(SectionController::class)
+                    ->needs(TitleValidator::class)
+                    ->give(function(){
+                        return new SectionTitleValidator();
+                    });
+
+        $this->app->when(PostController::class)
+                    ->needs(TitleValidator::class)
+                    ->give(function(){
+                        return new PostTitleValidator();
+                    });
     }
 
     /**

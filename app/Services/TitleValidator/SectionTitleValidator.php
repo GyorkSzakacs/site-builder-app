@@ -3,9 +3,9 @@
 namespace App\Services\TitleValidator;
 
 use App\Services\TitleValidator\TitleValidator;
-use App\Models\Page;
+use App\Models\Section;
 
-class PageTitleValidator implements TitleValidator
+class SectionTitleValidator implements TitleValidator
 {
     /**
      * Valid data array from PageRequest.
@@ -23,7 +23,7 @@ class PageTitleValidator implements TitleValidator
     public function setValidDataFromRequest(object $request)
     {
         $this->validData = $request->validated();
-
+        
         return $this;
     }
 
@@ -38,15 +38,18 @@ class PageTitleValidator implements TitleValidator
     }
 
     /**
-     * Check that the given page title is unique for storing.
+     * Check that the given section title is unique on current page for storing.
      * 
-     *@return boolean
+     * @return boolean
      */
     public function isTitleUniqueForStoring()
     {
-        $sameTitle = Page::Where('title', $this->validData['title'])->get();
+        $titleOnPage = Section::where([
+                                        ['title', $this->validData['title']],
+                                        ['page_id', $this->validData['page_id']]
+                                ])->get();
 
-        if($sameTitle->count() > 0)
+        if($titleOnPage->count() > 0 )
         {
             return false;
         }
@@ -55,19 +58,20 @@ class PageTitleValidator implements TitleValidator
     }
 
     /**
-     * Check that the given page title is unique for updating.
+     * Check that the given section title is unique on current page for updating.
      * 
-     *@param int $id
+     * @param int $id
      * @return boolean
      */
     public function isTitleUniqueForUpdating(int $id)
     {
-        $sameTitle = Page::Where([
+        $titleOnPage = Section::where([
                                     ['id', '<>', $id],
-                                    ['title', $this->validData['title']]
+                                    ['title', $this->validData['title']],
+                                    ['page_id', $this->validData['page_id']]
                                 ])->get();
 
-        if($sameTitle->count() > 0)
+        if($titleOnPage->count() > 0 )
         {
             return false;
         }
@@ -82,6 +86,6 @@ class PageTitleValidator implements TitleValidator
      */
     public function getErrorMessage()
     {
-        return 'Ezzel a címmel már létezik oldal!';
+        return 'Ezzel a címmel már létezik szekció ezen az oldalon!';
     }
 }

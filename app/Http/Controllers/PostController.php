@@ -7,9 +7,28 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Services\FileUploader\Uploader;
 use App\Services\FileUploader\ImageConstraints;
+use App\Services\TitleValidator\TitleValidator;
 
 class PostController extends Controller
 {
+    /**
+     * PostTitleValidator instace.
+     * 
+     * @var object
+     */
+    private $validator;
+
+    /**
+     * Create a new class instance.
+     * 
+     * @param TitleValidator $validator
+     * @return void
+     */
+    public function __construct(TitleValidator $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * Store post data.
      * 
@@ -18,23 +37,21 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        $validated = $request->validated();
+        $this->validator->setValidDataFromRequest($request);
         
-        $path = $this->storeImage($validated['post_image']);
+        $path = $this->storeImage($this->validator->validData['post_image']);
 
         if(is_a($path, $this->getClassName()))
         {
             return $path;
         }
 
-        $validData = $this->getValidData($validated, $path);
-        
-        if(!$this->isTitleUniqueInSectionForStoring($validData['title'], $validData['section_id']))
+        if(!$this->validator->isTitleUniqueForStoring())
         {
-            return $this->redirectBackWithTitleError();
+            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
         }
 
-        $newPost = Post::create($validData);
+        $newPost = Post::create($this->getOrderedValidData($path));
 
         return $this->redirectToPost($newPost);
     }
@@ -48,37 +65,35 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
-        $validated = $request->validated();
+        $this->validator->setValidDataFromRequest($request);
         
-        $path = $this->storeImage($validated['post_image']);
+        $path = $this->storeImage($this->validator->validData['post_image']);
 
         if(is_a($path, $this->getClassName())){
             return $path;
         }
 
-        $validData = $this->getValidData($validated, $path);
-        
-        if(!$this->isTitleUniqueInSectionForUpdating($validData['title'], $validData['section_id'], $post->id))
+        if(!$this->validator->isTitleUniqueForUpdating($post->id))
         {
-            return $this->redirectBackWithTitleError();
+            return $this->redirectBackWithTitleError($this->validator->getErrorMessage());
         }
 
         
         if(empty($path))
         {
             $post->update([
-                'title' => $validData['title'],
+                'title' => $this->validator->validData['title'],
                 'slug' => '',
-                'title_visibility' => $validData['title_visibility'],
-                'description' => $validData['description'],
-                'content' => $validData['content'],
-                'section_id' => $validData['section_id'],
-                'position' => $validData['position']
+                'title_visibility' => $this->validator->validData['title_visibility'],
+                'description' => $this->validator->validData['description'],
+                'content' => $this->validator->validData['content'],
+                'section_id' => $this->validator->validData['section_id'],
+                'position' => $this->validator->validData['position']
             ]);
         }
         else
         {
-            $post->update($validData);
+            $post->update($this->getOrderedValidData($path));
         }
 
         return $this->redirectToPost($post);
@@ -132,23 +147,22 @@ class PostController extends Controller
     }
 
     /**
-     * Get the validated post data to store.
+     * Get the ordered validated post data with stored image path for storing process.
      * 
-     * @param object $validated
      * @param string $path
      * @return array
      */
-    protected function getValidData($validated, $path)
+    protected function getOrderedValidData($path)
     {
         return [
-            'title' => $validated['title'],
+            'title' => $this->validator->validData['title'],
             'slug' => '',
-            'title_visibility' => $validated['title_visibility'],
-            'description' => $validated['description'],
-            'content' => $validated['content'],
+            'title_visibility' => $this->validator->validData['title_visibility'],
+            'description' => $this->validator->validData['description'],
+            'content' => $this->validator->validData['content'],
             'post_image' => $path,
-            'section_id' => $validated['section_id'],
-            'position' => $validated['position']
+            'section_id' => $this->validator->validData['section_id'],
+            'position' => $this->validator->validData['position']
         ];
     }
 
@@ -201,11 +215,12 @@ class PostController extends Controller
     /**
      * Redirect back with error for title.
      * 
+     * @param string $errorMessage
      * @return void
      */
-    protected function redirectBackWithTitleError()
+    protected function redirectBackWithTitleError($errorMessage)
     {
-        return back()->withErrors(['title' => 'Ezzel a címmel már létezik poszt ebben a szekcióban!'])->withInput();
+        return back()->withErrors(['title' => $errorMessage])->withInput();
     }
 
 
