@@ -13,7 +13,7 @@ use App\Traits\BackRedirector;
 class PostController extends Controller
 {
     use BackRedirector;
-    
+
     /**
      * PostTitleValidator instace.
      * 
@@ -81,22 +81,17 @@ class PostController extends Controller
             return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
+        $orderedData = $this->getOrderedValidData($path);
         
         if(empty($path))
         {
-            $post->update([
-                'title' => $this->validator->validData['title'],
-                'slug' => '',
-                'title_visibility' => $this->validator->validData['title_visibility'],
-                'description' => $this->validator->validData['description'],
-                'content' => $this->validator->validData['content'],
-                'section_id' => $this->validator->validData['section_id'],
-                'position' => $this->validator->validData['position']
-            ]);
+            unset($orderedData['post_image']);
+
+            $post->update($orderedData);
         }
         else
         {
-            $post->update($this->getOrderedValidData($path));
+            $post->update($orderedData);
         }
 
         return $this->redirectToPost($post);
