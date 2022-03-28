@@ -25,7 +25,7 @@ class ImageController extends Controller
             $uploader = new Uploader($uploadedImage, new ImageConstraints());
 
             if(!$uploader->validateFile()){
-                return respnse()->json(['error', $uploader->getErrorMessage()]);
+                return response()->json(['error'=> $uploader->getErrorMessage()]);
             }
 
             $path = $uploader->upload();
