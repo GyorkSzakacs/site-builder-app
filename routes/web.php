@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,3 +41,6 @@ Route::delete('/section/{section}', [SectionController::class, 'destroy']);
 Route::post('/post', [PostController::class, 'store']);
 Route::patch('/post/{post}', [PostController::class, 'update']);
 Route::delete('/post/{post}', [PostController::class, 'destroy']);
+
+//Image management routes
+Route::post('/image', [ImageController::class, 'store']);
