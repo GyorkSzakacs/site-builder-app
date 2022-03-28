@@ -44,3 +44,4 @@ Route::delete('/post/{post}', [PostController::class, 'destroy']);
 
 //Image management routes
 Route::post('/image', [ImageController::class, 'store']);
+Route::post('/image/{image}', [ImageController::class, 'dowload']);

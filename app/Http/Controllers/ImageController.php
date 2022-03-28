@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\FileUploader\Uploader;
 use App\Services\FileUploader\ImageConstraints;
+use Illuminate\Support\Facades\Storage;;
 
 class ImageController extends Controller
 {
@@ -32,5 +33,16 @@ class ImageController extends Controller
         }
 
         return response()->json(['location' => $path]);
+    }
+
+    /**
+     * Dowload the selected image.
+     * 
+     * @param string $image
+     * @return void
+     */
+    public function dowload($image)
+    {
+        return Storage::download('images/'.$image); 
     }
 }

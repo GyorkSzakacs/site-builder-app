@@ -83,4 +83,26 @@ class ImageManagementTest extends TestCase
                         'error' => 'Nem megfelelő kiterjesztésű fájl! Támogatott: jpg jpeg png gif '
                     ]);
     }
+
+    /**
+     * Test an image can be downloaded.
+     *
+     * @return void
+     */
+    public function test_an_image_can_be_dowloaded()
+    {
+        $this->withoutExceptionHandling();
+        
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $this->post('/image', [
+            'file' => $image
+        ]);
+
+        $path = $image->hashName();
+
+        $response = $this->post('/image/'.$path);
+
+        $response->assertDownload($path);
+    }
 }
