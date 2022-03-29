@@ -105,4 +105,27 @@ class ImageManagementTest extends TestCase
 
         $response->assertDownload($path);
     }
+
+    /**
+     * Test an image can be deleted.
+     *
+     * @return void
+     */
+    public function test_an_image_can_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+        
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $this->post('/image', [
+            'file' => $image
+        ]);
+
+        $path = $image->hashName();
+
+        $response = $this->delete('/image/'.$path);
+
+        Storage::disk('local')->assertMissing('images/'.$image->hashName());
+        $response->assertRedirect('/galery');
+    }
 }

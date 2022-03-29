@@ -45,4 +45,17 @@ class ImageController extends Controller
     {
         return Storage::download('images/'.$image); 
     }
+
+    /**
+     * Delete the selected image.
+     * 
+     * @param string $image
+     * @return void
+     */
+    public function destroy($image)
+    {
+        Storage::disk('local')->delete('images/'.$image);
+
+        return redirect('/galery');
+    }
 }
