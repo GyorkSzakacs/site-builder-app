@@ -128,4 +128,52 @@ class ImageManagementTest extends TestCase
         Storage::disk('local')->assertMissing('images/'.$image->hashName());
         $response->assertRedirect('/galery');
     }
+
+    /**
+     * Test that an image can't be deleted if it is contained by a post content.
+     * 
+     * @return void
+     */
+    public function test_an_image_can_not_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+        
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $this->post('/image', [
+            'file' => $image
+        ]);
+
+        $path = $image->hashName();
+
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.<img src ="/images/'.$path.'" width="200" alt="kép">',
+            'post_image' => '',
+            'position' => 1,
+            'section_id' => 1
+        ]);
+    
+        $response = $this->from('/image/image.jpg')->delete('/image/'.$path);
+
+        Storage::disk('local')->assertExists('images/'.$image->hashName());
+        $response->assertRedirect('/image/image.jpg');
+        $response->assertSessionHasErrors('delete');
+    }
 }

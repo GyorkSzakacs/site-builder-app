@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use App\Services\FileUploader\Uploader;
 use App\Services\FileUploader\ImageConstraints;
 use Illuminate\Support\Facades\Storage;;
+use App\Models\Post;
+use App\Traits\BackRedirector;
 
 class ImageController extends Controller
 {
+    use BackRedirector;
+
     /**
      * Store validted uploaded image.
      * 
@@ -54,6 +58,13 @@ class ImageController extends Controller
      */
     public function destroy($image)
     {
+        $posts = Post::where('content', 'LIKE', '%'.$image.'%')->get();
+
+        if($posts->count() > 0)
+        {
+            return $this->redirectBackWithError('delete', 'A kiválasztot kép nem törölhető!');
+        }
+
         Storage::disk('local')->delete('images/'.$image);
 
         return redirect('/galery');
