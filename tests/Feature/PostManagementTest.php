@@ -308,6 +308,8 @@ class PostManagementTest extends TestCase
      */
     public function test_set_next_post_position()
     {
+        $this->createParents();
+
         $this->post('/post', [
             'title' => 'Post',
             'title_visibility' => true,
@@ -339,6 +341,22 @@ class PostManagementTest extends TestCase
     public function test_set_default_post_title_visibility()
     {
         $this->withoutExceptionHandling();
+
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Hírek',
+            'title_visibility' => true,
+            'slug' => '',
+            'position' => 1,
+            'page_id' => 1
+        ]);
         
         Post::create([
             'title' => 'Post',
@@ -361,6 +379,22 @@ class PostManagementTest extends TestCase
     public function test_set_post_position_if_null()
     {
         $this->withoutExceptionHandling();
+        
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Hírek',
+            'title_visibility' => true,
+            'slug' => '',
+            'position' => 1,
+            'page_id' => 1
+        ]);
         
         Post::create([
             'title' => 'Post',

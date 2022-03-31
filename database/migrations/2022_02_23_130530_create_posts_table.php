@@ -22,7 +22,7 @@ class CreatePostsTable extends Migration
             $table->longText('content');
             $table->string('post_image');
             $table->integer('position');
-            $table->foreignId('section_id');
+            $table->foreignId('section_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

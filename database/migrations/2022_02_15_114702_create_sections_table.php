@@ -19,7 +19,7 @@ class CreateSectionsTable extends Migration
             $table->string('slug');
             $table->boolean('title_visibility');
             $table->integer('position');
-            $table->foreignId('page_id');
+            $table->foreignId('page_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

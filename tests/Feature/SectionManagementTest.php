@@ -151,6 +151,13 @@ class SectionManagementTest extends TestCase
      */
     public function test_set_next_section_position()
     {
+        $this->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
         $this->post('/section', $this->input());
         
         $this->post('/section', [
@@ -171,6 +178,15 @@ class SectionManagementTest extends TestCase
     public function test_set_default_section_title_visibility()
     {
         $this->withoutExceptionHandling();
+
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
         Section::create([
             'title' => 'Hírek',
             'slug' => '',
@@ -188,6 +204,14 @@ class SectionManagementTest extends TestCase
      */
     public function test_section_position_is_null()
     {
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => Page::getNextPosition(),
+            'category_id' => 1
+        ]);
+
         Section::create([
             'title' => 'Hírek',
             'slug' => '',
