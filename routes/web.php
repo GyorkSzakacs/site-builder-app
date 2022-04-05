@@ -27,7 +27,7 @@ Route::post('/category', [CategoryController::class, 'store']);
 Route::patch('/category/{category}', [CategoryController::class, 'update']);
 Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
 
-//Page menegement routes
+//Page management routes
 Route::post('/page', [PageController::class, 'store']);
 Route::patch('/page/{page}', [PageController::class, 'update']);
 Route::delete('/page/{page}', [PageController::class, 'destroy']);
@@ -46,3 +46,9 @@ Route::delete('/post/{post}', [PostController::class, 'destroy']);
 Route::post('/image', [ImageController::class, 'store']);
 Route::post('/image/{image}', [ImageController::class, 'dowload']);
 Route::delete('/image/{image}', [ImageController::class, 'destroy']);
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
