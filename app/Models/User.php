@@ -42,4 +42,55 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the current user access level.
+     * 
+     * @return int
+     */
+    public function getAccess()
+    {
+        return $this->access_level;
+    }
+
+    /**
+     * Has current user admin access.
+     * 
+     * @return bool
+     */
+    public function hasAdminAccess()
+    {
+        return $this->access_level == 1 ? true : false;
+    }
+
+    /**
+     * Has current user manager access level.
+     * 
+     * @return bool
+     */
+    public function hasManagerAccess()
+    {
+        return $this->access_level <= 2 ? true : false;
+    }
+
+    /**
+     * Has current user editor access level.
+     * 
+     * @return bool
+     */
+    public function hasEditorAccess()
+    {
+        return $this->access_level <= 3 ? true : false;
+    }
+
+    /**
+     * Has current user the given access level.
+     * 
+     * @param int $access
+     * @return bool
+     */
+    public function hasAccess(int $access)
+    {
+        return $this->access_level <= $access ? true : false;
+    }
 }
