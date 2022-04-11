@@ -18,6 +18,7 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
+            'access_level' => 1
         ]);
 
         $response = $this->actingAs($user)->get('/verify-email');
@@ -29,6 +30,7 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
+            'access_level' => 1
         ]);
 
         Event::fake();
@@ -50,6 +52,7 @@ class EmailVerificationTest extends TestCase
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
+            'access_level' => 1
         ]);
 
         $verificationUrl = URL::temporarySignedRoute(
