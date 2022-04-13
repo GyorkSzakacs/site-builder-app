@@ -38,11 +38,11 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register_with_valid_access_level()
     {
-        User::factory()->create([
+        $user = User::factory()->create([
             'access_level' => 1
         ]);
 
-        $response = $this->post('/register', [
+        $response = $this->actingAs($user)->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
@@ -52,7 +52,6 @@ class RegistrationTest extends TestCase
 
         $this->assertCount(1, User::all());
         $response->assertSessionHasErrors('access_level');
-        $this->assertGuest();
     }
 
     /**
@@ -74,4 +73,53 @@ class RegistrationTest extends TestCase
         $this->assertAuthenticated();
     }
 
+    /**
+     * Test only an admin can register a new user.
+     * 
+     * @return void
+     */
+    public function test_only_an_admin_can_register_a_new_user()
+    {
+        $admin = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $manager = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $editor = User::factory()->create([
+            'access_level' => 3
+        ]);
+        
+        $response1 = $this->actingAs($admin)->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'access_level' => 3
+        ]);
+
+        $response2 = $this->actingAs($manager)->post('/register', [
+            'name' => 'Test User2',
+            'email' => 'test2@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'access_level' => 3
+        ]);
+
+        $response3 = $this->actingAs($editor)->post('/register', [
+            'name' => 'Test User3',
+            'email' => 'test3@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'access_level' => 3
+        ]);
+
+        $this->assertCount(4, User::all());
+        $this->assertEquals('Test User', User::find(4)->name);
+        $response1->assertRedirect(RouteServiceProvider::HOME);
+        $response2->assertStatus(403);
+        $response3->assertStatus(403);
+    }
 }

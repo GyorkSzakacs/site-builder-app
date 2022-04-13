@@ -34,7 +34,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $userCount = User::all()->count();
-        
+
         if($userCount == 0)
         {
             $request->validate([
@@ -56,6 +56,11 @@ class RegisteredUserController extends Controller
         }
         else
         {
+            if(!$request->user()->hasAdminAccess())
+            {
+                abort(403);
+            }
+            
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -63,12 +68,15 @@ class RegisteredUserController extends Controller
                 'access_level' => ['required', 'integer', 'max:3']
             ]);
 
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'access_level' => $request->access_level
             ]);
+
+            event(new Registered($user));
+    
         }
 
         return redirect(RouteServiceProvider::HOME);
