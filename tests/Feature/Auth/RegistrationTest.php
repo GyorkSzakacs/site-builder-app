@@ -34,7 +34,7 @@ class RegistrationTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->post('/register', [
+        $response = $this->post('/first-register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
@@ -73,7 +73,7 @@ class RegistrationTest extends TestCase
      */
     public function test_first_users_can_register_as_admin()
     {
-        $response = $this->post('/register', [
+        $response = $this->post('/first-register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',

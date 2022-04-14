@@ -10,15 +10,19 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('first-register', [RegisteredUserController::class, 'createFirst'])
-            ->can('first-register')
-            ->name('first-register');
+Route::middleware('can:first-register')->group(function(){
+    Route::get('first-register', [RegisteredUserController::class, 'createFirst'])
+                ->name('first-register');
 
-Route::get('register', [RegisteredUserController::class, 'create'])
-            ->can('register')
-            ->name('register');
+    Route::post('first-register', [RegisteredUserController::class, 'store']);
+});
 
-Route::post('register', [RegisteredUserController::class, 'store']);
+Route::middleware('can:register')->group(function(){
+    Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store']);
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
