@@ -10,9 +10,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Gate;
 
 class RegisteredUserController extends Controller
 {
+    /**
+     * Display the first registration view.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function createFirst()
+    {
+        return ;
+    }
+    
     /**
      * Display the registration view.
      *
@@ -33,9 +44,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $userCount = User::all()->count();
-
-        if($userCount == 0)
+        if(Gate::allows('first-register'))
         {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
@@ -56,11 +65,8 @@ class RegisteredUserController extends Controller
         }
         else
         {
-            if(!$request->user()->hasAdminAccess())
-            {
-                abort(403);
-            }
-            
+            Gate::authorize('register');
+
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

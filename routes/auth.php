@@ -10,8 +10,13 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('first-register', [RegisteredUserController::class, 'createFirst'])
+            ->can('first-register')
+            ->name('first-register');
+
 Route::get('register', [RegisteredUserController::class, 'create'])
-                ->name('register');
+            ->can('register')
+            ->name('register');
 
 Route::post('register', [RegisteredUserController::class, 'store']);
 

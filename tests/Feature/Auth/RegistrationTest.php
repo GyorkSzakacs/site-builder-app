@@ -13,7 +13,19 @@ class RegistrationTest extends TestCase
 
     public function test_registration_screen_can_be_rendered()
     {
-        $response = $this->get('/register');
+        
+        $user = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $response = $this->actingAs($user)->get('/register');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_first_registration_screen_can_be_rendered()
+    {
+        $response = $this->get('/first-register');
 
         $response->assertStatus(200);
     }
