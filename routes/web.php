@@ -6,6 +6,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,9 @@ Route::delete('/post/{post}', [PostController::class, 'destroy']);
 Route::post('/image', [ImageController::class, 'store']);
 Route::post('/image/{image}', [ImageController::class, 'dowload']);
 Route::delete('/image/{image}', [ImageController::class, 'destroy']);
+
+//User management routs
+Route::patch('/account/{user}', [UserController::class, 'update']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
