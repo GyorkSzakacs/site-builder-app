@@ -50,6 +50,7 @@ Route::delete('/image/{image}', [ImageController::class, 'destroy']);
 
 //User management routs
 Route::patch('/account/{user}', [UserController::class, 'update']);
+Route::patch('/account-access/{user}', [UserController::class, 'updateAccess']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

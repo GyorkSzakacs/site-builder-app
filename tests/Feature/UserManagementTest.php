@@ -44,4 +44,51 @@ class UserManagementTest extends TestCase
         $response1->assertStatus(200);
         $response2->assertStatus(403);
     }
+
+    /**
+     * Test an admin can update a user's access.
+     *
+     * @return void
+     */
+    public function test_an_admin_can_update_access()
+    {
+       $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response1 = $this->actingAs($user1)->patch('/account-access/'.$user2->id, [
+            'access_level' => 3
+        ]);
+
+        $response2 = $this->actingAs($user2)->patch('/account-access/'.$user2->id, [
+            'access_level' => 1
+        ]);
+
+        $this->assertEquals(3, User::find(2)->access_level);
+        $response1->assertStatus(200);
+        $response2->assertStatus(403);
+    }
+
+    /**
+     * Test an admin can't update own access.
+     *
+     * @return void
+     */
+    public function test_an_admin_cant_update_own_access()
+    {
+       $user = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $response = $this->actingAs($user)->patch('/account-access/'.$user->id, [
+            'access_level' => 2
+        ]);
+
+        $this->assertEquals(1, User::first()->access_level);
+        $response->assertStatus(403);
+    }
 }

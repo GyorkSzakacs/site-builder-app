@@ -29,4 +29,25 @@ class UserController extends Controller
             'password' => Hash::make($request->password)
         ]);
     }
+
+    /**
+     * Change a user access level.
+     * 
+     * @param Request $request
+     * @param User $user
+     * 
+     * @return void
+     */
+    public function updateAccess(Request $request, User $user)
+    {
+        
+        if(!$request->user()->hasAdminAccess() || $request->user()->id == $user->id)
+        {
+            abort(403);
+        }
+
+        $user->update([
+            'access_level' => $request->access_level
+        ]);
+    }
 }
