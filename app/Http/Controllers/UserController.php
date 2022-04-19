@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 class UserController extends Controller
 {
@@ -49,5 +50,26 @@ class UserController extends Controller
         $user->update([
             'access_level' => $request->access_level
         ]);
+    }
+
+    /**
+     * Delete user.
+     * 
+     * @param Request $request
+     * @param User $user
+     * @param AuthenticatedSessionController $auth
+     * 
+     * @return void
+     */
+    public function destroy(Request $request, User $user, AuthenticatedSessionController $auth)
+    {
+        if($request->user()->id != $user->id)
+        {
+            abort(403);
+        }
+
+        $user->delete();
+
+        $auth->destroy($request);
     }
 }

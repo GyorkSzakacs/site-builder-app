@@ -91,4 +91,32 @@ class UserManagementTest extends TestCase
         $this->assertEquals(1, User::first()->access_level);
         $response->assertStatus(403);
     }
+
+    /**
+     * Test a user can delete his/her account.
+     *
+     * @return void
+     */
+    public function test_a_user_can_delete_own_account()
+    {
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response1 = $this->actingAs($user1)->delete('/account/'.$user2->id);
+
+        $this->assertCount(2, User::all());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user2)->delete('/account/'.$user2->id);
+
+        $this->assertCount(1, User::all());
+        $this->assertEquals(2, User::first()->access_level);
+        $response2->assertStatus(200);
+        $this->assertGuest();
+    }
 }
