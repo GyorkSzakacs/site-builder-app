@@ -93,30 +93,55 @@ class UserManagementTest extends TestCase
     }
 
     /**
-     * Test a user can delete his/her account.
+     * Test an admin can delete another user.
      *
      * @return void
      */
-    public function test_a_user_can_delete_own_account()
+    public function test_a_user_can_be_deleted()
     {
         $user1 = User::factory()->create([
-            'access_level' => 2
+            'access_level' => 1
         ]);
 
         $user2 = User::factory()->create([
             'access_level' => 3
         ]);
 
-        $response1 = $this->actingAs($user1)->delete('/account/'.$user2->id);
+        $response1 = $this->actingAs($user2)->delete('/account/'.$user2->id);
 
         $this->assertCount(2, User::all());
         $response1->assertStatus(403);
 
-        $response2 = $this->actingAs($user2)->delete('/account/'.$user2->id);
+        $response2 = $this->actingAs($user1)->delete('/account/'.$user2->id);
 
         $this->assertCount(1, User::all());
-        $this->assertEquals(2, User::first()->access_level);
+        $this->assertEquals(1, User::first()->access_level);
         $response2->assertStatus(200);
-        $this->assertGuest();
+    }
+
+    /**
+     * Test an admin can't delete his/her own account.
+     *
+     * @return void
+     */
+    public function test_an_admin_cant_be_deleted_itself()
+    {
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $response1 = $this->actingAs($user2)->delete('/account/'.$user2->id);
+
+        $this->assertCount(2, User::all());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->delete('/account/'.$user2->id);
+
+        $this->assertCount(1, User::all());
+        $response2->assertStatus(200);
     }
 }

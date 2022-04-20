@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 class UserController extends Controller
 {
@@ -57,19 +56,16 @@ class UserController extends Controller
      * 
      * @param Request $request
      * @param User $user
-     * @param AuthenticatedSessionController $auth
      * 
      * @return void
      */
-    public function destroy(Request $request, User $user, AuthenticatedSessionController $auth)
+    public function destroy(Request $request, User $user)
     {
-        if($request->user()->id != $user->id)
+        if(!$request->user()->hasAdminAccess() || $request->user()->id == $user->id)
         {
             abort(403);
         }
 
         $user->delete();
-
-        $auth->destroy($request);
     }
 }
