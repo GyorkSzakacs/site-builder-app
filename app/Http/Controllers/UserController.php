@@ -25,7 +25,30 @@ class UserController extends Controller
         
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $request->email
+        ]);
+    }
+
+    /**
+     * Update user password. 
+     * 
+     * @param Request $request
+     * @param User $user
+     * @return void
+     */
+    public function updatePassword(Request $request, User $user)
+    {
+        if($request->user()->id != $user->id)
+        {
+            abort(403);
+        }
+        
+        if(! Hash::check($request->old_password, $request->user()->password))
+        {
+            return back()->withErrors(['old_password' => 'Hibás jelszó!']);
+        }
+        
+        $user->update([
             'password' => Hash::make($request->password)
         ]);
     }

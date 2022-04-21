@@ -52,6 +52,7 @@ Route::delete('/image/{image}', [ImageController::class, 'destroy']);
 Route::patch('/account/{user}', [UserController::class, 'update']);
 Route::patch('/account-access/{user}', [UserController::class, 'updateAccess']);
 Route::delete('/account/{user}', [UserController::class, 'destroy']);
+Route::post('/update-password/{user}', [UserController::class, 'updatePassword']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
