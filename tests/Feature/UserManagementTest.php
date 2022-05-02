@@ -76,7 +76,7 @@ class UserManagementTest extends TestCase
     }
 
     /**
-     * Test a user can't update it's own password with wrond old password.
+     * Test a user can't update it's own password with wrong old password.
      *
      * @return void
      */
@@ -95,6 +95,28 @@ class UserManagementTest extends TestCase
 
         $this->assertTrue(Hash::check('oldpassword', User::first()->password));
         $response->assertSessionHasErrors('old_password');
+    }
+
+    /**
+     * Password validation test.
+     *
+     * @return void
+     */
+    public function test_the_given_password_is_valid()
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('oldpassword'),
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user)->post('/update-password/'.$user->id, [
+            'old_password' => 'oldpassword',
+            'password' => 'password',
+            'password_confirmation' => ''
+        ]);
+
+        $this->assertTrue(Hash::check('oldpassword', User::first()->password));
+        $response->assertSessionHasErrors('password');
     }
 
     /**
