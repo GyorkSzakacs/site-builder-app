@@ -43,6 +43,53 @@ class UserManagementTest extends TestCase
     }
 
     /**
+     * Test validation of profile updating request.
+     *
+     * @return void
+     */
+    public function test_validation_of_profile_updating_request()
+    {
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user)->patch('/account/'.$user->id, [
+            'name' => '',
+            'email' => 'test1example'
+        ]);
+
+        $this->assertNotEquals('test1example', User::first()->email);
+        $response->assertSessionHasErrors('name');
+        $response->assertSessionHasErrors('email');
+    }
+
+    /**
+     * Test the given email is unique for updating.
+     *
+     * @return void
+     */
+    public function test_given_email_is_unique_for_updating()
+    {
+        $user1 = User::factory()->create([
+            'email' => 'test@example.com',
+            'access_level' => 2
+        ]);
+
+        $user2 = User::factory()->create([
+            'email' => 'test2@example.com',
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user2)->patch('/account/'.$user2->id, [
+            'name' => 'User2',
+            'email' => 'test@example.com'
+        ]);
+
+        $this->assertNotEquals('test@example.com', User::find(2)->email);
+        $response->assertSessionHasErrors('email');
+    }
+
+    /**
      * Test a user can update it's own password.
      *
      * @return void

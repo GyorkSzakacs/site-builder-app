@@ -24,6 +24,21 @@ class UserController extends Controller
             abort(403);
         }
         
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255']
+        ]);
+
+        $sameEmails = User::Where([
+                                    ['id', '<>', $user->id],
+                                    ['email', $request->email]
+                                ])->get();
+
+        if($sameEmails->count() > 0)
+        {
+            return back()->withErrors(['email' => 'Ezzel az email címmel már létezik regisztrált felhasználó!']);
+        }
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email
