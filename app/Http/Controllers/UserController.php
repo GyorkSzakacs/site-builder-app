@@ -74,6 +74,10 @@ class UserController extends Controller
             abort(403);
         }
 
+        $request->validate([
+            'access_level' => ['required', 'integer', 'max:3']
+        ]);
+
         $user->update([
             'access_level' => $request->access_level
         ]);

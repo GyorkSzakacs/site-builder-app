@@ -167,6 +167,30 @@ class UserManagementTest extends TestCase
     }
 
     /**
+     * Test validation of user's access request.
+     *
+     * @return void
+     */
+    public function test_validation_of_update_access_request()
+    {
+       $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user1)->patch('/account-access/'.$user2->id, [
+            'access_level' => ''
+        ]);
+
+        $this->assertEquals(2, User::find(2)->access_level);
+        $response->assertSessionHasErrors('access_level');
+    }
+
+
+    /**
      * Test an admin can delete another user.
      *
      * @return void
