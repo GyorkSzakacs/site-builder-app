@@ -43,6 +43,8 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email
         ]);
+
+        return redirect('/dashboard');
     }
 
     /**
@@ -71,6 +73,8 @@ class UserController extends Controller
         $user->update([
             'password' => Hash::make($request->password)
         ]);
+
+        return redirect('/dashboard');
     }
 
     /**
@@ -96,6 +100,8 @@ class UserController extends Controller
         $user->update([
             'access_level' => $request->access_level
         ]);
+
+        return redirect('/dashboard');
     }
 
     /**
@@ -114,5 +120,7 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        return redirect('/dashboard');
     }
 }

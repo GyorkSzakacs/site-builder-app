@@ -38,7 +38,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $this->assertEquals('Test User1', User::find(2)->name);
-        $response1->assertStatus(200);
+        $response1->assertRedirect('/dashboard');
         $response2->assertStatus(403);
     }
 
@@ -118,7 +118,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $this->assertTrue(Hash::check('password', User::find(2)->password));
-        $response1->assertStatus(200);
+        $response1->assertRedirect('/dashboard');
         $response2->assertStatus(403);
     }
 
@@ -190,7 +190,7 @@ class UserManagementTest extends TestCase
         ]);
 
         $this->assertEquals(3, User::find(2)->access_level);
-        $response1->assertStatus(200);
+        $response1->assertRedirect('/dashboard');
         $response2->assertStatus(403);
     }
 
@@ -261,7 +261,7 @@ class UserManagementTest extends TestCase
 
         $this->assertCount(1, User::all());
         $this->assertEquals(1, User::first()->access_level);
-        $response2->assertStatus(200);
+        $response2->assertRedirect('/dashboard');
     }
 
     /**
@@ -287,6 +287,6 @@ class UserManagementTest extends TestCase
         $response2 = $this->actingAs($user1)->delete('/account/'.$user2->id);
 
         $this->assertCount(1, User::all());
-        $response2->assertStatus(200);
+        $response2->assertRedirect('/dashboard');
     }
 }
