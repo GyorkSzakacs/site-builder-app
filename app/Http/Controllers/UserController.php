@@ -29,12 +29,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255']
         ]);
 
-        $sameEmails = User::Where([
-                                    ['id', '<>', $user->id],
-                                    ['email', $request->email]
-                                ])->get();
-
-        if($sameEmails->count() > 0)
+        if(!$this->IsEmailUniqueForUpdating($request->email, $user->id))
         {
             return back()->withErrors(['email' => 'Ezzel az email címmel már létezik regisztrált felhasználó!']);
         }
@@ -122,5 +117,27 @@ class UserController extends Controller
         $user->delete();
 
         return redirect('/dashboard');
+    }
+
+    /**
+     * Exam the given email is unique for updating.
+     * 
+     * @param string $email
+     * @param int $id
+     * @return bool
+     */
+    protected function IsEmailUniqueForUpdating($email, $id)
+    {
+        $sameEmails = User::Where([
+                                    ['id', '<>', $id],
+                                    ['email', $email]
+                                ])->get();
+
+        if($sameEmails->count() > 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
