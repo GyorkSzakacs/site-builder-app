@@ -49,10 +49,10 @@ Route::post('/image/{image}', [ImageController::class, 'dowload']);
 Route::delete('/image/{image}', [ImageController::class, 'destroy']);
 
 //User management routs
-Route::patch('/account/{user}', [UserController::class, 'update']);
-Route::patch('/account-access/{user}', [UserController::class, 'updateAccess']);
-Route::delete('/account/{user}', [UserController::class, 'destroy']);
-Route::post('/update-password/{user}', [UserController::class, 'updatePassword']);
+Route::patch('/account/{user}', [UserController::class, 'update'])->can('update', 'user');
+Route::patch('/account-access/{user}', [UserController::class, 'updateAccess'])->can('updateAccess', 'user');
+Route::delete('/account/{user}', [UserController::class, 'destroy'])->can('delete', 'user');
+Route::post('/update-password/{user}', [UserController::class, 'updatePassword'])->can('updatePassword', 'user');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

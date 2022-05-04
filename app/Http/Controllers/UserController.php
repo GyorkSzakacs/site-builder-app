@@ -48,7 +48,7 @@ class UserController extends Controller
      */
     public function updatePassword(Request $request, User $user)
     {
-        $this->authorize('update', $user);
+        $this->authorize('updatePassword', $user);
         
         if(! Hash::check($request->old_password, $request->user()->password))
         {
