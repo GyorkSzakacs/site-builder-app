@@ -19,10 +19,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if($request->user()->id != $user->id)
-        {
-            abort(403);
-        }
+        $this->authorize('update', $user);
         
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -51,10 +48,7 @@ class UserController extends Controller
      */
     public function updatePassword(Request $request, User $user)
     {
-        if($request->user()->id != $user->id)
-        {
-            abort(403);
-        }
+        $this->authorize('update', $user);
         
         if(! Hash::check($request->old_password, $request->user()->password))
         {
@@ -82,12 +76,8 @@ class UserController extends Controller
      */
     public function updateAccess(Request $request, User $user)
     {
+        $this->authorize('updateAccess', $user);
         
-        if(!$request->user()->hasAdminAccess() || $request->user()->id == $user->id)
-        {
-            abort(403);
-        }
-
         $request->validate([
             'access_level' => ['required', 'integer', 'max:3']
         ]);
@@ -109,18 +99,15 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user)
     {
-        if(!$request->user()->hasAdminAccess() || $request->user()->id == $user->id)
-        {
-            abort(403);
-        }
-
+        $this->authorize('delete', $user);
+        
         $user->delete();
 
         return redirect('/dashboard');
     }
 
     /**
-     * Exam the given email is unique for updating.
+     * Determine the given email is unique for updating.
      * 
      * @param string $email
      * @param int $id
