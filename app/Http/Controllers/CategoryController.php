@@ -17,6 +17,11 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+        
         Category::create($this->getValidData($request));
 
         return redirect('/dashboard');
@@ -31,6 +36,11 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+
         $category->update($this->getValidData($request));
 
         return redirect('/dashboard');
@@ -39,10 +49,16 @@ class CategoryController extends Controller
     /**
      * Delete the selected category.
      * 
+     * @param Request $request
      * @param Category $category
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+
         $category->delete();
 
         return redirect('/dashboard');

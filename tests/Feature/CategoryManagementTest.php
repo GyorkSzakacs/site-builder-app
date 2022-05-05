@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Category;
 use App\Models\Page;
+use App\Models\User;
 
 class CategoryManagementTest extends TestCase
 {
@@ -29,19 +30,28 @@ class CategoryManagementTest extends TestCase
     }
 
     /**
-     * Can a User create a Category
+     * Test a User with manager access can create a Category
      *
      * @return void
      */
-    public function test_a_user_can_create_category()
+    public function test_a_manager_can_create_category()
     {
-        $this->withoutExceptionHandling();
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
 
-        $response = $this->post('/category', $this->input());
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response1 = $this->actingAs($user1)->post('/category', $this->input());
+
+        $response2 = $this->actingAs($user2)->post('/category', $this->input());
 
         $this->assertCount(1, Category::all());
         $this->assertEquals(2, Category::first()->position);
-        $response->assertRedirect('/dashboard');
+        $response1->assertRedirect('/dashboard');
+        $response2->assertStatus(403);
 
     }
 
@@ -64,52 +74,68 @@ class CategoryManagementTest extends TestCase
     }
 
     /**
-     * A category can be updated
+     * A category can be updated by an user with manager access.
      *
      * @return void
      */
-    public function test_a_category_can_be_updated()
+    public function test_a_category_can_be_updated_by_a_manager()
     {
-        
-        $this->withoutExceptionHandling();
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
 
-        $this->post('/category', $this->input());
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
 
-        $category = Category::first();
+        $category = Category::create($this->input());
 
-        $response = $this->patch('/category/'.$category->id,[
+        $response1 = $this->actingAs($user1)->patch('/category/'.$category->id,[
             'title' => 'Kapcsolat',
             'position' => 2
         ]);
 
+        $response2 = $this->actingAs($user2)->patch('/category/'.$category->id,[
+            'title' => 'Valami más',
+            'position' => 3
+        ]);
 
         $this->assertEquals('Kapcsolat', Category::first()->title);
         $this->assertEquals(2, Category::first()->position);
 
-        $response->assertRedirect('/dashboard');
+        $response1->assertRedirect('/dashboard');
+        $response2->assertStatus(403);
 
     }
 
     /**
-     * A category can be deleted
+     * A category can be deleted by a manager.
      *
      * @return void
      */
-    public function test_a_category_can_be_deleted()
-    {
-        
-        $this->withoutExceptionHandling();
+    public function test_a_category_can_be_deleted_by_a_manager()
+    { 
+       $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
 
-        $this->post('/category', $this->input());
+        $user2 = User::factory()->create([
+            'access_level' => 2
+        ]);
 
-        $category = Category::first();
+        $category = Category::create($this->input());
 
         $this->assertCount(1, Category::all());
         
-        $response = $this->delete('/category/'.$category->id);
+        $response1 = $this->actingAs($user1)->delete('/category/'.$category->id);
+
+       $this->assertCount(1, Category::all());
+        $response1->assertStatus(403);
+
+       $response2 = $this->actingAs($user2)->delete('/category/'.$category->id);
 
        $this->assertCount(0, Category::all());
-       $response->assertRedirect('/dashboard');
+       $response2->assertRedirect('/dashboard');
 
     }
 
@@ -150,7 +176,7 @@ class CategoryManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/category', [
+        Category::create([
             'title' => 'Szolgáltatások',
             'position' => 1
         ]);
@@ -187,17 +213,17 @@ class CategoryManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/category', [
+        Category::create([
             'title' => 'Főoldal',
             'position' => 1
         ]);
 
-        $this->post('/category', [
+        Category::create([
             'title' => 'Rólunk',
             'position' => 2
         ]);
 
-        $this->post('/category', [
+        Category::create([
             'title' => 'Szolgáltatások',
             'position' => 3
         ]);
@@ -208,7 +234,7 @@ class CategoryManagementTest extends TestCase
         $occupiedItems = Category::where('position', '>=', 2)->get();
         $this->assertCount(2, $occupiedItems);
 
-        $this->post('/category', [
+        Category::create([
             'title' => 'Kapcsolat',
             'position' => 2
         ]);
