@@ -7,6 +7,7 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,9 @@ Route::get('/', function () {
 });
 
 //Category management routes
-Route::post('/category', [CategoryController::class, 'store']);
-Route::patch('/category/{category}', [CategoryController::class, 'update']);
-Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
+Route::post('/category', [CategoryController::class, 'store'])->can('create', Category::class);
+Route::patch('/category/{category}', [CategoryController::class, 'update'])->can('update', 'category');
+Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->can('delete', 'category');
 
 //Page management routes
 Route::post('/page', [PageController::class, 'store']);
