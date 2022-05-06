@@ -62,8 +62,11 @@ class CategoryManagementTest extends TestCase
      */
     public function test_request_data_is_valid()
     {
-        
-        $response = $this->post('/category',[
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user)->post('/category',[
             'title' => '',
             'position' => 'data'
         ]);

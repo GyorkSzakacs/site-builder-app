@@ -10,6 +10,14 @@ class CategoryController extends Controller
 {
     
     /**
+     * Constructor for CategoryController class.
+     */
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
+    
+    /**
      * Create a new category.
      * 
      * @param CategoryRequest $request
@@ -17,8 +25,6 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $this->authorize('create', Category::class);
-        
         Category::create($this->getValidData($request));
 
         return redirect('/dashboard');
@@ -33,8 +39,6 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        $this->authorize('update', $category);
-        
         $category->update($this->getValidData($request));
 
         return redirect('/dashboard');
@@ -48,8 +52,6 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, Category $category)
     {
-        $this->authorize('delete', $category);
-        
         $category->delete();
 
         return redirect('/dashboard');
