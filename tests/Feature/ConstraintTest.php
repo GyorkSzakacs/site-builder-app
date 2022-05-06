@@ -180,7 +180,7 @@ class ConstraintTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/category',[
+        Category::create([
             'title' => 'Category1',
             'position' => 1
         ]);
@@ -199,7 +199,7 @@ class ConstraintTest extends TestCase
             'category_id' => 1
         ]);
 
-        $this->post('/category',[
+        Category::create([
             'title' => 'Category2',
             'position' => 2
         ]);
@@ -213,7 +213,7 @@ class ConstraintTest extends TestCase
 
         $deletedCategory = Category::first();
 
-        $this->delete('/category/'.$deletedCategory->id);
+        $deletedCategory->delete();
 
         $this->assertCount(3, Page::all());
     }

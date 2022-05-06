@@ -56,7 +56,7 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/category', [
+        Category::create([
             'title' => 'Főoldal',
             'position' => 1
         ]);
@@ -263,7 +263,7 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/category', [
+        Category::create([
             'title' => 'Szolgáltatások',
             'position' => 1
         ]);
