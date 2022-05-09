@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\Section;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\User;
 
 class SectionManagementTest extends TestCase
 {
@@ -37,7 +38,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -60,7 +65,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -94,7 +103,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -151,7 +164,11 @@ class SectionManagementTest extends TestCase
      */
     public function test_set_next_section_position()
     {
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => 1,
@@ -231,15 +248,19 @@ class SectionManagementTest extends TestCase
     public function test_retool_section_positions()
     {
         $this->withoutExceptionHandling();
+
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
         
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Kapcsolat',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -310,7 +331,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -350,7 +375,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -400,7 +429,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -425,7 +458,11 @@ class SectionManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),

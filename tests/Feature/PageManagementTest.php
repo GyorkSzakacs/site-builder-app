@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\Page;
 use App\Models\Category;
 use App\Models\Section;
+use App\Models\User;
 
 class PageManagementTest extends TestCase
 {
@@ -30,21 +31,37 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * A user can create a page.
+     * A user with manager access can create a page.
      *
      * @return void
      */
-    public function test_user_can_create_a_page()
+    public function test_a_manager_can_create_a_page()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $response = $this->post('/page', $this->input());
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response1 = $this->actingAs($user1)->post('/page', $this->input());
+
+        $response2 = $this->actingAs($user2)->post('/page', [
+            'title' => 'Kapcsolat',
+            'title_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
 
         $this->assertCount(1, Page::all());
         $this->assertEquals('fooldal', Page::first()->slug);
         $this->assertTrue(Page::first()->title_visibility);
 
-        $response->assertRedirect('/dashboard');
+        $response1->assertRedirect('/dashboard');
+        $response2->assertStatus(403);
     }
 
     /**
@@ -56,12 +73,16 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
         Category::create([
             'title' => 'Főoldal',
             'position' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => 1,
@@ -83,7 +104,11 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => 1,
@@ -108,8 +133,12 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
         
-        $this->post('/page', $this->input());
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
 
+        $this->actingAs($user1)->post('/page', $this->input());
+        
         $page = Page::first();
 
         $response = $this->patch('/page/'.$page->id, [
@@ -140,7 +169,11 @@ class PageManagementTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->post('/page', $this->input());
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user1)->post('/page', $this->input());
 
         $page = Page::first();
 
@@ -180,9 +213,13 @@ class PageManagementTest extends TestCase
      */
     public function test_a_page_title_must_be_unique()
     {
-        $this->post('/page', $this->input());
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
 
-        $response = $this->post('/page', $this->input());
+        $this->actingAs($user)->post('/page', $this->input());
+
+        $response = $this->actingAs($user)->post('/page', $this->input());
 
         $this->assertCount(1, Page::all());
         $response->assertSessionHasErrors('title');
@@ -207,7 +244,11 @@ class PageManagementTest extends TestCase
      */
     public function test_set_next_page_position()
     {
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -268,14 +309,18 @@ class PageManagementTest extends TestCase
             'position' => 1
         ]);
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -301,22 +346,26 @@ class PageManagementTest extends TestCase
     public function test_retool_page_positions()
     {
         $this->withoutExceptionHandling();
-        
-        $this->post('/page', [
+
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
             'position' => 1,
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
             'position' => 2,
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás3',
             'title_visibility' => true,
             'position' => 3,
@@ -329,14 +378,14 @@ class PageManagementTest extends TestCase
         $occupiedItems = Page::where('position', '>=', 2)->get();
         $this->assertCount(2, $occupiedItems);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás4',
             'title_visibility' => true,
             'position' => 2,
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás5',
             'title_visibility' => true,
             'position' => 1,
@@ -365,8 +414,12 @@ class PageManagementTest extends TestCase
     public function test_get_page_of_the_section()
     {
         $this->withoutExceptionHandling();
-        
-        $this->post('/page', [
+
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -404,10 +457,14 @@ class PageManagementTest extends TestCase
     public function test_page_is_unique_while_storing()
     {
         $this->withoutExceptionHandling();
+
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', $this->input());
         
-        $this->post('/page', $this->input());
-        
-        $response = $this->post('/page', [
+        $response = $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => false,
             'position' => 1,
@@ -425,7 +482,11 @@ class PageManagementTest extends TestCase
      */
     public function test_page_is_unique_while_updating()
     {
-        $this->post('/page', $this->input());
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+        
+        $this->actingAs($user)->post('/page', $this->input());
 
         $page = Page::first();
 
@@ -438,7 +499,7 @@ class PageManagementTest extends TestCase
 
         $this->assertFalse(Page::first()->title_visibility);
         
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Rólunk',
             'title_visibility' => false,
             'position' => 1,

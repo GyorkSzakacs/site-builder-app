@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Section;
 use App\Models\Post;
+use App\Models\User;
 
 class ConstraintTest extends TestCase
 {
@@ -21,7 +22,11 @@ class ConstraintTest extends TestCase
      */
     public function test_posts_of_deleted_section_are_deleted()
     {
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+        
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => 1,
@@ -87,7 +92,11 @@ class ConstraintTest extends TestCase
      */
     public function test_sections_and_posts_of_deleted_page_are_deleted()
     {
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Page1',
             'title_visibility' => true,
             'position' => 1,
@@ -138,7 +147,7 @@ class ConstraintTest extends TestCase
             'section_id' => 2
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Page2',
             'title_visibility' => true,
             'position' => 1,
@@ -185,14 +194,18 @@ class ConstraintTest extends TestCase
             'position' => 1
         ]);
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Page1',
             'title_visibility' => true,
             'position' => 1,
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Page2',
             'title_visibility' => true,
             'position' => 1,
@@ -204,7 +217,7 @@ class ConstraintTest extends TestCase
             'position' => 2
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Page3',
             'title_visibility' => true,
             'position' => 1,

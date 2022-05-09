@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class ImageManagementTest extends TestCase
 {
@@ -146,7 +147,11 @@ class ImageManagementTest extends TestCase
 
         $path = $image->hashName();
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => 1,

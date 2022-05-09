@@ -184,14 +184,18 @@ class CategoryManagementTest extends TestCase
             'position' => 1
         ]);
 
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
-        $this->post('/page', [
+        $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),

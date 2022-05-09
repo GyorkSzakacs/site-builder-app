@@ -38,6 +38,11 @@ class PageController extends Controller
      */
     public function store(PageRequest $request)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+        
         $this->validator->setValidDataFromRequest($request);
 
         if(!$this->validator->isTitleUniqueForStoring())

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Post;
 use App\Models\Page;
 use App\Models\Section;
+use App\Models\User;
 
 class PostManagementTest extends TestCase
 {
@@ -22,7 +23,11 @@ class PostManagementTest extends TestCase
      */
     protected function createParents()
     {
-        $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
