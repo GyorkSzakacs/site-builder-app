@@ -15,7 +15,7 @@ class PageRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->hasManagerAccess();
     }
 
     /**

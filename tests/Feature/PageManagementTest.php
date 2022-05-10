@@ -216,7 +216,11 @@ class PageManagementTest extends TestCase
      */
     public function test_input_data_are_valid()
     {
-        $response = $this->post('/page', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user)->post('/page', [
             'title' => '',
             'title_visibility' => '',
             'position' => '',
