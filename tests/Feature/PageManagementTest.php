@@ -125,23 +125,38 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * Test a page can be updated.
+     * Test a page can be updated by a manager access.
      * 
      * @return void
      */
-    public function test_a_page_can_be_updated()
+    public function test_a_page_can_be_updated_by_manager()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
         $user1 = User::factory()->create([
             'access_level' => 2
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
         ]);
 
         $this->actingAs($user1)->post('/page', $this->input());
         
         $page = Page::first();
 
-        $response = $this->patch('/page/'.$page->id, [
+        $response1 = $this->actingAs($user2)->patch('/page/'.$page->id, [
+            'title' => 'Elérhetőségeink',
+            'title_visibility' => false,
+            'position' => 2,
+            'category_id' => 2
+        ]);
+
+        $this->assertEquals('Főoldal', Page::first()->title);
+
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->patch('/page/'.$page->id, [
             'title' => 'Elérhetőségeink',
             'title_visibility' => false,
             'position' => 2,
@@ -157,20 +172,24 @@ class PageManagementTest extends TestCase
         $this->assertEquals(2, Category::all()->count());
         $this->assertEquals(Page::first()->category_id, Category::all()->find(2)->id);
 
-        $response->assertRedirect('/dashboard');
+        $response2->assertRedirect('/dashboard');
     }
 
     /**
-     * Test a page can be deleted.
+     * Test a page can be deleted by a manager access.
      * 
      * @return void
      */
-    public function test_a_page_can_be_deleted()
+    public function test_a_page_can_be_deleted_by_manager()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
         $user1 = User::factory()->create([
             'access_level' => 2
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
         ]);
 
         $this->actingAs($user1)->post('/page', $this->input());
@@ -179,11 +198,15 @@ class PageManagementTest extends TestCase
 
         $this->assertCount(1, Page::all());
 
-        $response = $this->delete('page/'.$page->id);
+        $response1 = $this->actingAs($user2)->delete('page/'.$page->id);
+
+        $this->assertCount(1, Page::all());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->delete('page/'.$page->id);
 
         $this->assertCount(0, Page::all());
-
-        $response->assertRedirect('/dashboard');
+        $response2->assertRedirect('/dashboard');
     }
 
     /**

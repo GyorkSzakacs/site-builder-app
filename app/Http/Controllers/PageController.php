@@ -38,10 +38,7 @@ class PageController extends Controller
      */
     public function store(PageRequest $request)
     {
-        if(!$request->user()->hasManagerAccess())
-        {
-            return abort(403);
-        }
+        $this->authorize('create', Page::class);
         
         $this->validator->setValidDataFromRequest($request);
 
@@ -64,6 +61,8 @@ class PageController extends Controller
      */
     public function update(PageRequest $request, Page $page)
     {
+        $this->authorize('update', $page);
+        
         $this->validator->setValidDataFromRequest($request);
 
         if(!$this->validator->isTitleUniqueForUpdating($page->id))
@@ -79,11 +78,14 @@ class PageController extends Controller
     /**
      * Delete the selected page.
      * 
+     * @param Reqest $request
      * @param Page $page
      * @return void
      */
-    public function destroy(Page $page)
+    public function destroy(Request $request, Page $page)
     {
+        $this->authorize('delete', $page);
+        
         $page->delete();
 
         return redirect('/dashboard');
