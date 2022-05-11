@@ -30,46 +30,59 @@ class SectionManagementTest extends TestCase
     }
     
     /**
-     * Test a section can be created.
+     * Test a section can be created by a manager.
      *
      * @return void
      */
-    public function test_a_section_can_be_created()
+    public function test_a_section_can_be_created_by_manager()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $user = User::factory()->create([
+        $user1 = User::factory()->create([
             'access_level' => 2
         ]);
 
-        $this->actingAs($user)->post('/page', [
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $this->actingAs($user1)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
             'category_id' => 1
         ]);
 
-        $response = $this->post('/section', $this->input());
+        $response1 = $this->actingAs($user2)->post('/section', $this->input());
+
+        $this->assertCount(0, Section::all());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->post('/section', $this->input());
 
         $this->assertCount(1, Section::all());
         $this->assertEquals('Hírek', Section::first()->title);
-        $response->assertRedirect('/fooldal');
+        $response2->assertRedirect('/fooldal');
     }
 
     /**
-     * Test a section can be updated.
+     * Test a section can be updated by a manager.
      *
      * @return void
      */
-    public function test_a_section_can_be_updated()
+    public function test_a_section_can_be_updated_by_manager()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $user = User::factory()->create([
+        $user1 = User::factory()->create([
             'access_level' => 2
         ]);
 
-        $this->actingAs($user)->post('/page', [
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $this->actingAs($user1)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -78,36 +91,51 @@ class SectionManagementTest extends TestCase
 
         $this->post('/section', $this->input());
 
+        $this->assertCount(1, Section::all());
+        
         $section = Section::first();
 
-        $response = $this->patch('/section/'.$section->id, [
+        $response1 = $this->actingAs($user2)->patch('/section/'.$section->id, [
             'title' => 'Érdekességek',
             'title_visibility' => false,
             'position' => 1,
             'page_id' => 1
         ]);
 
-        $this->assertCount(1, Section::all());
+        $this->assertEquals('Hírek', Section::first()->title);
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->patch('/section/'.$section->id, [
+            'title' => 'Érdekességek',
+            'title_visibility' => false,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
         $this->assertEquals('Érdekességek', Section::first()->title);
         $this->assertEquals('erdekessegek', Section::first()->slug);
         $this->assertFalse(Section::first()->title_visibility);
-        $response->assertRedirect('/fooldal');
+        $response2->assertRedirect('/fooldal');
     }
 
      /**
-     * Test a section can be deleted.
+     * Test a section can be deleted by a manager.
      *
      * @return void
      */
-    public function test_a_section_can_be_deleted()
+    public function test_a_section_can_be_deleted_by_mamager()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $user = User::factory()->create([
+        $user1 = User::factory()->create([
             'access_level' => 2
         ]);
 
-        $this->actingAs($user)->post('/page', [
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $this->actingAs($user1)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
             'position' => Page::getNextPosition(),
@@ -118,10 +146,15 @@ class SectionManagementTest extends TestCase
 
         $section = Section::first();
 
-        $response = $this->delete('/section/'.$section->id);
+        $response1 = $this->actingAs($user2)->delete('/section/'.$section->id);
+
+        $this->assertCount(1, Section::all());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->delete('/section/'.$section->id);
 
         $this->assertCount(0, Section::all());
-        $response->assertRedirect('/fooldal');
+        $response2->assertRedirect('/fooldal');
     }
 
     /**

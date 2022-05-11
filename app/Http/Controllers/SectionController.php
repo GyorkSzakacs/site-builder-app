@@ -38,6 +38,11 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+
         $this->validator->setValidDataFromRequest($request);
         
         if(!$this->validator->isTitleUniqueForStoring())
@@ -59,6 +64,11 @@ class SectionController extends Controller
      */
     public function update(SectionRequest $request, Section $section)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+
         $this->validator->setValidDataFromRequest($request);
         
         if(!$this->validator->isTitleUniqueForUpdating($section->id))
@@ -74,11 +84,17 @@ class SectionController extends Controller
     /**
      * Delete the selected section.
      * 
+     * @param Request $request
      * @param Selction $section
      * @return void
      */
-    public function destroy(Section $section)
+    public function destroy(Request $request, Section $section)
     {
+        if(!$request->user()->hasManagerAccess())
+        {
+            return abort(403);
+        }
+
         $section->delete();
 
         return $this->redirectToPage($section);
