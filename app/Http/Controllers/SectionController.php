@@ -28,6 +28,8 @@ class SectionController extends Controller
     public function __construct(TitleValidator $validator)
     {
         $this->validator = $validator;
+
+        $this->authorizeResource(Section::class, 'section');
     }
 
     /**
@@ -38,8 +40,6 @@ class SectionController extends Controller
      */
     public function store(SectionRequest $request)
     {
-        $this->authorize('create', Section::class);
-        
         $this->validator->setValidDataFromRequest($request);
         
         if(!$this->validator->isTitleUniqueForStoring())
@@ -61,8 +61,6 @@ class SectionController extends Controller
      */
     public function update(SectionRequest $request, Section $section)
     {
-        $this->authorize('update', $section);
-        
         $this->validator->setValidDataFromRequest($request);
         
         if(!$this->validator->isTitleUniqueForUpdating($section->id))
@@ -84,8 +82,6 @@ class SectionController extends Controller
      */
     public function destroy(Request $request, Section $section)
     {
-        $this->authorize('delete', $section);
-        
         $section->delete();
 
         return $this->redirectToPage($section);

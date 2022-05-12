@@ -164,7 +164,11 @@ class SectionManagementTest extends TestCase
      */
     public function test_section_input_data_validation()
     {
-        $response = $this->from('/fooldal')->post('/section', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->from('/fooldal')->actingAs($user)->post('/section', [
             'title' => '',
             'title_visibility' => 'data',
             'position' => 'data',
