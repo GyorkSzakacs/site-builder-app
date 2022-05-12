@@ -40,6 +40,11 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        if(!$request->user()->hasEditorAccess())
+        {
+            return abort(403);
+        }
+
         $this->validator->setValidDataFromRequest($request);
         
         $path = $this->storeImage($this->validator->validData['post_image']);
@@ -68,6 +73,11 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
+        if(!$request->user()->hasEditorAccess())
+        {
+            return abort(403);
+        }
+
         $this->validator->setValidDataFromRequest($request);
         
         $path = $this->storeImage($this->validator->validData['post_image']);
@@ -100,11 +110,17 @@ class PostController extends Controller
     /**
      * Delete the selected post.
      * 
+     * @param Request $request
      * @param Post $post
      * @return void
      */
-    public function destroy(Post $post)
+    public function destroy(Request $request, Post $post)
     {
+        if(!$request->user()->hasEditorAccess())
+        {
+            return abort(403);
+        }
+
         $post->delete();
 
         return redirect('/'.$post->section->page->slug);

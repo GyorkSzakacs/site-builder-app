@@ -43,19 +43,41 @@ class PostManagementTest extends TestCase
     }
 
     /**
-     * Test a post can be created.
+     * Test a post can be created by a user with exitor access.
      *
      * @return void
      */
-    public function test_a_post_can_be_created()
+    public function test_a_post_can_be_created_by_editor()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 4
+        ]);
+
         $image = UploadedFile::fake()->image('image.jpg');
 
         $this->createParents();
 
-        $response = $this->post('/post', [
+        $response1 = $this->actingAs($user2)->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => $image,
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        $this->assertCount(0, Post::all());
+        Storage::disk('local')->assertMissing('images/'.$image->hashName());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->post('/post', [
             'title' => 'Első cikkem',
             'title_visibility' => true,
             'description' => 'Az első cikkem.',
@@ -69,12 +91,12 @@ class PostManagementTest extends TestCase
 
         Storage::disk('local')->assertExists('images/'.$image->hashName());
         $this->assertEquals('images/'.$image->hashName(), Post::first()->post_image);
-
+        
         $this->assertEquals('elso-cikkem', Post::first()->slug);
         $this->assertEquals(1, Post::first()->section_id);
         $this->assertTrue(Post::first()->title_visibility);
 
-        $response->assertRedirect('/fooldal/szekcio/elso-cikkem');
+        $response2->assertRedirect('/fooldal/szekcio/elso-cikkem');
     }
 
     /**
@@ -164,7 +186,11 @@ class PostManagementTest extends TestCase
         $wrongExtension = UploadedFile::fake()->create('document.pdf');
         $bigSize = UploadedFile::fake()->image('image.jpg')->size(101);
 
-        $responseWrongExtension = $this->post('/post', [
+        $user = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $responseWrongExtension = $this->actingAs($user)->post('/post', [
             'title' => 'Post',
             'title_visibility' => true,
             'description' => 'Leírás',
@@ -174,7 +200,7 @@ class PostManagementTest extends TestCase
             'section_id' => 1
         ]);
 
-        $responseBigSize = $this->post('/post', [
+        $responseBigSize = $this->actingAs($user)->post('/post', [
             'title' => 'Post',
             'title_visibility' => true,
             'description' => 'Leírás',
@@ -194,17 +220,25 @@ class PostManagementTest extends TestCase
     }
 
     /**
-     * Test a post can be updated.
+     * Test a post can be updated by editor.
      * 
      * @return void
      */
-    public function test_a_post_can_be_updated()
+    public function test_a_post_can_be_updated_by_editor()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
         $image = UploadedFile::fake()->image('image.jpg');
 
         $this->createParents();
+
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 4
+        ]);
 
         $this->post('/post', [
             'title' => 'Első cikkem',
@@ -241,7 +275,21 @@ class PostManagementTest extends TestCase
 
         $newImage = UploadedFile::fake()->image('newImage.jpg');
 
-        $response2 = $this->patch('/post/'.$post->id, [
+        $response2 = $this->actingAs($user2)->patch('/post/'.$post->id, [
+            'title' => 'Első cikkem második frissítés',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Ez az első cikkem második frissítése.',
+            'post_image' => $newImage,
+            'position' => 1,
+            'section_id' => 1
+        ]);
+
+        Storage::disk('local')->assertMissing('images/'.$newImage->hashName());
+        $this->assertEquals('Első frissített cikkem', Post::first()->title);
+        $response2->assertStatus(403);
+
+        $response3 = $this->actingAs($user1)->patch('/post/'.$post->id, [
             'title' => 'Első cikkem második frissítés',
             'title_visibility' => true,
             'description' => '',
@@ -262,19 +310,27 @@ class PostManagementTest extends TestCase
         $this->assertEquals(1, Post::first()->section_id);
 
         $response1->assertRedirect('/fooldal/szekcio/elso-frissitett-cikkem');
-        $response2->assertRedirect('/fooldal/szekcio/elso-cikkem-masodik-frissites');
+        $response3->assertRedirect('/fooldal/szekcio/elso-cikkem-masodik-frissites');
     }
 
     /**
-     * Test a post can be deleted.
+     * Test a post can be deleted by an editor.
      * 
      * @return void
      */
-    public function test_a_post_can_be_deleted()
+    public function test_a_post_can_be_deleted_by_editor()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
         $this->createParents();
+
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 4
+        ]);
 
         $this->post('/post', [
             'title' => 'Első cikkem',
@@ -288,10 +344,15 @@ class PostManagementTest extends TestCase
 
         $post = Post::first();
 
-        $response = $this->delete('/post/'.$post->id);
+        $response1 = $this->actingAs($user2)->delete('/post/'.$post->id);
+
+        $this->assertCount(1, Post::all());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->delete('/post/'.$post->id);
 
         $this->assertCount(0, Post::all());
-        $response->assertRedirect('/fooldal');
+        $response2->assertRedirect('/fooldal');
     }
 
     /**
