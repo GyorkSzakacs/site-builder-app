@@ -9,6 +9,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use App\Models\Category;
 use App\Models\Page;
+use App\Models\Section;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +37,9 @@ Route::patch('/page/{page}', [PageController::class, 'update'])->can('update', '
 Route::delete('/page/{page}', [PageController::class, 'destroy'])->can('delete', 'page');
 
 //Section management routes
-Route::post('/section', [SectionController::class, 'store']);
-Route::patch('/section/{section}', [SectionController::class, 'update']);
-Route::delete('/section/{section}', [SectionController::class, 'destroy']);
+Route::post('/section', [SectionController::class, 'store'])->can('create', Section::class);
+Route::patch('/section/{section}', [SectionController::class, 'update'])->can('update', 'section');
+Route::delete('/section/{section}', [SectionController::class, 'destroy'])->can('delete', 'section');
 
 //Post management routes
 Route::post('/post', [PostController::class, 'store']);
