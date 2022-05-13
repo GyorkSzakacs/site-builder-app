@@ -106,7 +106,11 @@ class PostManagementTest extends TestCase
      */
     public function test_post_input_data_requirement_validation()
     {
-        $response = $this->post('/post', [
+        $user = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $response = $this->actingAs($user)->post('/post', [
             'title' => '',
             'title_visibility' => '',
             'description' => '',
@@ -130,7 +134,11 @@ class PostManagementTest extends TestCase
      */
     public function test_post_input_data_type_validation()
     {
-        $response = $this->post('/post', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user)->post('/post', [
             'title' => 1,
             'title_visibility' => 'data',
             'description' => 1,
