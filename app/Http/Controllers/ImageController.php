@@ -21,6 +21,11 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
+        if(!$request->user()->hasEditorAccess())
+        {
+            return abort(403);
+        }
+
         $path = '';
 
         $uploadedImage = $request->file;
@@ -42,22 +47,34 @@ class ImageController extends Controller
     /**
      * Dowload the selected image.
      * 
+     * @param Request $request
      * @param string $image
      * @return void
      */
-    public function dowload($image)
+    public function dowload(Request $request, $image)
     {
+        if(!$request->user()->hasEditorAccess())
+        {
+            return abort(403);
+        }
+
         return Storage::download('images/'.$image); 
     }
 
     /**
      * Delete the selected image.
      * 
+     * @param Request $request
      * @param string $image
      * @return void
      */
-    public function destroy($image)
+    public function destroy(Request $request, $image)
     {
+        if(!$request->user()->hasEditorAccess())
+        {
+            return abort(403);
+        }
+
         $posts = Post::where('content', 'LIKE', '%'.$image.'%')->get();
 
         if($posts->count() > 0)

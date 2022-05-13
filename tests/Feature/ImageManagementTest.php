@@ -14,24 +14,37 @@ class ImageManagementTest extends TestCase
     use RefreshDatabase;
     
     /**
-     * Test an image can be uploaded.
+     * Test an image can be uploaded by user with editor access.
      *
      * @return void
      */
-    public function test_an_image_can_be_uploaded()
+    public function test_an_image_can_be_uploaded_by_editor()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $response = $this->post('/image', [
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 4
+        ]);
+
+        $response1 = $this->actingAs($user2)->post('/image', [
             'file' => $image
         ]);
 
-        
-        Storage::disk('local')->assertExists('images/'.$image->hashName());
+        Storage::disk('local')->assertMissing('images/'.$image->hashName());
+        $response1->assertStatus(403);
 
-        $response->assertStatus(200)
+        $response2 = $this->actingAs($user1)->post('/image', [
+            'file' => $image
+        ]);
+
+        Storage::disk('local')->assertExists('images/'.$image->hashName());
+        $response2->assertStatus(200)
                     ->assertJson([
                         'location' => 'images/'.$image->hashName()
                     ]);
@@ -48,7 +61,11 @@ class ImageManagementTest extends TestCase
         
         $image = UploadedFile::fake()->image('image.jpg')->size(101);
 
-        $response = $this->post('/image', [
+        $user = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $response = $this->actingAs($user)->post('/image', [
             'file' => $image
         ]);
 
@@ -72,7 +89,11 @@ class ImageManagementTest extends TestCase
         
         $image = UploadedFile::fake()->create('document.pdf');
 
-        $response = $this->post('/image', [
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response = $this->actingAs($user)->post('/image', [
             'file' => $image
         ]);
 
@@ -86,48 +107,73 @@ class ImageManagementTest extends TestCase
     }
 
     /**
-     * Test an image can be downloaded.
+     * Test an image can be downloaded by user with editor access.
      *
      * @return void
      */
-    public function test_an_image_can_be_dowloaded()
+    public function test_an_image_can_be_dowloaded_by_editor()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $this->post('/image', [
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 4
+        ]);
+
+        $this->actingAs($user1)->post('/image', [
             'file' => $image
         ]);
 
         $path = $image->hashName();
 
-        $response = $this->post('/image/'.$path);
+        $response1 = $this->actingAs($user2)->post('/image/'.$path);
 
-        $response->assertDownload($path);
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->post('/image/'.$path);
+
+        $response2->assertDownload($path);
     }
 
     /**
-     * Test an image can be deleted.
+     * Test an image can be deleted by user with exitor access.
      *
      * @return void
      */
-    public function test_an_image_can_be_deleted()
+    public function test_an_image_can_be_deleted_by_editor()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
         
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $this->post('/image', [
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 4
+        ]);
+
+        $this->actingAs($user1)->post('/image', [
             'file' => $image
         ]);
 
         $path = $image->hashName();
 
-        $response = $this->delete('/image/'.$path);
+        $response1 = $this->actingAs($user2)->delete('/image/'.$path);
+
+        Storage::disk('local')->assertExists('images/'.$image->hashName());
+        $response1->assertStatus(403);
+
+        $response2 = $this->actingAs($user1)->delete('/image/'.$path);
 
         Storage::disk('local')->assertMissing('images/'.$image->hashName());
-        $response->assertRedirect('/galery');
+        $response2->assertRedirect('/galery');
     }
 
     /**
@@ -141,7 +187,11 @@ class ImageManagementTest extends TestCase
         
         $image = UploadedFile::fake()->image('image.jpg');
 
-        $this->post('/image', [
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $this->actingAs($user1)->post('/image', [
             'file' => $image
         ]);
 
