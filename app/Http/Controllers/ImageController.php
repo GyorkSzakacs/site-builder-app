@@ -8,6 +8,7 @@ use App\Services\FileUploader\ImageConstraints;
 use Illuminate\Support\Facades\Storage;;
 use App\Models\Post;
 use App\Traits\BackRedirector;
+use Illuminate\Support\Facades\Gate;
 
 class ImageController extends Controller
 {
@@ -21,11 +22,8 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {
-        if(!$request->user()->hasEditorAccess())
-        {
-            return abort(403);
-        }
-
+        Gate::authorize('image-upload');
+        
         $path = '';
 
         $uploadedImage = $request->file;
@@ -53,10 +51,7 @@ class ImageController extends Controller
      */
     public function dowload(Request $request, $image)
     {
-        if(!$request->user()->hasEditorAccess())
-        {
-            return abort(403);
-        }
+        Gate::authorize('image-upload');
 
         return Storage::download('images/'.$image); 
     }
@@ -70,11 +65,8 @@ class ImageController extends Controller
      */
     public function destroy(Request $request, $image)
     {
-        if(!$request->user()->hasEditorAccess())
-        {
-            return abort(403);
-        }
-
+        Gate::authorize('image-delete');
+        
         $posts = Post::where('content', 'LIKE', '%'.$image.'%')->get();
 
         if($posts->count() > 0)

@@ -33,5 +33,17 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('register', function(User $user){
             return $user->hasAdminAccess();
         });
+
+        Gate::define('image-upload', function(User $user){
+            return $user->hasEditorAccess();
+        });
+
+        Gate::define('image-dowload', function(User $user){
+            return $user->hasEditorAccess();;
+        });
+
+        Gate::define('image-delete', function(User $user){
+            return $user->hasEditorAccess();;
+        });
     }
 }
