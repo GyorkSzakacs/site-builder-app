@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasEditorAccess();
         });
 
-        Gate::define('image-dowload', function(User $user){
+        Gate::define('image-download', function(User $user){
             return $user->hasEditorAccess();;
         });
 

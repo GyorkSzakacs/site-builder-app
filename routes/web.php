@@ -48,9 +48,9 @@ Route::patch('/post/{post}', [PostController::class, 'update'])->can('update', '
 Route::delete('/post/{post}', [PostController::class, 'destroy'])->can('delete', 'post');
 
 //Image management routes
-Route::post('/image', [ImageController::class, 'store']);
-Route::post('/image/{image}', [ImageController::class, 'dowload']);
-Route::delete('/image/{image}', [ImageController::class, 'destroy']);
+Route::post('/image', [ImageController::class, 'store'])->can('image-upload');
+Route::post('/image/{image}', [ImageController::class, 'download'])->can('image-download');
+Route::delete('/image/{image}', [ImageController::class, 'destroy'])->can('image-delete');
 
 //User management routs
 Route::patch('/account/{user}', [UserController::class, 'update'])->can('update', 'user');

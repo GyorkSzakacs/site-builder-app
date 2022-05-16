@@ -43,15 +43,15 @@ class ImageController extends Controller
     }
 
     /**
-     * Dowload the selected image.
+     * Download the selected image.
      * 
      * @param Request $request
      * @param string $image
      * @return void
      */
-    public function dowload(Request $request, $image)
+    public function download(Request $request, $image)
     {
-        Gate::authorize('image-upload');
+        Gate::authorize('image-download');
 
         return Storage::download('images/'.$image); 
     }
