@@ -31,6 +31,16 @@ class PageController extends Controller
     }
 
     /**
+     * Render the root view.
+     * 
+     * @return View
+     */
+    public function index()
+    {
+        return View('auth.first-register');
+    }
+
+    /**
      * Create new page
      * 
      * @param PageRequiest $request

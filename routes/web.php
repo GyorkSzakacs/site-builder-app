@@ -23,9 +23,7 @@ use App\Models\Post;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PageController::class, 'index']);
 
 //Category management routes
 Route::post('/category', [CategoryController::class, 'store'])->can('create', Category::class);

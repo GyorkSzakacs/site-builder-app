@@ -21,7 +21,7 @@ class RegisteredUserController extends Controller
      */
     public function createFirst()
     {
-        return ;
+        return view('auth.first-register');
     }
     
     /**

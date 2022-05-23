@@ -21,6 +21,7 @@ class RegistrationTest extends TestCase
         $response = $this->actingAs($user)->get('/register');
 
         $response->assertStatus(200);
+        $response->assertViewIs('auth.register');
     }
 
     public function test_first_registration_screen_can_be_rendered()
@@ -28,6 +29,19 @@ class RegistrationTest extends TestCase
         $response = $this->get('/first-register');
 
         $response->assertStatus(200);
+        $response->assertViewIs('auth.first-register');
+    }
+
+    /**
+     * Test render first-register view if there isn't user with admin access.
+     * 
+     * @return void
+     */
+    public function test_render_first_register_view_if_there_is_not_admin()
+    {
+        $response = $this->get('/');
+
+        $response->assertViewIs('auth.first-register');
     }
 
     public function test_new_users_can_register()
