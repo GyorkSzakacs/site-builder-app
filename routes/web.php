@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Section;
 use App\Models\Post;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,9 @@ Route::delete('/account/{user}', [UserController::class, 'destroy'])->can('delet
 Route::post('/update-password/{user}', [UserController::class, 'updatePassword'])->can('updatePassword', 'user');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $users = User::all();
+
+    return view('dashboard', ['users' => $users]);
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
