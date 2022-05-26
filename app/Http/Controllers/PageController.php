@@ -7,6 +7,7 @@ use App\Models\Page;
 use App\Http\Requests\PageRequest;
 use App\Services\TitleValidator\TitleValidator;
 use App\Traits\BackRedirector;
+use Illuminate\Support\Facades\Gate;
 
 class PageController extends Controller
 {
@@ -37,6 +38,11 @@ class PageController extends Controller
      */
     public function index()
     {
+        if(Gate::denies('first-register'))
+        {
+            return View('page.index');
+        }
+
         return View('auth.first-register');
     }
 

@@ -31,6 +31,24 @@ class PageManagementTest extends TestCase
     }
 
     /**
+     * Test render page template view with first positioned page as index if there is user with admin access.
+     * 
+     * @return void
+     */
+    public function test_render_first_page_view()
+    {
+        $this->withoutExceptionHandling();
+
+        User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $response = $this->get('/');
+
+        $response->assertViewIs('page.index');
+    }
+
+    /**
      * A user with manager access can create a page.
      *
      * @return void
