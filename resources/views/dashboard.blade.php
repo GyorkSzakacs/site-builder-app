@@ -54,7 +54,7 @@
                                         @endswitch
                                     </td>
                                     <td class="p-1 border border-gray-400">
-                                        <a href="" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                        <a href="/account-access/{{ $user->id }}" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                             {{ __('Szerepkör módosítása') }}
                                         </a>
                                     </td>

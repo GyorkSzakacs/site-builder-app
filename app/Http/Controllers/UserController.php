@@ -67,6 +67,21 @@ class UserController extends Controller
     }
 
     /**
+     * Render access level edit screen.
+     * 
+     * @param Request $request
+     * @param User $user
+     * 
+     * @return void
+     */
+    public function editAccess(Request $request, User $user)
+    {
+        $this->authorize('updateAccess', $user);
+        
+        return view('auth.update-access', ['user' => $user]);
+    }
+
+    /**
      * Change a user access level.
      * 
      * @param Request $request

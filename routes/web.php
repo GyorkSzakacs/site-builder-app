@@ -53,7 +53,12 @@ Route::delete('/image/{image}', [ImageController::class, 'destroy'])->can('image
 
 //User management routs
 Route::patch('/account/{user}', [UserController::class, 'update'])->can('update', 'user');
-Route::patch('/account-access/{user}', [UserController::class, 'updateAccess'])->can('updateAccess', 'user');
+
+Route::middleware('can:updateAccess,user')->group(function(){
+    Route::get('/account-access/{user}', [UserController::class, 'editAccess']);
+    Route::patch('/account-access/{user}', [UserController::class, 'updateAccess']);
+});
+
 Route::delete('/account/{user}', [UserController::class, 'destroy'])->can('delete', 'user');
 Route::post('/update-password/{user}', [UserController::class, 'updatePassword'])->can('updatePassword', 'user');
 

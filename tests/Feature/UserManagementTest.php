@@ -236,6 +236,34 @@ class UserManagementTest extends TestCase
         $response->assertSessionHasErrors('access_level');
     }
 
+    /**
+     * Test render access update screen.
+     *
+     * @return void
+     */
+    public function test_render_update_access_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $response1 = $this->actingAs($user1)->get('/account-access/'.$user2->id);
+
+        $response2 = $this->actingAs($user2)->get('/account-access/'.$user2->id);
+
+        $response1->assertViewIs('auth.update-access');
+        $response1->assertViewHas('user', function($user){
+            return $user->id == 2;
+        });
+
+        $response2->assertStatus(403);
+    }
 
     /**
      * Test an admin can delete another user.
