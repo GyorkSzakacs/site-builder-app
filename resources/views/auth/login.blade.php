@@ -2,7 +2,7 @@
     <x-auth-card>
 
         <div class="mb-4">
-            <h1 class="font-semibold text-2xl text-center">Bejelentkezés</h1>
+            <h1 class="font-semibold text-2xl text-center">{{ __('Bejelentkezés') }}</h1>
         </div>
 
         <x-slot name="logo">

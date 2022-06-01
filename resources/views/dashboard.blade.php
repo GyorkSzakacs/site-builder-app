@@ -59,7 +59,7 @@
                                         </a>
                                     </td>
                                     <td class="px-1 border border-gray-400">
-                                        <form method="POST" action="/account/{{ $user->id }}" onsubmit="return confirm('Biztosan törölni szeretné ezt a felhasználót?')">
+                                        <form method="POST" action="/account/{{ $user->id }}" onsubmit="return confirm('Biztosan törölni szeretné {{ $user->name }} felhasználót?')">
                                             @csrf
 
                                             @method('DELETE')
