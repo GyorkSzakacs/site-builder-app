@@ -55,9 +55,9 @@
 
             <div class="flex items-center justify-end mt-4">
 
-                <a class="text-sm p-2 text-blue-500 rounded-md hover:bg-gray-100 hover:text-blue-600" href="{{ route('dashboard') }}">
-                        {{ __('Mégse') }}
-                </a>
+                <x-cancel :link="route('dashboard')">
+                    {{ __('Mégse') }}
+                </x-cancel>
 
                 <x-button class="ml-4">
                     {{ __('Módosítás') }}
