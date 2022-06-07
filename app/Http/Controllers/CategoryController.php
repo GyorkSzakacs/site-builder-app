@@ -16,6 +16,18 @@ class CategoryController extends Controller
     {
         $this->authorizeResource(Category::class, 'category');
     }
+
+    /**
+     * Get the screen with the form for creation of a category.
+     * 
+     * @return View
+     */
+    public function create()
+    {
+        $next = Category::getNextPosition();
+
+        return view('category.create', ['next' => $next]);
+    }
     
     /**
      * Create a new category.

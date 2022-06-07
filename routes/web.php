@@ -27,7 +27,11 @@ use App\Models\User;
 Route::get('/', [PageController::class, 'index']);
 
 //Category management routes
-Route::post('/category', [CategoryController::class, 'store'])->can('create', Category::class);
+Route::middleware('can:create,App\Models\Category')->group(function(){
+    Route::get('/create-category', [CategoryController::class, 'create'])
+        ->name('create-category');
+    Route::post('/category', [CategoryController::class, 'store']);
+});
 Route::patch('/category/{category}', [CategoryController::class, 'update'])->can('update', 'category');
 Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->can('delete', 'category');
 

@@ -30,6 +30,34 @@ class CategoryManagementTest extends TestCase
     }
 
     /**
+     * Test render new category screen.
+     *
+     * @return void
+     */
+    public function test_render_new_category_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response1 = $this->actingAs($user1)->get('/create-category');
+
+        $response2 = $this->actingAs($user2)->get('/create-category');
+
+        $response1->assertViewIs('category.create');
+        $response1->assertViewHas([
+            'next' => 1
+        ]);
+        $response2->assertStatus(403);
+    }
+
+    /**
      * Test a User with manager access can create a Category
      *
      * @return void
