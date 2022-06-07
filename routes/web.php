@@ -65,7 +65,12 @@ Route::post('/update-password/{user}', [UserController::class, 'updatePassword']
 Route::get('/dashboard', function () {
     $users = User::all();
 
-    return view('dashboard', ['users' => $users]);
+    $categories = Category::all();
+
+    return view('dashboard', [
+                                'users' => $users,
+                                'categories' => $categories
+                            ]);
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';

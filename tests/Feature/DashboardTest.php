@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Category;
 
 class DashboardTest extends TestCase
 {
@@ -24,6 +25,12 @@ class DashboardTest extends TestCase
             'name' => 'Admin01',
             'access_level' => 1
         ]);
+
+        $category = Category::create([
+            'title' => 'Főoldal',
+            'position' => 1
+        ]);
+
         $response = $this->actingAs($user)->get('/dashboard');
 
         $response->assertViewIs('dashboard');
@@ -36,6 +43,16 @@ class DashboardTest extends TestCase
             }
             
             return $name == 'Admin01';
+        });
+        $response->assertViewHas('categories', function($categories){
+            $title = '';
+            
+            foreach($categories as $category)
+            {
+                $title .= $category->title;
+            }
+            
+            return $title == 'Főoldal';
         });
     }
 }
