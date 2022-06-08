@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-manager-layout>
     <x-auth-card>
 
         <div class="mb-4">
