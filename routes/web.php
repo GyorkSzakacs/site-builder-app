@@ -74,7 +74,8 @@ Route::post('/update-password/{user}', [UserController::class, 'updatePassword']
 Route::get('/dashboard', function () {
     $users = User::all();
 
-    $categories = Category::all();
+    $categories = Category::orderBy('position', 'asc')
+                            ->get();
 
     return view('dashboard', [
                                 'users' => $users,

@@ -26,8 +26,13 @@ class DashboardTest extends TestCase
             'access_level' => 1
         ]);
 
-        $category = Category::create([
+        Category::create([
             'title' => 'Főoldal',
+            'position' => 2
+        ]);
+
+        Category::create([
+            'title' => 'Kapcsolat',
             'position' => 1
         ]);
 
@@ -52,7 +57,7 @@ class DashboardTest extends TestCase
                 $title .= $category->title;
             }
             
-            return $title == 'Főoldal';
+            return $title == 'KapcsolatFőoldal';
         });
     }
 }
