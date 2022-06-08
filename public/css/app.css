@@ -962,6 +962,9 @@ select {
 .pb-1 {
   padding-bottom: 0.25rem;
 }
+.pb-12 {
+  padding-bottom: 3rem;
+}
 .pl-3 {
   padding-left: 0.75rem;
 }
@@ -976,9 +979,6 @@ select {
 }
 .pt-8 {
   padding-top: 2rem;
-}
-.pb-12 {
-  padding-bottom: 3rem;
 }
 .text-center {
   text-align: center;

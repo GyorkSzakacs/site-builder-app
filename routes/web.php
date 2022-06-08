@@ -32,7 +32,12 @@ Route::middleware('can:create,App\Models\Category')->group(function(){
         ->name('create-category');
     Route::post('/category', [CategoryController::class, 'store']);
 });
-Route::patch('/category/{category}', [CategoryController::class, 'update'])->can('update', 'category');
+
+Route::middleware('can:update,category')->group(function(){
+    Route::get('/update-category/{category}', [CategoryController::class, 'edit']);
+    Route::patch('/category/{category}', [CategoryController::class, 'update']);
+});
+
 Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->can('delete', 'category');
 
 //Page management routes

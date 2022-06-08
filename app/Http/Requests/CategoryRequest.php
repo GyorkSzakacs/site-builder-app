@@ -6,8 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryRequest extends FormRequest
 {
-    protected $redirect = '/dashboard';
-    
     /**
      * Determine if the user is authorized to make this request.
      *

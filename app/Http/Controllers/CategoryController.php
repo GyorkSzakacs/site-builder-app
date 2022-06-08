@@ -43,6 +43,23 @@ class CategoryController extends Controller
     }
 
     /**
+     * Get the scrren with the form for updating a category.
+     * 
+     * @param Request $request
+     * @param Category $category
+     * @return View
+     */
+    public function edit(Request $request, Category $category)
+    {
+        $max = Category::max('position');
+
+        return view('category.update', [
+                                        'category' => $category,
+                                        'max' => $max
+                                    ]);
+    }
+
+    /**
      * Update the selected category.
      * 
      * @param CategoryRequest $request

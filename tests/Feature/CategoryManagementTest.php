@@ -101,7 +101,39 @@ class CategoryManagementTest extends TestCase
 
         $response->assertSessionHasErrors('title');
         $response->assertSessionHasErrors('position');
-        $response->assertRedirect('/dashboard');
+    }
+
+    /**
+     * Test render update category screen.
+     *
+     * @return void
+     */
+    public function test_render_update_category_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $category = Category::create($this->input());
+
+        $response1 = $this->actingAs($user1)->get('/update-category/'.$category->id);
+
+        $response2 = $this->actingAs($user2)->get('/update-category/'.$category->id);
+
+        $response1->assertViewIs('category.update');
+        $response1->assertViewHas('category', function($category){
+            return $category->id == 1;
+        });
+        $response1->assertViewHas([
+            'max' => 2
+        ]);
+        $response2->assertStatus(403);
     }
 
     /**
