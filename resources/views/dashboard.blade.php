@@ -134,4 +134,52 @@
             </div>
         </div>
     </div>
+    <div class="pb-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="flex">
+                        <h2 class="block font-semibold mr-5 text-xl text-gray-80">
+                            {{ __('Oldalak') }}
+                        </h2>
+                        <a href="{{ route('create-category') }}" class="inline-flex items-center px-2 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            {{ __('Új hozzzáadása') }}
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <table class="table-fixed border-collapse border border-gray-400">
+                            <thead class="bg-gray-300">
+                                <tr>
+                                    <th class="px-4">{{ __('Cím') }}</th>
+                                    <th class="px-4">{{ __('Cím láthatósága') }}</th>
+                                    <th class="px-4">{{ __('Kategória') }}</th>
+                                    <th class="px-4">{{ __('Pozíció') }}</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($categories as $category)    
+                                <tr>
+                                    <td class="px-4 border border-gray-400">{{ $category->title }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $category->title }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $category->title }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $category->position }}</td>
+                                    <td class="p-1 border border-gray-400">
+                                        <a href="/update-category/{{ $category->id }}" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                            {{ __('Módosít') }}
+                                        </a>
+                                    </td>
+                                    <td class="px-1 border border-gray-400">
+                                        <x-delete :action="route('dashboard')" :question="__('Biztosan törölni szeretné '.$category->title.' kategóriát?')"/>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>
