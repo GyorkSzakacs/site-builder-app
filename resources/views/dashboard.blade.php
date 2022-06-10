@@ -62,15 +62,7 @@
                                     </td>
                                     <td class="px-1 border border-gray-400">
                                     @can('delete', $user)
-                                        <form method="POST" action="/account/{{ $user->id }}" onsubmit="return confirm('Biztosan törölni szeretné {{ $user->name }} felhasználót?')">
-                                            @csrf
-
-                                            @method('DELETE')
-                                            
-                                            <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-red-800 active:bg-red-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                {{ __('Töröl') }}
-                                            </button>
-                                        </form>
+                                        <x-buttons.delete :action="__('/account/').$user->id" :question="__('Biztosan törölni szeretné '.$user->name.' felhasználót?')"/>
                                     @endcan
                                     </td>
                                 </tr>
@@ -115,15 +107,7 @@
                                         </a>
                                     </td>
                                     <td class="px-1 border border-gray-400">
-                                        <form method="POST" action="/category/{{ $category->id }}" onsubmit="return confirm('Biztosan törölni szeretné {{ $category->title }} kategóriát?')">
-                                            @csrf
-
-                                            @method('DELETE')
-                                            
-                                            <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-red-800 active:bg-red-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                                {{ __('Töröl') }}
-                                            </button>
-                                        </form>
+                                        <x-buttons.delete :action="__('/category/').$category->id" :question="__('Biztosan törölni szeretné '.$category->title.' kategóriát?')"/>
                                     </td>
                                 </tr>
                             @endforeach
@@ -171,7 +155,7 @@
                                         </a>
                                     </td>
                                     <td class="px-1 border border-gray-400">
-                                        <x-delete :action="route('dashboard')" :question="__('Biztosan törölni szeretné '.$category->title.' kategóriát?')"/>
+                                        <x-buttons.delete :action="__('/category/').$category->id" :question="__('Biztosan törölni szeretné '.$category->title.' kategóriát?')"/>
                                     </td>
                                 </tr>
                             @endforeach
