@@ -31,6 +31,32 @@ class PageManagementTest extends TestCase
     }
 
     /**
+     * Test render new page screen.
+     *
+     * @return void
+     */
+    public function test_render_new_page_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response1 = $this->actingAs($user1)->get('/create-page');
+
+        $response2 = $this->actingAs($user2)->get('/create-page');
+
+        $response1->assertViewIs('page.create');
+        
+        $response2->assertStatus(403);
+    }
+
+    /**
      * Test render page template view with first positioned page as index if there is user with admin access.
      * 
      * @return void

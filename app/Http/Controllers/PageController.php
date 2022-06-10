@@ -47,6 +47,18 @@ class PageController extends Controller
     }
 
     /**
+     * Get the screen with the form for creation of a page.
+     * 
+     * @return View
+     */
+    public function create()
+    {
+        $this->authorize('create', Page::class);
+
+        return view('page.create');
+    }
+
+    /**
      * Create new page
      * 
      * @param PageRequiest $request

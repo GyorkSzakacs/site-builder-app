@@ -41,7 +41,11 @@ Route::middleware('can:update,category')->group(function(){
 Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->can('delete', 'category');
 
 //Page management routes
-Route::post('/page', [PageController::class, 'store'])->can('create', Page::class);
+Route::middleware('can:create,App\Models\Page')->group(function(){
+    Route::get('/create-page', [PageController::class, 'create']);
+    Route::post('/page', [PageController::class, 'store']);
+});
+
 Route::patch('/page/{page}', [PageController::class, 'update'])->can('update', 'page');
 Route::delete('/page/{page}', [PageController::class, 'destroy'])->can('delete', 'page');
 
