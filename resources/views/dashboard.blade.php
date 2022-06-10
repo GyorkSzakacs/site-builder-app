@@ -13,9 +13,9 @@
                         <h2 class="block font-semibold mr-5 text-xl text-gray-80">
                             {{ __('Felhasználók') }}
                         </h2>
-                        <a href="{{ route('register') }}" class="inline-flex items-center px-2 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            {{ __('Új hozzzáadása') }}
-                        </a>
+                        <x-buttons.edit :link="route('register')">
+                            {{ __('Új hozzáadása') }}
+                        </x-buttons.edit>
                     </div>
                     <div class="mt-4">
                         <table class="table-fixed border-collapse border border-gray-400">
@@ -55,9 +55,9 @@
                                     </td>
                                     <td class="p-1 border border-gray-400">
                                     @can('updateAccess', $user)
-                                        <a href="/account-access/{{ $user->id }}" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                        <x-buttons.edit :link="__('/account-access/').$user->id">
                                             {{ __('Szerepkör módosítása') }}
-                                        </a>
+                                        </x-buttons.edit>
                                     @endcan
                                     </td>
                                     <td class="px-1 border border-gray-400">
@@ -82,9 +82,9 @@
                         <h2 class="block font-semibold mr-5 text-xl text-gray-80">
                             {{ __('Kategóriák') }}
                         </h2>
-                        <a href="{{ route('create-category') }}" class="inline-flex items-center px-2 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <x-buttons.edit :link="route('create-category')">
                             {{ __('Új hozzzáadása') }}
-                        </a>
+                        </x-buttons.edit>
                     </div>
                     <div class="mt-4">
                         <table class="table-fixed border-collapse border border-gray-400">
@@ -102,9 +102,9 @@
                                     <td class="px-4 border border-gray-400">{{ $category->title }}</td>
                                     <td class="px-4 border border-gray-400">{{ $category->position }}</td>
                                     <td class="p-1 border border-gray-400">
-                                        <a href="/update-category/{{ $category->id }}" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                        <x-buttons.edit :link="__('/update-category/').$category->id">
                                             {{ __('Módosít') }}
-                                        </a>
+                                        </x-buttons.edit>
                                     </td>
                                     <td class="px-1 border border-gray-400">
                                         <x-buttons.delete :action="__('/category/').$category->id" :question="__('Biztosan törölni szeretné '.$category->title.' kategóriát?')"/>
@@ -126,9 +126,9 @@
                         <h2 class="block font-semibold mr-5 text-xl text-gray-80">
                             {{ __('Oldalak') }}
                         </h2>
-                        <a href="{{ route('create-category') }}" class="inline-flex items-center px-2 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <x-buttons.edit :link="route('create-category')">
                             {{ __('Új hozzzáadása') }}
-                        </a>
+                        </x-buttons.edit>
                     </div>
                     <div class="mt-4">
                         <table class="table-fixed border-collapse border border-gray-400">
@@ -143,19 +143,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach($categories as $category)    
+                            @foreach($pages as $page)    
                                 <tr>
-                                    <td class="px-4 border border-gray-400">{{ $category->title }}</td>
-                                    <td class="px-4 border border-gray-400">{{ $category->title }}</td>
-                                    <td class="px-4 border border-gray-400">{{ $category->title }}</td>
-                                    <td class="px-4 border border-gray-400">{{ $category->position }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $page->title }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $page->title_visibility }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $page->category }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $page->position }}</td>
                                     <td class="p-1 border border-gray-400">
-                                        <a href="/update-category/{{ $category->id }}" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                        <x-buttons.edit :link="__('/update-category/').$category->id">
                                             {{ __('Módosít') }}
-                                        </a>
+                                        </x-buttons.edit>
                                     </td>
                                     <td class="px-1 border border-gray-400">
-                                        <x-buttons.delete :action="__('/category/').$category->id" :question="__('Biztosan törölni szeretné '.$category->title.' kategóriát?')"/>
+                                        <x-buttons.delete :action="__('/page/').$page->id" :question="__('Biztosan törölni szeretné '.$page->title.' oldalt és a rajta szereplő tartalmat?')"/>
                                     </td>
                                 </tr>
                             @endforeach

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Page;
 
 class DashboardTest extends TestCase
 {
@@ -36,6 +37,14 @@ class DashboardTest extends TestCase
             'position' => 1
         ]);
 
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => 'fooldal',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
         $response = $this->actingAs($user)->get('/dashboard');
 
         $response->assertViewIs('dashboard');
@@ -58,6 +67,16 @@ class DashboardTest extends TestCase
             }
             
             return $title == 'KapcsolatFőoldal';
+        });
+        $response->assertViewHas('pages', function($pages){
+            $title = '';
+            
+            foreach($pages as $page)
+            {
+                $title .= $page->title;
+            }
+            
+            return $title == 'Főoldal';
         });
     }
 }

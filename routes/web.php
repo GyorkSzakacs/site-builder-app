@@ -77,9 +77,12 @@ Route::get('/dashboard', function () {
     $categories = Category::orderBy('position', 'asc')
                             ->get();
 
+    $pages = Page::all();                        
+
     return view('dashboard', [
                                 'users' => $users,
-                                'categories' => $categories
+                                'categories' => $categories,
+                                'pages' => $pages
                             ]);
 })->middleware(['auth'])->name('dashboard');
 
