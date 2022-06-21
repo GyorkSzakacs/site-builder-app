@@ -126,7 +126,7 @@
                         <h2 class="block font-semibold mr-5 text-xl text-gray-80">
                             {{ __('Oldalak') }}
                         </h2>
-                        <x-buttons.edit :link="route('create-category')">
+                        <x-buttons.edit :link="route('create-page')">
                             {{ __('Új hozzzáadása') }}
                         </x-buttons.edit>
                     </div>

@@ -42,7 +42,8 @@ Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->c
 
 //Page management routes
 Route::middleware('can:create,App\Models\Page')->group(function(){
-    Route::get('/create-page', [PageController::class, 'create']);
+    Route::get('/create-page', [PageController::class, 'create'])
+        ->name('create-page');
     Route::post('/page', [PageController::class, 'store']);
 });
 

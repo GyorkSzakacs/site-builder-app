@@ -6,8 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PageRequest extends FormRequest
 {
-    protected $redirect = '/dashboard';
-    
     /**
      * Determine if the user is authorized to make this request.
      *

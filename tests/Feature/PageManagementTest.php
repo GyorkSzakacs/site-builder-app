@@ -47,11 +47,31 @@ class PageManagementTest extends TestCase
             'access_level' => 3
         ]);
 
+        Category::create([
+            'title' => 'Főoldal',
+            'position' => 2
+        ]);
+
+        Category::create([
+            'title' => 'Kapcsolat',
+            'position' => 1
+        ]);
+
         $response1 = $this->actingAs($user1)->get('/create-page');
 
         $response2 = $this->actingAs($user2)->get('/create-page');
 
         $response1->assertViewIs('page.create');
+        $response1->assertViewHas('categories', function($categories){
+            $name = '';
+            
+            foreach($categories as $category)
+            {
+                $name .= $category->title;
+            }
+            
+            return $name == 'FőoldalKapcsolat';
+        });
         
         $response2->assertStatus(403);
     }
@@ -274,7 +294,6 @@ class PageManagementTest extends TestCase
         $response->assertSessionHasErrors('title');
         $response->assertSessionHasErrors('title_visibility');
         $response->assertSessionHasErrors('position');
-        $response->assertRedirect('/dashboard');
     }
 
     /**

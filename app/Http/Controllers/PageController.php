@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Page;
+use App\Models\Category;
 use App\Http\Requests\PageRequest;
 use App\Services\TitleValidator\TitleValidator;
 use App\Traits\BackRedirector;
@@ -55,7 +56,9 @@ class PageController extends Controller
     {
         $this->authorize('create', Page::class);
 
-        return view('page.create');
+        $categories = Category::all();
+
+        return view('page.create', ['categories' => $categories]);
     }
 
     /**
