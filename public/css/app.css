@@ -647,17 +647,17 @@ select {
 .-mr-2 {
   margin-right: -0.5rem;
 }
-.mr-5 {
-  margin-right: 1.25rem;
+.ml-2 {
+  margin-left: 0.5rem;
 }
 .ml-4 {
   margin-left: 1rem;
 }
+.mr-5 {
+  margin-right: 1.25rem;
+}
 .mt-2 {
   margin-top: 0.5rem;
-}
-.ml-2 {
-  margin-left: 0.5rem;
 }
 .mt-6 {
   margin-top: 1.5rem;
@@ -908,11 +908,11 @@ select {
 .p-2 {
   padding: 0.5rem;
 }
-.p-6 {
-  padding: 1.5rem;
-}
 .p-1 {
   padding: 0.25rem;
+}
+.p-6 {
+  padding: 1.5rem;
 }
 .px-4 {
   padding-left: 1rem;

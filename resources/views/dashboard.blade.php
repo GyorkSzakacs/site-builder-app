@@ -146,8 +146,8 @@
                             @foreach($pages as $page)    
                                 <tr>
                                     <td class="px-4 border border-gray-400">{{ $page->title }}</td>
-                                    <td class="px-4 border border-gray-400">{{ $page->title_visibility }}</td>
-                                    <td class="px-4 border border-gray-400">{{ $page->category }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $page->title_visibility ? __('Igen') : __('Nem') }}</td>
+                                    <td class="px-4 border border-gray-400">{{ $page->category->title }}</td>
                                     <td class="px-4 border border-gray-400">{{ $page->position }}</td>
                                     <td class="p-1 border border-gray-400">
                                         <x-buttons.edit :link="__('/update-category/').$category->id">
@@ -155,7 +155,7 @@
                                         </x-buttons.edit>
                                     </td>
                                     <td class="px-1 border border-gray-400">
-                                        <x-buttons.delete :action="__('/page/').$page->id" :question="__('Biztosan törölni szeretné '.$page->title.' oldalt és a rajta szereplő tartalmat?')"/>
+                                        <x-buttons.delete :action="__('/page/').$page->id" :question="__('Biztosan törölni szeretné '.$page->title.' oldalt és annak tartalmát?')"/>
                                     </td>
                                 </tr>
                             @endforeach

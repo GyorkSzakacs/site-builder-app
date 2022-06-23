@@ -55,7 +55,7 @@
             <div class="mt-4">
                 <x-label for="position" :value="__('Pozíció')" />
 
-                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position')" min="1" max="3" required />
+                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', 1)" min="1" max="3" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">
