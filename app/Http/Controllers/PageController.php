@@ -84,6 +84,22 @@ class PageController extends Controller
     }
 
     /**
+     * Get the screen with the form for update of a page.
+     * 
+     * @param Request $request
+     * @param Page $page
+     * @return View
+     */
+    public function edit(Request $request, Page $page)
+    {
+        //$this->authorize('update', $page);
+        
+        $categories = Category::all();
+
+        return view('page.update', ['page' => $page, 'categories' => $categories]);
+    }
+
+    /**
      * Update the selected page details
      * 
      * @param PageRequest $request

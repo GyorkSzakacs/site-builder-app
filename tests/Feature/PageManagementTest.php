@@ -188,6 +188,64 @@ class PageManagementTest extends TestCase
         $this->assertEquals(1, $category->position);
     }
 
+     /**
+     * Test render update page screen.
+     *
+     * @return void
+     */
+    public function test_render_update_page_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        Category::create([
+            'title' => 'Főoldal',
+            'position' => 2
+        ]);
+
+        Category::create([
+            'title' => 'Kapcsolat',
+            'position' => 1
+        ]);
+
+        $page = Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]
+        );
+
+        $response1 = $this->actingAs($user1)->get('/update-page/'.$page->id);
+
+        $response2 = $this->actingAs($user2)->get('/update-page/'.$page->id);
+
+        $response1->assertViewIs('page.update');
+        $response1->assertViewHas('page', function($page){
+            return $page->id == 1;
+        });
+        $response1->assertViewHas('categories', function($categories){
+            $name = '';
+            
+            foreach($categories as $category)
+            {
+                $name .= $category->title;
+            }
+            
+            return $name == 'FőoldalKapcsolat';
+        });
+        
+        $response2->assertStatus(403);
+    }
+
     /**
      * Test a page can be updated by a manager access.
      * 

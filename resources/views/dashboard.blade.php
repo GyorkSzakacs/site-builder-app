@@ -150,7 +150,7 @@
                                     <td class="px-4 border border-gray-400">{{ $page->category->title }}</td>
                                     <td class="px-4 border border-gray-400">{{ $page->position }}</td>
                                     <td class="p-1 border border-gray-400">
-                                        <x-buttons.edit :link="__('/update-category/').$category->id">
+                                        <x-buttons.edit :link="__('/update-page/').$page->id">
                                             {{ __('Módosít') }}
                                         </x-buttons.edit>
                                     </td>
