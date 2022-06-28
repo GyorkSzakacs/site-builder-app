@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Page;
 use App\Models\Category;
+use App\Http\Requests\PageStoreRequest;
 use App\Http\Requests\PageRequest;
 use App\Services\TitleValidator\TitleValidator;
 use App\Traits\BackRedirector;
@@ -64,10 +65,10 @@ class PageController extends Controller
     /**
      * Create new page
      * 
-     * @param PageRequiest $request
+     * @param PageStoreRequiest $request
      * @return void
      */
-    public function store(PageRequest $request)
+    public function store(PageStoreRequest $request)
     {
         $this->authorize('create', Page::class);
         
@@ -78,7 +79,7 @@ class PageController extends Controller
             return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
-        Page::create($this->getOrderedValidData());
+        Page::create($this->getOrderedValidDataForStoring());
 
         return redirect('/dashboard');
     }
@@ -140,6 +141,22 @@ class PageController extends Controller
 
     /**
      * Get ordered valid data for storing process.
+     * 
+     * @return array
+     */
+    protected function getOrderedValidDataForStoring()
+    {
+        return [
+            'title' => $this->validator->validData['title'],
+            'slug' => '',
+            'title_visibility' => $this->validator->validData['title_visibility'],
+            'category_id' => isset($this->validator->validData['category_id']) ? $this->validator->validData['category_id'] : '',
+            'position' => ''
+        ];
+    }
+
+    /**
+     * Get ordered valid data for updating process.
      * 
      * @return array
      */

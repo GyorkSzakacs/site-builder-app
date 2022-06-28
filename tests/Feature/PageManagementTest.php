@@ -25,7 +25,7 @@ class PageManagementTest extends TestCase
         return [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => 1,
+            'position' => "",
             'category_id' => 1
         ];
     }
@@ -116,7 +116,7 @@ class PageManagementTest extends TestCase
         $response2 = $this->actingAs($user2)->post('/page', [
             'title' => 'Kapcsolat',
             'title_visibility' => true,
-            'position' => 2,
+            'position' => "",
             'category_id' => 1
         ]);
 
@@ -336,7 +336,7 @@ class PageManagementTest extends TestCase
      * 
      * @return void
      */
-    public function test_input_data_are_valid()
+    public function test_input_data_for_storing_are_valid()
     {
         $user = User::factory()->create([
             'access_level' => 2
@@ -351,7 +351,7 @@ class PageManagementTest extends TestCase
 
         $response->assertSessionHasErrors('title');
         $response->assertSessionHasErrors('title_visibility');
-        $response->assertSessionHasErrors('position');
+        $response->assertSessionDoesntHaveErrors('position');
     }
 
     /**
@@ -544,21 +544,21 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
-            'position' => 1,
+            'position' => '',
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
-            'position' => 2,
+            'position' => '',
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás3',
             'title_visibility' => true,
-            'position' => 3,
+            'position' => '',
             'category_id' => 1
         ]);
 
@@ -571,14 +571,14 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás4',
             'title_visibility' => true,
-            'position' => 2,
+            'position' => '',
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás5',
             'title_visibility' => true,
-            'position' => 1,
+            'position' => '',
             'category_id' => 2
         ]);
 
@@ -586,6 +586,14 @@ class PageManagementTest extends TestCase
         $third = Page::find(2);
         $forth = Page::find(3);
         $second = Page::find(4);
+
+        $this->actingAs($user)->patch('/page/'.$second->id, [
+            'title' => 'Szolgáltatás4',
+            'title_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
+
         $firstAtSecond = Page::find(5);
 
         $this->assertCount(5, Page::all());
