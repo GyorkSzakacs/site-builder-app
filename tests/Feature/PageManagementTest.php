@@ -380,9 +380,51 @@ class PageManagementTest extends TestCase
      */
     public function test_get_next_page_position()
     {
-        $next = Page::getNextPosition();
+        $this->withoutExceptionHandling();
 
-        $this->assertEquals(1, $next);
+        Category::create([
+            'title' => 'Főoldal',
+            'position' => 2
+        ]);
+
+        Category::create([
+            'title' => 'Kapcsolat',
+            'position' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Oldal1',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Oldal2',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Oldal3',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 2
+        ]);
+
+        $next1 = Page::getNextPosition(1);
+
+        $next2 = Page::getNextPosition(2);
+
+        $next3 = Page::getNextPosition(3);
+
+        $this->assertEquals(3, $next1);
+        $this->assertEquals(2, $next2);
+        $this->assertEquals(1, $next3);
     }
 
     /**
@@ -399,7 +441,7 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -417,8 +459,8 @@ class PageManagementTest extends TestCase
             'title' => 'Főoldal',
             'slug' => '',
             'title_visibility' => true,
-            'position' => '',
-            'category_id' => 1
+            'category_id' => 1,
+            'position' => ''
         ]);
 
         $this->assertEquals(1, Page::first()->position);
@@ -464,14 +506,14 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -570,7 +612,7 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 

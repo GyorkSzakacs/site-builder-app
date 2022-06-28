@@ -30,7 +30,7 @@ class PostManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -420,7 +420,7 @@ class PostManagementTest extends TestCase
             'title' => 'Főoldal',
             'slug' => '',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -458,7 +458,7 @@ class PostManagementTest extends TestCase
             'title' => 'Főoldal',
             'slug' => '',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(),
+            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 

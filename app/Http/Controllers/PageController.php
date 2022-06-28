@@ -92,7 +92,7 @@ class PageController extends Controller
      */
     public function edit(Request $request, Page $page)
     {
-        //$this->authorize('update', $page);
+        $this->authorize('update', $page);
         
         $categories = Category::all();
 

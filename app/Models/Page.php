@@ -90,4 +90,42 @@ class Page extends Model
     {
         return $this->hasMany(Section::class);
     }
+
+    /**
+     * Get next position.
+     * 
+     * @param int $category_id
+     * @return int $next
+     */
+    public static function getNextPosition(int $category_id)
+    {
+        if($category = Category::find($category_id))
+        {
+            $next = $category->pages->max('position') + 1;
+        }
+        else
+        {
+            $next = 1;
+        }
+
+        return $next;
+    }
+
+    /**
+     * Set position attribute
+     * 
+     * @param int $position
+     * @return void
+     */
+    public function setPositionAttribute($position)
+    {
+        if($position == null){
+            $position = self::getNextPosition($this->category_id);
+        }
+        else{
+            $this->retoolPositions($position);
+        }
+
+        $this->attributes['position'] = $position;
+    }
 }
