@@ -78,7 +78,7 @@ class PageController extends Controller
             return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
-        Page::create($this->getOrderedValidDataForStoring());
+        Page::create($this->getOrderedValidData());
 
         return redirect('/dashboard');
     }
@@ -117,13 +117,7 @@ class PageController extends Controller
             return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
-        $oldCategory = Page::find($page->id)->category_id;
-        $newCategory = $this->validator->validData['category_id'];
-
-        if($oldCategory != $newCategory)
-        {
-            $this->validator->validData['position'] = Page::getNextPosition($newCategory);
-        }
+        $this->setPositionToUpdate($page->id);
 
         $page->update($this->getOrderedValidData());
 
@@ -147,23 +141,7 @@ class PageController extends Controller
     }
 
     /**
-     * Get ordered valid data for storing process.
-     * 
-     * @return array
-     */
-    protected function getOrderedValidDataForStoring()
-    {
-        return [
-            'title' => $this->validator->validData['title'],
-            'slug' => '',
-            'title_visibility' => $this->validator->validData['title_visibility'],
-            'category_id' => isset($this->validator->validData['category_id']) ? $this->validator->validData['category_id'] : '',
-            'position' => ''
-        ];
-    }
-
-    /**
-     * Get ordered valid data for updating process.
+     * Get ordered valid data .
      * 
      * @return array
      */
@@ -174,7 +152,26 @@ class PageController extends Controller
             'slug' => '',
             'title_visibility' => $this->validator->validData['title_visibility'],
             'category_id' => isset($this->validator->validData['category_id']) ? $this->validator->validData['category_id'] : '',
-            'position' => $this->validator->validData['position']
+            'position' => isset($this->validator->validData['position']) ? $this->validator->validData['position'] : ''
         ];
+    }
+
+    /**
+     * Set position to update a page.
+     * 
+     * @param int $id
+     * @return void
+     */
+    protected function setPositionToUpdate(int $id)
+    {
+        $oldCategory = Page::find($id)->category_id;
+        $newCategory = $this->validator->validData['category_id'];
+
+        if($oldCategory != $newCategory)
+        {
+            $this->validator->validData['position'] = Page::getNextPosition($newCategory);
+        }
+
+        return;
     }
 }
