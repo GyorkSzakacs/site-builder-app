@@ -96,7 +96,9 @@ class PageController extends Controller
         
         $categories = Category::all();
 
-        return view('page.update', ['page' => $page, 'categories' => $categories]);
+        $max = Page::getNextPosition($page->category_id) - 1;
+
+        return view('page.update', ['page' => $page, 'categories' => $categories, 'max' => $max]);
     }
 
     /**

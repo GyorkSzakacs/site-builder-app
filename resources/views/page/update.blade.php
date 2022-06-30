@@ -72,7 +72,7 @@
             <div class="mt-4">
                 <x-label for="position" :value="__('Pozíció')" />
 
-                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $page->position)" min="1" max="3" required />
+                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $page->position)" min="1" max="{{ $max }}" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">

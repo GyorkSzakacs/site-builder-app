@@ -240,6 +240,10 @@ class PageManagementTest extends TestCase
             
             return $name == 'FőoldalKapcsolat';
         });
+        $response1->assertViewHas([
+            'max' => 1
+        ]
+        );
         
         $response2->assertStatus(403);
     }
