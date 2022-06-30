@@ -49,7 +49,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user1)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -85,7 +84,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user1)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -138,7 +136,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user1)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -208,7 +205,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
@@ -293,14 +289,12 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Kapcsolat',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(2),
             'category_id' => 2
         ]);
         
@@ -375,7 +369,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -419,7 +412,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -473,7 +465,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -502,7 +493,6 @@ class SectionManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 

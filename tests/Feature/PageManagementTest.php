@@ -25,7 +25,6 @@ class PageManagementTest extends TestCase
         return [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => "",
             'category_id' => 1
         ];
     }
@@ -116,13 +115,14 @@ class PageManagementTest extends TestCase
         $response2 = $this->actingAs($user2)->post('/page', [
             'title' => 'Kapcsolat',
             'title_visibility' => true,
-            'position' => "",
             'category_id' => 1
         ]);
 
         $this->assertCount(1, Page::all());
         $this->assertEquals('fooldal', Page::first()->slug);
         $this->assertTrue(Page::first()->title_visibility);
+        $this->assertEquals(1, Page::first()->position);
+        $this->assertEquals(1, Page::first()->category_id);
 
         $response1->assertRedirect('/dashboard');
         $response2->assertStatus(403);
@@ -149,7 +149,6 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
@@ -175,7 +174,6 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => ''
         ]);
 
@@ -345,7 +343,6 @@ class PageManagementTest extends TestCase
         $response = $this->actingAs($user)->post('/page', [
             'title' => '',
             'title_visibility' => '',
-            'position' => '',
             'category_id' => ''
         ]);
 
@@ -441,7 +438,6 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -506,14 +502,12 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -544,21 +538,18 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
-            'position' => '',
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
-            'position' => '',
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás3',
             'title_visibility' => true,
-            'position' => '',
             'category_id' => 1
         ]);
 
@@ -571,14 +562,12 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás4',
             'title_visibility' => true,
-            'position' => '',
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás5',
             'title_visibility' => true,
-            'position' => '',
             'category_id' => 2
         ]);
 
@@ -594,14 +583,12 @@ class PageManagementTest extends TestCase
             'category_id' => 1
         ]);
 
-        $firstAtSecond = Page::find(5);
-
         $this->assertCount(5, Page::all());
-        $this->assertEquals(1, $firstAtSecond->position);
-        $this->assertEquals(1, $first->position);
-        $this->assertEquals(2, $second->position);
-        $this->assertEquals(3, $third->position);
-        $this->assertEquals(4, $forth->position);
+        $this->assertEquals(1, Page::find(5)->position);
+        $this->assertEquals(1, Page::first()->position);
+        $this->assertEquals(2, Page::find(4)->position);
+        $this->assertEquals(3, Page::find(2)->position);
+        $this->assertEquals(4, Page::find(3)->position);
     }
 
     /**
@@ -620,7 +607,6 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Fpoldal',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
@@ -665,7 +651,6 @@ class PageManagementTest extends TestCase
         $response = $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => false,
-            'position' => 1,
             'category_id' => 1
         ]);
         
@@ -700,7 +685,6 @@ class PageManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Rólunk',
             'title_visibility' => false,
-            'position' => 1,
             'category_id' => 1
         ]);
 

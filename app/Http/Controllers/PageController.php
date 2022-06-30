@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Page;
 use App\Models\Category;
-use App\Http\Requests\PageStoreRequest;
 use App\Http\Requests\PageRequest;
 use App\Services\TitleValidator\TitleValidator;
 use App\Traits\BackRedirector;
@@ -65,10 +64,10 @@ class PageController extends Controller
     /**
      * Create new page
      * 
-     * @param PageStoreRequiest $request
+     * @param PageRequiest $request
      * @return void
      */
-    public function store(PageStoreRequest $request)
+    public function store(PageRequest $request)
     {
         $this->authorize('create', Page::class);
         

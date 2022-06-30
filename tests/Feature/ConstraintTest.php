@@ -29,7 +29,6 @@ class ConstraintTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Főoldal',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
@@ -99,7 +98,6 @@ class ConstraintTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Page1',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
@@ -150,7 +148,6 @@ class ConstraintTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Page2',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
@@ -201,14 +198,12 @@ class ConstraintTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Page1',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Page2',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 1
         ]);
 
@@ -220,7 +215,6 @@ class ConstraintTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Page3',
             'title_visibility' => true,
-            'position' => 1,
             'category_id' => 2
         ]);
 

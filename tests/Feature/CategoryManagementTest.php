@@ -251,14 +251,12 @@ class CategoryManagementTest extends TestCase
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás1',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
         $this->actingAs($user)->post('/page', [
             'title' => 'Szolgáltatás2',
             'title_visibility' => true,
-            'position' => Page::getNextPosition(1),
             'category_id' => 1
         ]);
 
