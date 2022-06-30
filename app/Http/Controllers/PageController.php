@@ -117,6 +117,14 @@ class PageController extends Controller
             return $this->redirectBackWithError('title', $this->validator->getErrorMessage());
         }
 
+        $oldCategory = Page::find($page->id)->category_id;
+        $newCategory = $this->validator->validData['category_id'];
+
+        if($oldCategory != $newCategory)
+        {
+            $this->validator->validData['position'] = Page::getNextPosition($newCategory);
+        }
+
         $page->update($this->getOrderedValidData());
 
         return redirect('/dashboard');

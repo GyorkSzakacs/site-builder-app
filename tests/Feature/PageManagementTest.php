@@ -269,7 +269,7 @@ class PageManagementTest extends TestCase
             'title' => 'Elérhetőségeink',
             'title_visibility' => false,
             'position' => 2,
-            'category_id' => 2
+            'category_id' => 1
         ]);
 
         $this->assertEquals('Főoldal', Page::first()->title);
@@ -280,7 +280,7 @@ class PageManagementTest extends TestCase
             'title' => 'Elérhetőségeink',
             'title_visibility' => false,
             'position' => 2,
-            'category_id' => 2
+            'category_id' => 1
         ]);
 
         $this->assertCount(1, Page::all());
@@ -288,9 +288,9 @@ class PageManagementTest extends TestCase
         $this->assertEquals('elerhetosegeink', Page::first()->slug);
         $this->assertEquals(0, Page::first()->title_visibility);
         $this->assertEquals(2, Page::first()->position);
-        $this->assertEquals(2, Page::first()->category_id);
-        $this->assertEquals(2, Category::all()->count());
-        $this->assertEquals(Page::first()->category_id, Category::all()->find(2)->id);
+        $this->assertEquals(1, Page::first()->category_id);
+        $this->assertEquals(1, Category::all()->count());
+        $this->assertEquals(Page::first()->category_id, Category::first()->id);
 
         $response2->assertRedirect('/dashboard');
     }
@@ -330,7 +330,7 @@ class PageManagementTest extends TestCase
     }
 
     /**
-     * Test input data are valaid.
+     * Test input data for storing are valaid.
      * 
      * @return void
      */
@@ -349,6 +349,39 @@ class PageManagementTest extends TestCase
         $response->assertSessionHasErrors('title');
         $response->assertSessionHasErrors('title_visibility');
         $response->assertSessionDoesntHaveErrors('position');
+    }
+
+    /**
+     * Test input data for updating are valaid.
+     * 
+     * @return void
+     */
+    public function test_input_data_for_updating_are_valid()
+    {
+        //$this->withoutExceptionHandling();
+        
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $page = Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 1,
+            'position' => ''
+        ]);
+
+        $response = $this->actingAs($user)->patch('/page/'.$page->id, [
+            'title' => '',
+            'title_visibility' => '',
+            'position' => '',
+            'category_id' => ''
+        ]);
+
+        $response->assertSessionHasErrors('title');
+        $response->assertSessionHasErrors('title_visibility');
+        $response->assertSessionHasErrors('position');
     }
 
     /**
@@ -460,6 +493,53 @@ class PageManagementTest extends TestCase
         ]);
 
         $this->assertEquals(1, Page::first()->position);
+    }
+
+     /**
+     * Test set next position in the selected category if the category property has been changed in update form.
+     * 
+     * @return void
+     */
+    public function test_set_next_position_if_the_category_changed()
+    {
+        $this->withoutExceptionHandling();
+        
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $page1 = Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 1,
+            'position' => ''
+        ]);
+
+        $page2 = Page::create([
+            'title' => 'Kapcsolat',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 2,
+            'position' => ''
+        ]);
+
+        $page3 = Page::create([
+            'title' => 'Elérhetőségeink',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 2,
+            'position' => ''
+        ]);
+
+        $response = $this->actingAs($user)->patch('/page/'.$page1->id, [
+            'title' => 'Fpoldal',
+            'title_visibility' => true,
+            'position' => 2,
+            'category_id' => 2
+        ]);
+
+        $this->assertEquals(3, Page::find(1)->position);
     }
 
     /**
