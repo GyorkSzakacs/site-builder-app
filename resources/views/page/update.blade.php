@@ -56,7 +56,7 @@
             <div class="mt-4">
                 <x-label for="category_id" :value="__('Kategória')" />
 
-                <select name="category_id" class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <select name="category_id" id="category" onChange="hidePosition()" class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <option value="">{{ __('Új kategória') }}</option>
                     @foreach($categories as $category)
                         @if($category->id == $page->category_id)
@@ -69,7 +69,7 @@
             </div>
 
             <!-- Position -->
-            <div class="mt-4">
+            <div id="divPosition" class="mt-4">
                 <x-label for="position" :value="__('Pozíció')" />
 
                 <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $page->position)" min="1" max="{{ $max }}" required />
@@ -88,4 +88,23 @@
             </div>
         </form>
     </x-auth-card>
+    <script type="text/javascript">
+		function hidePosition() {
+			var select = document.getElementById('category');
+			var option = select.options[select.selectedIndex];
+
+            var positionContainer = document.getElementById('divPosition');
+
+            var current = {{ $page->category_id }};
+
+            if(current == option.value)
+            {
+                positionContainer.style.display = "block";
+            }
+            else
+            {
+                positionContainer.style.display = "none";
+            }
+		}
+	</script>
 </x-guest-layout>
