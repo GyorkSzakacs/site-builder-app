@@ -12,6 +12,11 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                @foreach($menuItems as $menuItem) 
+                    <x-nav-link :href="__('/')" :active="request()->routeIs('dashboard')">
+                        {{ $menuItem->title }}
+                    </x-nav-link>
+                @endforeach
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Vezérlőpult') }}
                     </x-nav-link>
