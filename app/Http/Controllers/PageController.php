@@ -55,6 +55,21 @@ class PageController extends Controller
     }
 
     /**
+     * Render the index view with the selected page.
+     * 
+     * @param string $slug
+     * @return View
+     */
+    public function show(string $slug)
+    {
+       $page = Page::where('slug', $slug)
+                        ->first();
+        
+        return View('page.index', ['page' => $page]);
+    }
+
+
+    /**
      * Get the screen with the form for creation of a page.
      * 
      * @return View

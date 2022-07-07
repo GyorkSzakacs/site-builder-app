@@ -126,6 +126,52 @@ class PageManagementTest extends TestCase
     }
 
     /**
+     * Test render page template view with the selected page.
+     * 
+     * @return void
+     */
+    public function test_render_selected_page_view()
+    {
+        $this->withoutExceptionHandling();
+
+        $page1 = Page::create([
+            'title' => 'Kapcsolat',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 1,
+            'position' => 1
+        ]);
+
+        Category::create([
+            'title' => 'Szolgáltatások',
+            'position' => 1
+        ]);
+
+        $page2 = Page::create([
+            'title' => 'Szolgáltatás2',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 2,
+            'position' => 1
+        ]);
+
+        $page3 = Page::create([
+            'title' => 'Szolgáltatás1',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 2,
+            'position' => 1
+        ]);
+
+        $response = $this->get('/'.$page2->slug);
+
+        $response->assertViewIs('page.index');
+        $response->assertViewHas('page', function($page){
+            return $page->id == 2;
+        });
+    }
+
+    /**
      * A user with manager access can create a page.
      *
      * @return void
