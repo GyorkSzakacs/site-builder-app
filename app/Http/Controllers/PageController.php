@@ -41,7 +41,14 @@ class PageController extends Controller
     {
         if(Gate::denies('first-register'))
         {
-            return View('page.index');
+            $firstCategory = Category::orderBy('position', 'asc')
+                                        ->first();
+
+            $firstPage = $firstCategory->pages
+                                        ->sortBy('position')
+                                        ->first();
+
+            return View('page.index', ['page' => $firstPage]);
         }
 
         return View('auth.first-register');

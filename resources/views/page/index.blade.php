@@ -1,7 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        @if(isset($page))
+            {{ $page->title }}
+        @else
             {{ __('Site Builder App by Szakács Györk') }}
+        @endif
         </h2>
     </x-slot>
 

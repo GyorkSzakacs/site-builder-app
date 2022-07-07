@@ -88,9 +88,41 @@ class PageManagementTest extends TestCase
             'access_level' => 1
         ]);
 
+        Page::create([
+            'title' => 'Kapcsolat',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 1,
+            'position' => 1
+        ]);
+
+        Category::create([
+            'title' => 'Szolgáltatások',
+            'position' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Szolgáltatás2',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 2,
+            'position' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Szolgáltatás1',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 2,
+            'position' => 1
+        ]);
+
         $response = $this->get('/');
 
         $response->assertViewIs('page.index');
+        $response->assertViewHas('page', function($page){
+            return $page->id == 3;
+        });
     }
 
     /**
