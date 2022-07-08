@@ -53,7 +53,6 @@ Route::middleware('can:update,page')->group(function(){
 });
 
 Route::delete('/page/{page}', [PageController::class, 'destroy'])->can('delete', 'page');
-Route::get('/{slug}', [PageController::class, 'show']);
 
 //Section management routes
 Route::post('/section', [SectionController::class, 'store'])->can('create', Section::class);
@@ -97,3 +96,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
+//Get page content with page slug. This should be the last route in the list.
+Route::get('/{slug}', [PageController::class, 'show']);
