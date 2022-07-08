@@ -1,12 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        
         @if(isset($page))
-            {{ $page->title }}
+            @if($page->title_visibility)
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ $page->title }}
+                </h2>
+            @else
+                <h2 class="invisible font-semibold text-xl text-gray-800 leading-tight">
+                    {{ $page->title }}
+                </h2>
+            @endif
         @else
-            {{ __('Site Builder App by Szakács Györk') }}
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Site Builder App by Szakács Györk') }}
+            </h2>
         @endif
-        </h2>
+        
     </x-slot>
 
     <div class="py-12">
