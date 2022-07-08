@@ -619,6 +619,21 @@ select {
 .top-0 {
   top: 0px;
 }
+.-top-4 {
+  top: -1rem;
+}
+.-top-1 {
+  top: -0.25rem;
+}
+.top-4 {
+  top: 1rem;
+}
+.top-6 {
+  top: 1.5rem;
+}
+.top-12 {
+  top: 3rem;
+}
 .z-0 {
   z-index: 0;
 }
@@ -1039,6 +1054,9 @@ select {
 }
 .leading-7 {
   line-height: 1.75rem;
+}
+.leading-3 {
+  line-height: .75rem;
 }
 .tracking-widest {
   letter-spacing: 0.1em;

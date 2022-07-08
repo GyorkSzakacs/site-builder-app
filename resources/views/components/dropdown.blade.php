@@ -9,7 +9,7 @@ switch ($align) {
         $alignmentClasses = 'origin-top';
         break;
     case 'center':
-        $alignmentClasses = 'origin-center -left-4';
+        $alignmentClasses = 'origin-center -left-4 top-12';
         break;
     case 'right':
     default:
