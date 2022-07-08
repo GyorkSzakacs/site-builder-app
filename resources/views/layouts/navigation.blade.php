@@ -14,7 +14,7 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                 @foreach($menuItems as $menuItem)
                     @if(count($menuItem->pages) == 1)
-                        <x-nav-link :href="__('/')" :active="request()->url() == url('/')">
+                        <x-nav-link :href="url('/'.$menuItem->pages->first()->slug)" :active="request()->url() == url('/'.$menuItem->pages->first()->slug)">
                             {{ $menuItem->title }}
                         </x-nav-link>
                     @elseif(count($menuItem->pages) > 1)
@@ -34,7 +34,7 @@
 
                             <x-slot name="content">
                                 @foreach($menuItem->pages->sortBy('position') as $subItem)
-                                    <x-dropdown-link :href="__('/')">
+                                    <x-dropdown-link :href="url('/'.$subItem->slug)">
                                         {{$subItem->title }}
                                     </x-dropdown-link>
                                 @endforeach
