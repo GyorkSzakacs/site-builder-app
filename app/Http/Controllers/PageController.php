@@ -48,7 +48,9 @@ class PageController extends Controller
                                         ->sortBy('position')
                                         ->first();
 
-            return View('page.index', ['page' => $firstPage]);
+            $sections = $firstPage->sections->sortBy('position');
+
+            return View('page.index', ['page' => $firstPage, 'sections' => $sections]);
         }
 
         return View('auth.first-register');
@@ -64,8 +66,10 @@ class PageController extends Controller
     {
        $page = Page::where('slug', $slug)
                         ->first();
+
+        $sections = $page->sections->sortBy('position');
         
-        return View('page.index', ['page' => $page]);
+        return View('page.index', ['page' => $page, 'sections' => $sections]);
     }
 
 

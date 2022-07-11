@@ -163,11 +163,44 @@ class PageManagementTest extends TestCase
             'position' => 1
         ]);
 
+        $section1 = Section::create([
+            'title' => 'Szekció1',
+            'slug' => '',
+            'title_visibility' => false,
+            'page_id' => $page3->id,
+            'position' => 1
+        ]);
+
+        $section2 = Section::create([
+            'title' => 'Szekció2',
+            'slug' => '',
+            'title_visibility' => false,
+            'page_id' => $page2->id,
+            'position' => 2
+        ]);
+
+        $section3 = Section::create([
+            'title' => 'Szekció3',
+            'slug' => '',
+            'title_visibility' => false,
+            'page_id' => $page2->id,
+            'position' => 1
+        ]);
+
         $response = $this->get('/'.$page2->slug);
 
         $response->assertViewIs('page.index');
         $response->assertViewHas('page', function($page){
             return $page->id == 2;
+        });
+        $response->assertViewHas('sections', function($sections){
+            $title = '';
+
+            foreach($sections as $section)
+            {
+                $title .= $section->title;
+            }
+            return $title == 'Szekció3Szekció2';
         });
     }
 

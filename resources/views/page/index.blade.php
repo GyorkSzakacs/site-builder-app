@@ -21,6 +21,21 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <div class="flex mb-2">
+                
+                <h2 class="block font-semibold mr-5 text-xl text-gray-80">
+                    {{ __('Hírek') }}
+                </h2>
+
+                <x-buttons.edit :link="route('register')">
+                    {{ __('Módosít') }}
+                </x-buttons.edit>
+
+                <x-buttons.delete :action="__('/account/')" :question="__('Biztosan törölni szeretné '.$page->title.' felhasználót?')" class="ml-2"/>
+
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     Hozza létre weboldalát néhány kattintással!
@@ -28,4 +43,11 @@
             </div>
         </div>
     </div>
+    
+    <div class="flex justify-center">
+        <x-buttons.edit :link="route('register')">
+            {{ __('+') }}
+        </x-buttons.edit>
+    </div>
+
 </x-app-layout>
