@@ -33,6 +33,17 @@ class SectionController extends Controller
     }
 
     /**
+     * Render the new section for a page screen.
+     * 
+     * @param int $id
+     * @return View
+     */
+    public function create(int $id)
+    {
+        return View('section.create', ['pageId' => $id]);
+    }
+
+    /**
      * Create a new section.
      * 
      * @param SectionRequest $request

@@ -45,7 +45,7 @@
     </div>
     
     <div class="flex justify-center">
-        <x-buttons.edit :link="route('register')">
+        <x-buttons.edit :link="route('create-section', ['id' => $page->id])">
             {{ __('+') }}
         </x-buttons.edit>
     </div>

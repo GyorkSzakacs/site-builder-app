@@ -55,7 +55,12 @@ Route::middleware('can:update,page')->group(function(){
 Route::delete('/page/{page}', [PageController::class, 'destroy'])->can('delete', 'page');
 
 //Section management routes
-Route::post('/section', [SectionController::class, 'store'])->can('create', Section::class);
+Route::middleware('can:create,App\Models\Section')->group(function(){
+    Route::get('/{id}/create-section', [SectionController::class, 'create'])
+        ->name('create-section');
+    Route::post('/section', [SectionController::class, 'store']);
+});
+
 Route::patch('/section/{section}', [SectionController::class, 'update'])->can('update', 'section');
 Route::delete('/section/{section}', [SectionController::class, 'destroy'])->can('delete', 'section');
 

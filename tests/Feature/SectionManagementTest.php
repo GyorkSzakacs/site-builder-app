@@ -28,6 +28,51 @@ class SectionManagementTest extends TestCase
             'page_id' => 1
         ];
     }
+
+    /**
+     * Test render new section screen.
+     *
+     * @return void
+     */
+    public function test_render_new_section_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+       Page::create([
+        'title' => 'Oldal1',
+        'title_visibility' => true,
+        'slug' => '',
+        'category_id' => 1,
+        'position' => 1
+    ]);
+
+    $page = Page::create([
+        'title' => 'Oldal2',
+        'title_visibility' => true,
+        'slug' => '',
+        'category_id' => 1,
+        'position' => 2
+    ]);
+         
+    $user1 = User::factory()->create([
+        'access_level' => 2
+    ]);
+     
+    $user2 = User::factory()->create([
+        'access_level' => 3
+    ]);
+    
+       $response1 = $this->actingAs($user2)->get('/'.$page->id.'/create-section');
+       
+        $response2 = $this->actingAs($user1)->get('/'.$page->id.'/create-section');
+
+        $response2->assertViewIs('section.create');
+        $response2->assertViewHas([
+            'pageId' => 2
+        ]);
+        
+        $response1->assertStatus(403);
+    }
     
     /**
      * Test a section can be created by a manager.
