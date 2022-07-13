@@ -30,12 +30,15 @@
                         {{ $section->title }}
                     </h2>
 
+                    @can('update', $section)
                     <x-buttons.edit :link="route('register')">
                         {{ __('Módosít') }}
                     </x-buttons.edit>
+                    @endcan
 
+                    @can('delete', $section)
                     <x-buttons.delete :action="__('/section/'.$section->id)" :question="__('Biztosan törölni szeretné '.$section->title.' szekcíót és annak tartalmát az oldalról ?')" class="ml-2"/>
-
+                    @endcan
                 </div>
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -59,10 +62,12 @@
             </div>
         </div>
     @endif
+
+    @can('create', App\Models\Section::class)
     <div class="flex justify-center">
         <x-buttons.edit :link="route('create-section', ['id' => $page->id])">
             {{ __('+') }}
         </x-buttons.edit>
     </div>
-
+    @endcan
 </x-app-layout>
