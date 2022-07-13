@@ -231,9 +231,63 @@ class SectionManagementTest extends TestCase
      */
     public function test_get_next_section_position()
     {
-        $next = Section::getNextPosition();
+        Page::create([
+            'title' => 'Oldal1',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
 
-        $this->assertEquals(1, $next);
+        Page::create([
+            'title' => 'Oldal2',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Oldal3',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 2
+        ]);
+
+        Section::create([
+            'title' => 'Szekció1',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Szekció2',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 2,
+            'page_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Szekció3',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 2
+        ]);
+
+        $next1 = Section::getNextPosition(1);
+
+        $next2 = Section::getNextPosition(2);
+
+        $next3 = Section::getNextPosition(3);
+
+        $this->assertEquals(3, $next1);
+        $this->assertEquals(2, $next2);
+        $this->assertEquals(1, $next3);
     }
 
     /**
@@ -258,7 +312,7 @@ class SectionManagementTest extends TestCase
         $this->post('/section', [
             'title' => 'Érdekességek',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 
@@ -311,8 +365,8 @@ class SectionManagementTest extends TestCase
             'title' => 'Hírek',
             'slug' => '',
             'title_visibility' => true,
-            'position' => '',
-            'page_id' => 1
+            'page_id' => 1,
+            'position' => ''
         ]);
 
         $this->assertEquals(1, Section::first()->position);
@@ -420,14 +474,14 @@ class SectionManagementTest extends TestCase
         $this->post('/section', [
             'title' => 'Szekció1',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 
         $this->post('/section', [
             'title' => 'Szekció2',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 
@@ -463,14 +517,14 @@ class SectionManagementTest extends TestCase
         $this->post('/section', [
             'title' => 'Szekció1',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 
         $this->post('/section', [
             'title' => 'Szekció2',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 

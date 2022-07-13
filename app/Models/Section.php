@@ -77,4 +77,38 @@ class Section extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    
+    /**
+     * Get next position.
+     * 
+     * @param int $page_id
+     * @return int $next
+     */
+    public static function getNextPosition(int $page_id)
+    {
+        $page = Page::find($page_id);
+        
+        $next = $page->sections->max('position') + 1;
+        
+        return $next;
+    }
+
+    /**
+     * Set position attribute
+     * 
+     * @param int $position
+     * @return void
+     */
+    public function setPositionAttribute($position)
+    {
+        if($position == null){
+            $position = self::getNextPosition($this->page_id);
+        }
+        else{
+            $this->retoolPositions($position);
+        }
+
+        $this->attributes['position'] = $position;
+    }
 }

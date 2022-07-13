@@ -808,14 +808,14 @@ class PageManagementTest extends TestCase
         $this->post('/section', [
             'title' => 'Szekció1',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 
         $this->post('/section', [
             'title' => 'Szekció2',
             'title_visibility' => true,
-            'position' => Section::getNextPosition(),
+            'position' => Section::getNextPosition(1),
             'page_id' => 1
         ]);
 
