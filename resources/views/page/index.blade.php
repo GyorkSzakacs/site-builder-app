@@ -26,9 +26,15 @@
 
                 <div class="flex mb-2">
                     
+                    @if($section->title_visibility)
                     <h2 class="block font-semibold mr-5 text-xl text-gray-80">
                         {{ $section->title }}
                     </h2>
+                    @else
+                    <h2 class="invisible block font-semibold mr-5 text-xl text-gray-80">
+                        {{ $section->title }}
+                    </h2>
+                    @endif
 
                     @can('update', $section)
                     <x-buttons.edit :link="route('register')">
