@@ -70,6 +70,9 @@ class SectionManagementTest extends TestCase
         $response2->assertViewHas([
             'pageId' => 2
         ]);
+        $response2->assertViewHas([
+            'next' => 1
+        ]);
         
         $response1->assertStatus(403);
     }

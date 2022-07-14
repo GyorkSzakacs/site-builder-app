@@ -40,7 +40,9 @@ class SectionController extends Controller
      */
     public function create(int $id)
     {
-        return View('section.create', ['pageId' => $id]);
+        $next = Section::getNextPosition($id);
+
+        return View('section.create', ['pageId' => $id, 'next' => $next]);
     }
 
     /**
