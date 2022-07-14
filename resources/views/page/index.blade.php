@@ -49,7 +49,34 @@
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
-                        Hozza létre weboldalát néhány kattintással!
+                        <div class="flex mb-2">
+                    
+                            <h2 class="block font-semibold mr-5 text-xl text-gray-80">
+                                {{ __('Poszt1')}}
+                            </h2>
+                   
+                            @can('update', $section)
+                            <x-buttons.edit :link="url('/update-section/'.$section->id)">
+                                {{ __('Módosít') }}
+                            </x-buttons.edit>
+                            @endcan
+
+                            @can('delete', $section)
+                            <x-buttons.delete :action="__('/section/'.$section->id)" :question="__('Biztosan törölni szeretné '.$section->title.' szekcíót és annak tartalmát az oldalról ?')" class="ml-2"/>
+                            @endcan
+                        </div>
+
+                        <div>
+                            Hozza létre weboldalát néhány kattintással!
+                        </div>
+
+                        @can('create', App\Models\Post::class)
+                        <div class="flex justify-center">
+                            <x-buttons.edit :link="route('create-section', ['id' => $page->id])">
+                                {{ __('+') }}
+                            </x-buttons.edit>
+                        </div>
+                        @endcan
                     </div>
                 </div>
             </div>
