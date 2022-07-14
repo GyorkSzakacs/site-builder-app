@@ -37,7 +37,7 @@
                     @endif
 
                     @can('update', $section)
-                    <x-buttons.edit :link="route('register')">
+                    <x-buttons.edit :link="url('/update-section/'.$section->id)">
                         {{ __('Módosít') }}
                     </x-buttons.edit>
                     @endcan
