@@ -65,6 +65,20 @@ class SectionController extends Controller
         return $this->redirectToPage($newSection);
     }
 
+     /**
+     * Get the screen with the form for update of a section.
+     * 
+     * @param Request $request
+     * @param Section $section
+     * @return View
+     */
+    public function edit(Request $request, Section $section)
+    {
+        $max = Section::getNextPosition($section->page_id) - 1;
+
+        return view('section.update', ['section' => $section, 'max' => $max]);
+    }
+
     /**
      * Update the selected section.
      * 

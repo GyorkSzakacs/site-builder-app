@@ -39,30 +39,30 @@ class SectionManagementTest extends TestCase
        //$this->withoutExceptionHandling();
 
        Page::create([
-        'title' => 'Oldal1',
-        'title_visibility' => true,
-        'slug' => '',
-        'category_id' => 1,
-        'position' => 1
-    ]);
+            'title' => 'Oldal1',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 1,
+            'position' => 1
+        ]);
 
-    $page = Page::create([
-        'title' => 'Oldal2',
-        'title_visibility' => true,
-        'slug' => '',
-        'category_id' => 1,
-        'position' => 2
-    ]);
+        $page = Page::create([
+            'title' => 'Oldal2',
+            'title_visibility' => true,
+            'slug' => '',
+            'category_id' => 1,
+            'position' => 2
+        ]);
          
-    $user1 = User::factory()->create([
-        'access_level' => 2
-    ]);
+        $user1 = User::factory()->create([
+            'access_level' => 2
+        ]);
      
-    $user2 = User::factory()->create([
-        'access_level' => 3
-    ]);
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
     
-       $response1 = $this->actingAs($user2)->get('/'.$page->id.'/create-section');
+        $response1 = $this->actingAs($user2)->get('/'.$page->id.'/create-section');
        
         $response2 = $this->actingAs($user1)->get('/'.$page->id.'/create-section');
 
@@ -111,6 +111,55 @@ class SectionManagementTest extends TestCase
         $this->assertEquals('Hírek', Section::first()->title);
         $response2->assertRedirect('/fooldal');
     }
+
+     /**
+     * Test render update section screen.
+     *
+     * @return void
+     */
+    public function test_render_update_section_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+        $user1 = User::factory()->create([
+            'access_level' => 1
+        ]);
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $section = Section::create([
+            'title' => 'Szekció',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
+        $response1 = $this->actingAs($user1)->get('/update-section/'.$section->id);
+
+        $response2 = $this->actingAs($user2)->get('/update-section/'.$section->id);
+
+        $response1->assertViewIs('section.update');
+        $response1->assertViewHas('section', function($section){
+            return $section->id == 1;
+        });
+        $response1->assertViewHas([
+            'max' => 1
+        ]);
+        
+        $response2->assertStatus(403);
+    }
+
 
     /**
      * Test a section can be updated by a manager.

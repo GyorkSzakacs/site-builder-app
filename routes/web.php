@@ -61,6 +61,7 @@ Route::middleware('can:create,App\Models\Section')->group(function(){
     Route::post('/section', [SectionController::class, 'store']);
 });
 
+Route::get('/update-section/{section}', [SectionController::class, 'edit']);
 Route::patch('/section/{section}', [SectionController::class, 'update'])->can('update', 'section');
 Route::delete('/section/{section}', [SectionController::class, 'destroy'])->can('delete', 'section');
 
