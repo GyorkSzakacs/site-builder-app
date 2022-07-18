@@ -72,7 +72,7 @@
 
                         @can('create', App\Models\Post::class)
                         <div class="flex justify-center">
-                            <x-buttons.edit :link="route('create-section', ['id' => $page->id])">
+                            <x-buttons.edit :link="route('create-post', ['id' => $section->id])">
                                 {{ __('+') }}
                             </x-buttons.edit>
                         </div>

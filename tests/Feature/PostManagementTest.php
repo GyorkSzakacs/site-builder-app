@@ -41,6 +41,50 @@ class PostManagementTest extends TestCase
         ]);
     }
 
+     /**
+     * Test render new post screen.
+     *
+     * @return void
+     */
+    public function test_render_new_post_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+       Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 1,
+            'position' => 1
+        ]);
+
+        $section = Section::create([
+            'title' => 'Szekció',
+            'slug' => '',
+            'title_visibility' => true,
+            'page_id' => 1,
+            'position' => Section::getNextPosition(1)
+        ]);
+    
+        $response1 = $this->get('/'.$section->id.'/create-post');
+       
+        $user = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response2 = $this->actingAs($user)->get('/'.$section->id.'/create-post');
+
+        $response2->assertViewIs('post.create');
+        $response2->assertViewHas([
+            'sectionId' => 1
+        ]);
+        /*$response2->assertViewHas([
+            'next' => 1
+        ]);*/
+        
+        $response1->assertStatus(403);
+    }
+
     /**
      * Test a post can be created by a user with exitor access.
      *

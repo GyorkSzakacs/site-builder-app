@@ -33,6 +33,21 @@ class PostController extends Controller
     }
 
     /**
+     * Render the new post for a page screen.
+     * 
+     * @param int $id
+     * @return View
+     */
+    public function create(int $id)
+    {
+        $this->authorize('create', Post::class);
+        
+        //$next = Post::getNextPosition($id);
+
+        return View('post.create', ['sectionId' => $id]);
+    }
+
+    /**
      * Store post data.
      * 
      * @param PostRequest $request
