@@ -49,11 +49,14 @@
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
+                        
+                    @if(isset($section->posts) && count($section->posts) > 0)
+                            @foreach($section->posts->sortBy('position') as $post)
                         <div class="flex mb-2">
                     
-                            <h2 class="block font-semibold mr-5 text-xl text-gray-80">
-                                {{ __('Poszt1')}}
-                            </h2>
+                            <a href="#" class="block font-semibold mr-5 text-lg text-gray-80 hover:underline">
+                                {{ $post->title}}
+                            </a>
                    
                             @can('update', $section)
                             <x-buttons.edit :link="url('/update-section/'.$section->id)">
@@ -67,16 +70,22 @@
                         </div>
 
                         <div>
+                            {!! $post->content !!}
+                        </div>
+                        @endforeach
+                    @else
+                        <div>
                             Hozza létre weboldalát néhány kattintással!
                         </div>
+                    @endif
 
-                        @can('create', App\Models\Post::class)
+                    @can('create', App\Models\Post::class)
                         <div class="flex justify-center">
                             <x-buttons.edit :link="route('create-post', ['id' => $section->id])">
                                 {{ __('+') }}
                             </x-buttons.edit>
                         </div>
-                        @endcan
+                    @endcan
                     </div>
                 </div>
             </div>
@@ -97,7 +106,7 @@
     @endif
 
     @can('create', App\Models\Section::class)
-    <div class="flex justify-center">
+    <div class="flex justify-center -mt-6 pb-6">
         <x-buttons.edit :link="route('create-section', ['id' => $page->id])">
             {{ __('+') }}
         </x-buttons.edit>
