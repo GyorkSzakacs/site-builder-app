@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\Page;
+use App\Models\Section;
 use App\Services\FileUploader\Uploader;
 use App\Services\FileUploader\ImageConstraints;
 use App\Services\TitleValidator\TitleValidator;
@@ -30,6 +32,25 @@ class PostController extends Controller
     public function __construct(TitleValidator $validator)
     {
         $this->validator = $validator;
+    }
+
+    /**
+     * Render show a selected post view.
+     * 
+     * @param string $pageSlug
+     * @param string $sectionSlug
+     * @param string $postSlug
+     * @return View
+     */
+    public function show(string $pageSlug, string $sectionSlug, string $postSlug)
+    {
+        $page = Page::where('slug', $pageSlug)->first();
+
+        $section = $page->sections->where('slug', $sectionSlug)->first();
+
+        $post = $section->posts->where('slug', $postSlug)->first();
+
+        return View('post.show', ['post' => $post]);
     }
 
     /**

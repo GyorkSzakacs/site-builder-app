@@ -41,6 +41,50 @@ class PostManagementTest extends TestCase
         ]);
     }
 
+    /**
+     * Test render view post screen.
+     *
+     * @return void
+     */
+    public function test_render_view_post_screen()
+    {
+       $this->withoutExceptionHandling();
+
+        $page = Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 1,
+            'position' => 1
+        ]);
+
+        $section = Section::create([
+            'title' => 'Szekció',
+            'slug' => '',
+            'title_visibility' => true,
+            'page_id' => 1,
+            'position' => Section::getNextPosition(1)
+        ]);
+
+        $post = Post::create([
+            'title' => 'Poszt',
+            'slug' => '',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Ez az első bejegyzés',
+            'post_image' => '',
+            'section_id' => 1,
+            'position' => Section::getNextPosition(1)
+        ]);
+    
+        $response = $this->get('/'.$page->slug.'/'.$section->slug.'/'.$post->slug);
+       
+        $response->assertViewIs('post.show');
+        $response->assertViewHas('post', function($post){
+            return $post->title == 'Poszt';
+        });
+    }
+
      /**
      * Test render new post screen.
      *

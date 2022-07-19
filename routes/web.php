@@ -111,5 +111,8 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
+//Get post show screen.
+Route::get('/{pageSlug}/{sectionSlug}/{postSlug}', [PostController::class, 'show']);
+
 //Get page content with page slug. This should be the last route in the list.
 Route::get('/{slug}', [PageController::class, 'show']);
