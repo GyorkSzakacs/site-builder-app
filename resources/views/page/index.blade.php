@@ -51,27 +51,15 @@
                     <div class="p-6 bg-white border-b border-gray-200">
                         
                     @if(isset($section->posts) && count($section->posts) > 0)
-                            @foreach($section->posts->sortBy('position') as $post)
-                        <div class="flex mb-2">
-                    
-                            <a href="#" class="block font-semibold mr-5 text-lg text-gray-80 hover:underline">
+                        @foreach($section->posts->sortBy('position') as $post)
+                        
+                            <a href="{{ url('/'.$page->slug.'/'.$section->slug.'/'.$post->slug) }}" target="_blank" class="mb-2 block font-semibold text-lg text-gray-80 hover:underline">
                                 {{ $post->title}}
                             </a>
                    
-                            @can('update', $section)
-                            <x-buttons.edit :link="url('/update-section/'.$section->id)">
-                                {{ __('Módosít') }}
-                            </x-buttons.edit>
-                            @endcan
-
-                            @can('delete', $section)
-                            <x-buttons.delete :action="__('/section/'.$section->id)" :question="__('Biztosan törölni szeretné '.$section->title.' szekcíót és annak tartalmát az oldalról ?')" class="ml-2"/>
-                            @endcan
-                        </div>
-
-                        <div>
-                            {!! $post->content !!}
-                        </div>
+                            <div>
+                                {!! $post->content !!}
+                            </div>
                         @endforeach
                     @else
                         <div>
