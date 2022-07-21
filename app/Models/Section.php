@@ -4,14 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\PositionManagger;
-use App\Traits\AttributeSetter;
+use Illuminate\Support\Str;
 
 class Section extends Model
 {
-    use HasFactory,
-        PositionManagger,
-        AttributeSetter;
+    use HasFactory;
 
     /**
      * The guarded attributes.
@@ -37,6 +34,35 @@ class Section extends Model
     protected $casts = [
         'title_visibility' => 'boolean',
     ];
+
+    /**
+     * Set slug attribute.
+     * 
+     * @param string $slug
+     * @return void
+     */
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = Str::slug($this->title, '-');
+    }
+
+    /**
+     * Set position attribute
+     * 
+     * @param int $position
+     * @return void
+     */
+    public function setPositionAttribute($position)
+    {
+        if($position == null){
+            $position = self::getNextPosition($this->page_id);
+        }
+        else{
+            $this->retoolPositions($position);
+        }
+
+        $this->attributes['position'] = $position;
+    }
     
     /**
      * Get the foreignkey column name.
@@ -57,6 +83,7 @@ class Section extends Model
     {
         return $this->page_id;
     }
+
 
     /**
      * Get the page of the section.
@@ -94,21 +121,37 @@ class Section extends Model
         return $next;
     }
 
-    /**
-     * Set position attribute
+     /**
+     * Retool positions if the requested has been already occupied.
      * 
      * @param int $position
      * @return void
      */
-    public function setPositionAttribute($position)
+    public function retoolPositions($position)
     {
-        if($position == null){
-            $position = self::getNextPosition($this->page_id);
-        }
-        else{
-            $this->retoolPositions($position);
-        }
+        $id = $this->id;
+        $parentId = $this->getParentIdColumnValue();
 
-        $this->attributes['position'] = $position;
+        $parentIdColumnName = self::getParentIdColumnName();
+
+        $occupied = self::where([
+                            [$parentIdColumnName, $parentId],
+                            ['position', $position]
+                        ])->first();
+        if($occupied != null && $occupied->id != $id)
+        {
+            $items = self::where([
+                            [$parentIdColumnName, $parentId],
+                            ['position', '>=', $position]
+                        ])->get();
+
+            foreach($items as $item){
+                $newPosition = $item->position + 1;
+
+                $item->update([
+                    'position' => $newPosition
+                ]);
+            }
+        }
     }
 }
