@@ -59,7 +59,7 @@
             <div class="mt-4">
                 <x-label for="position" :value="__('Pozíció')" />
 
-                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', 1)" min="1" max="10" required />
+                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $next)" min="1" max="{{ $next }}" required />
             </div>
 
             <!-- Content -->
