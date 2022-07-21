@@ -63,9 +63,9 @@ class PostController extends Controller
     {
         $this->authorize('create', Post::class);
         
-        //$next = Post::getNextPosition($id);
+        $next = Post::getNextPosition($id);
 
-        return View('post.create', ['sectionId' => $id]);
+        return View('post.create', ['sectionId' => $id, 'next' => $next]);
     }
 
     /**

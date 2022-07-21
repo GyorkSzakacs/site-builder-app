@@ -122,9 +122,9 @@ class PostManagementTest extends TestCase
         $response2->assertViewHas([
             'sectionId' => 1
         ]);
-        /*$response2->assertViewHas([
+        $response2->assertViewHas([
             'next' => 1
-        ]);*/
+        ]);
         
         $response1->assertStatus(403);
     }
