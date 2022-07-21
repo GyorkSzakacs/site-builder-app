@@ -80,7 +80,12 @@ class PostController extends Controller
         
         $this->validator->setValidDataFromRequest($request);
         
-        $path = $this->storeImage($this->validator->validData['post_image']);
+        $path = '';
+
+        if(isset($this->validator->validData['post_image']))
+        {
+            $path = $this->storeImage($this->validator->validData['post_image']);
+        }
 
         if(is_a($path, $this->getClassName()))
         {
@@ -110,8 +115,13 @@ class PostController extends Controller
         
         $this->validator->setValidDataFromRequest($request);
         
-        $path = $this->storeImage($this->validator->validData['post_image']);
+        $path = '';
 
+        if(isset($this->validator->validData['post_image']))
+        {
+            $path = $this->storeImage($this->validator->validData['post_image']);
+        }
+        
         if(is_a($path, $this->getClassName())){
             return $path;
         }

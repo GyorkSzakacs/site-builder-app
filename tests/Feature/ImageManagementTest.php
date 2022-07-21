@@ -36,6 +36,8 @@ class ImageManagementTest extends TestCase
             'file' => $image
         ]);
 
+        $imageUrl = asset('images/'.$image->hashName());
+
         Storage::disk('local')->assertMissing('images/'.$image->hashName());
         $response1->assertStatus(403);
 
@@ -46,7 +48,7 @@ class ImageManagementTest extends TestCase
         Storage::disk('local')->assertExists('images/'.$image->hashName());
         $response2->assertStatus(200)
                     ->assertJson([
-                        'location' => 'images/'.$image->hashName()
+                        'location' => $imageUrl
                     ]);
     }
 

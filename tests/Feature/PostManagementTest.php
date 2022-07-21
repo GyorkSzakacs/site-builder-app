@@ -260,7 +260,6 @@ class PostManagementTest extends TestCase
             'title_visibility' => true,
             'description' => '',
             'content' => 'Ez az első cikkem.',
-            'post_image' => '',
             'position' => 1,
             'section_id' => 1
         ]);
@@ -352,7 +351,6 @@ class PostManagementTest extends TestCase
             'title_visibility' => false,
             'description' => 'Az első cikkem.',
             'content' => 'Ez az első frissített cikkem.',
-            'post_image' => '',
             'position' => 2,
             'section_id' => 1
         ]);

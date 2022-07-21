@@ -36,7 +36,7 @@ class ImageController extends Controller
                 return response()->json(['error'=> $uploader->getErrorMessage()]);
             }
 
-            $path = $uploader->upload();
+            $path = asset($uploader->upload());
         }
 
         return response()->json(['location' => $path]);
