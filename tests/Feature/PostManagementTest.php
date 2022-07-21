@@ -74,7 +74,7 @@ class PostManagementTest extends TestCase
             'content' => 'Ez az első bejegyzés',
             'post_image' => '',
             'section_id' => 1,
-            'position' => Section::getNextPosition(1)
+            'position' => Post::getNextPosition(1)
         ]);
     
         $response = $this->get('/'.$page->slug.'/'.$section->slug.'/'.$post->slug);
@@ -130,7 +130,7 @@ class PostManagementTest extends TestCase
     }
 
     /**
-     * Test a post can be created by a user with exitor access.
+     * Test a post can be created by a user with editor access.
      *
      * @return void
      */
@@ -457,9 +457,90 @@ class PostManagementTest extends TestCase
      */
     public function test_get_next_post_position()
     {
-        $next = Post::getNextPosition();
+        $this->withoutExceptionHandling();
 
-        $this->assertEquals(1, $next);
+        Page::create([
+            'title' => 'Oldal1',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        Page::create([
+            'title' => 'Oldal2',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 2,
+            'category_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Szekció1',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Szekció2',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 2,
+            'page_id' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Szekció3',
+            'slug' => '',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 2
+        ]);
+
+        Post::create([
+            'title' => 'Poszt1',
+            'slug' => '',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Ez az első bejegyzés',
+            'post_image' => '',
+            'section_id' => 1,
+            'position' => 1
+        ]);
+
+        Post::create([
+            'title' => 'Poszt2',
+            'slug' => '',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Ez az első bejegyzés',
+            'post_image' => '',
+            'section_id' => 1,
+            'position' => 2
+        ]);
+
+        Post::create([
+            'title' => 'Poszt3',
+            'slug' => '',
+            'title_visibility' => true,
+            'description' => '',
+            'content' => 'Ez az első bejegyzés',
+            'post_image' => '',
+            'section_id' => 3,
+            'position' => 1
+        ]);
+
+        $next1 = Post::getNextPosition(1);
+
+        $next2 = Post::getNextPosition(2);
+
+        $next3 = Post::getNextPosition(3);
+
+        $this->assertEquals(3, $next1);
+        $this->assertEquals(1, $next2);
+        $this->assertEquals(2, $next3);
     }
 
     /**
@@ -487,7 +568,7 @@ class PostManagementTest extends TestCase
             'description' => 'Leírás',
             'content' => 'Tartalom2',
             'post_image' => '',
-            'position' => Post::getNextPosition(),
+            'position' => Post::getNextPosition(1),
             'section_id' => 1
         ]);
 
@@ -525,8 +606,8 @@ class PostManagementTest extends TestCase
             'description' => '',
             'content' => 'Tartalom',
             'post_image' => '',
-            'position' => 1,
-            'section_id' => 1
+            'section_id' => 1,
+            'position' => 1
         ]);
 
         $this->assertEquals(1, Post::first()->title_visibility);
@@ -563,8 +644,8 @@ class PostManagementTest extends TestCase
             'description' => '',
             'content' => 'Tartalom',
             'post_image' => '',
-            'position' => '',
-            'section_id' => 1
+            'section_id' => 1,
+            'position' => ''
         ]);
 
         Post::create([
@@ -573,8 +654,8 @@ class PostManagementTest extends TestCase
             'description' => '',
             'content' => 'Tartalom',
             'post_image' => '',
-            'position' => 3,
-            'section_id' => 1
+            'section_id' => 1,
+            'position' => 3
         ]);
 
         $this->assertEquals(1, Post::first()->position);

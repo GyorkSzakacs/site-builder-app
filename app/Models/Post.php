@@ -67,4 +67,37 @@ class Post extends Model
     {
         return $this->belongsTo(Section::class);
     }
+
+    /**
+     * Get next position.
+     * 
+     * @param int $section_id
+     * @return int $next
+     */
+    public static function getNextPosition(int $section_id)
+    {
+        $section = Section::find($section_id);
+        
+        $next = $section->posts->max('position') + 1;
+        
+        return $next;
+    }
+
+    /**
+     * Set position attribute
+     * 
+     * @param int $position
+     * @return void
+     */
+    public function setPositionAttribute($position)
+    {
+        if($position == null){
+            $position = self::getNextPosition($this->section_id);
+        }
+        else{
+            $this->retoolPositions($position);
+        }
+
+        $this->attributes['position'] = $position;
+    }
 }
