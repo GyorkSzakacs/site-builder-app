@@ -82,11 +82,19 @@
                         <div class="max-w-3xl ml-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                             <div class="p-6 bg-white border-b border-gray-200">
                                 <h3 class="mb-2">Rövid leírás:</h3>    
-                                {{ $post->description }}
+                                @if(!empty($post->description))
+                                    {{ $post->description }}
+                                @else
+                                   {{ __('-') }}
+                                @endif
                             </div>
                             <div class="p-6 bg-white border-b border-gray-200">
-                                <h3 class="mb-2">Bejegyzés kép (Megosztáshoz):</h3>    
-                                <img src="{{ asset($post->post_image) }}">
+                                <h3 class="mb-2">Bejegyzés kép (Megosztáshoz):</h3>
+                                @if(!empty($post->post_image))
+                                    <img src="{{ asset($post->post_image) }}">
+                                @else
+                                   {{ __('-') }}
+                                @endif
                             </div>
                         </div>
                         @endcan

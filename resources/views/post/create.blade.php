@@ -116,7 +116,7 @@
 
                 const json = JSON.parse(xhr.responseText);
 
-                if (!json || typeof json.location != 'string')
+                if (!json)
                 {
                     reject('Invalid JSON: ' + xhr.responseText);
                     return;
@@ -125,6 +125,12 @@
                 if (typeof json.error != 'undefined')
                 {
                     reject(json.error);
+                    return;
+                }
+
+                if (typeof json.location != 'string')
+                {
+                    reject('Invalid JSON: ' + xhr.responseText);
                     return;
                 }
 
@@ -143,9 +149,13 @@
 
         tinymce.init({
             selector: 'textarea#content',
+            language:'hu_HU',
             plugins: 
                 'table save image advlist autolink link lists charmap preview anchor pagebreak searchreplace wordcount visualblocks visualchars code insertdatetime media nonbreaking emoticons template directionality fullscreen help',
             toolbar: 'undo redo | styleselect | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignjustify | link image',
+            relative_urls: false,
+            remove_script_host: false,
+            document_base_url: 'http://localhost/',
             images_upload_handler: image_upload
         });
     </script>
