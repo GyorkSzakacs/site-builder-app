@@ -47,18 +47,20 @@
                     @endcan
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
+                <div class="bg-gray-50 shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-gray-50 border-b border-gray-200">
                         
                     @if(isset($section->posts) && count($section->posts) > 0)
                         @foreach($section->posts->sortBy('position') as $post)
                         
-                            <a href="{{ url('/'.$page->slug.'/'.$section->slug.'/'.$post->slug) }}" target="_blank" class="mb-2 block font-semibold text-lg text-gray-80 hover:underline">
-                                {{ $post->title}}
-                            </a>
+                            <div class="bg-white p-2">
+                                <a href="{{ url('/'.$page->slug.'/'.$section->slug.'/'.$post->slug) }}" target="_blank" class="mb-2 block font-semibold text-lg text-gray-80 hover:underline">
+                                    {{ $post->title}}
+                                </a>
                    
-                            <div>
-                                {!! $post->content !!}
+                                <div class="p-1 overflow-hidden rounded-lg">
+                                    {!! $post->content !!}
+                                </div>
                             </div>
                         @endforeach
                     @else
