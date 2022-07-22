@@ -98,6 +98,23 @@ class PostController extends Controller
     }
 
     /**
+     * Render the edit post view.
+     * 
+     * @param Post $post
+     * @return View
+     */
+    public function edit(Post $post)
+    {
+        $this->authorize('update', $post);
+        
+        $sectionId = $post->section_id;
+
+        $max = Post::getNextPosition($sectionId) - 1;
+
+        return View('post.update', ['post' => $post, 'sectionId' => $sectionId, 'max' => $max]);
+    }
+
+    /**
      * Update the selected post data.
      * 
      * @param PostRequest $request

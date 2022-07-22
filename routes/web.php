@@ -75,7 +75,11 @@ Route::middleware('can:create,App\Models\Post')->group(function(){
     Route::post('/post', [PostController::class, 'store']);
 });
 
-Route::patch('/post/{post}', [PostController::class, 'update'])->can('update', 'post');
+Route::middleware('can:update,post')->group(function(){
+    Route::get('/update-post/{post}', [PostController::class, 'edit']);
+    Route::patch('/post/{post}', [PostController::class, 'update']);
+});
+
 Route::delete('/post/{post}', [PostController::class, 'destroy'])->can('delete', 'post');
 
 //Image management routes

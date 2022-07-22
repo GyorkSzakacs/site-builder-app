@@ -314,6 +314,65 @@ class PostManagementTest extends TestCase
     }
 
     /**
+     * Test render update post screen.
+     *
+     * @return void
+     */
+    public function test_render_update_post_screen()
+    {
+       //$this->withoutExceptionHandling();
+
+       Page::create([
+            'title' => 'Főoldal',
+            'slug' => '',
+            'title_visibility' => true,
+            'category_id' => 1,
+            'position' => 1
+        ]);
+
+        Section::create([
+            'title' => 'Szekció',
+            'slug' => '',
+            'title_visibility' => true,
+            'page_id' => 1,
+            'position' => Section::getNextPosition(1)
+        ]);
+
+        $post = Post::create([
+            'title' => 'Poszt',
+            'slug' => '',
+            'title_visibility' => true,
+            'description' => '',
+            'post_image' => '',
+            'content' => 'Tartalom',
+            'section_id' => 1,
+            'position' => Post::getNextPosition(1)
+        ]);
+    
+        $response1 = $this->get('/update-post/'.$post->id);
+       
+        $user = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response2 = $this->actingAs($user)->get('/update-post/'.$post->id);
+
+        $response2->assertViewIs('post.update');
+        $response2->assertViewHas('post', function($post){
+            return $post->id == 1;
+        });
+        $response2->assertViewHas([
+            'sectionId' => 1
+        ]);
+        $response2->assertViewHas([
+            'max' => 1
+        ]);
+        
+        $response1->assertStatus(403);
+    }
+
+
+    /**
      * Test a post can be updated by editor.
      * 
      * @return void
