@@ -1,5 +1,5 @@
 <x-manager-layout>
-    <x-auth-card>
+    <x-post-editor>
 
         <div class="mb-4">
             <h1 class="font-semibold text-2xl text-center">{{ __('Új bejegyzés hozzáadása') }}</h1>
@@ -17,6 +17,7 @@
         <form method="POST" action="/post" enctype="multipart/form-data">
             @csrf
 
+            <div class="flex flex-wrap justify-between">
             <!-- Title -->
             <div>
                 <x-label for="title" :value="__('Cím')" />
@@ -62,6 +63,8 @@
                 <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $next)" min="1" max="{{ $next }}" required />
             </div>
 
+            </div>
+
             <!-- Content -->
             <div class="mt-4">
                 <x-label for="content" :value="__('Bejegyzés tartalma')" />
@@ -85,7 +88,7 @@
 
             </div>
         </form>
-    </x-auth-card>
+    </x-post-editor>
 
     <script src="{{ asset('js/tinymce/tinymce.min.js') }}" referrerpolicy="origin"></script>
     <script>
