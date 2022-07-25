@@ -107,11 +107,9 @@ class PostController extends Controller
     {
         $this->authorize('update', $post);
         
-        $sectionId = $post->section_id;
+        $max = Post::getNextPosition($post->section_id) - 1;
 
-        $max = Post::getNextPosition($sectionId) - 1;
-
-        return View('post.update', ['post' => $post, 'sectionId' => $sectionId, 'max' => $max]);
+        return View('post.update', ['post' => $post, 'max' => $max]);
     }
 
     /**

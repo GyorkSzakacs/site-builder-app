@@ -362,9 +362,6 @@ class PostManagementTest extends TestCase
             return $post->id == 1;
         });
         $response2->assertViewHas([
-            'sectionId' => 1
-        ]);
-        $response2->assertViewHas([
             'max' => 1
         ]);
         
