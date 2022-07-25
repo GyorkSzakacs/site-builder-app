@@ -83,7 +83,9 @@ Route::middleware('can:update,post')->group(function(){
 Route::delete('/post/{post}', [PostController::class, 'destroy'])->can('delete', 'post');
 
 //Image management routes
-Route::get('/gallery',[ImageController::class, 'index']);
+Route::get('/gallery',[ImageController::class, 'index'])
+            ->name('gallery');
+            
 Route::post('/image', [ImageController::class, 'store'])
         ->name('upload-image')
         ->can('image-upload');

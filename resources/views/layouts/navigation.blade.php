@@ -46,6 +46,10 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Vezérlőpult') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('gallery')" :active="request()->routeIs('gallery')">
+                        {{ __('Galéria') }}
+                    </x-nav-link>
                 </div>
             </div>
 
