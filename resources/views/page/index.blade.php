@@ -52,11 +52,18 @@
                         
                     @if(isset($section->posts) && count($section->posts) > 0)
                         @foreach($section->posts->sortBy('position') as $post)
-                        
-                            <div class="bg-white p-2">
+                         
+                        <div class="bg-white p-2">
+                                
+                            @if($post->title_visibility)
                                 <a href="{{ url('/'.$page->slug.'/'.$section->slug.'/'.$post->slug) }}" target="_blank" class="mb-2 block font-semibold text-lg text-gray-80 hover:underline">
                                     {{ $post->title}}
                                 </a>
+                            @else
+                                <a href="{{ url('/'.$page->slug.'/'.$section->slug.'/'.$post->slug) }}" target="_blank" class="text-right text-blue-300 mb-2 block font-semibold text-lg text-gray-80 hover:underline">
+                                    {{ __('Megnyitás új lapon >>')}}
+                                </a>
+                            @endif
                    
                                 <div class="p-1 overflow-hidden rounded-lg">
                                     {!! $post->content !!}
