@@ -21,7 +21,9 @@ class ImageController extends Controller
      */
     public function index()
     {
-        return view('gallery.index');
+        $images = Storage::disk('local')->files('images');
+        
+        return view('gallery.index', ['images' => $images]);
     }
 
     /**

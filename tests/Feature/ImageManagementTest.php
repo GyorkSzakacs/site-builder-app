@@ -25,6 +25,7 @@ class ImageManagementTest extends TestCase
         $response = $this->get('/gallery');
 
         $response->assertViewIs('gallery.index');
+        $response->assertViewHas('images');
     }
     
     /**
