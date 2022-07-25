@@ -15,6 +15,16 @@ class ImageController extends Controller
     use BackRedirector;
 
     /**
+     * Render index view for uploaded images.
+     * 
+     * @return View
+     */
+    public function index()
+    {
+        return view('gallery.index');
+    }
+
+    /**
      * Store validted uploaded image.
      * 
      * @param Request $request

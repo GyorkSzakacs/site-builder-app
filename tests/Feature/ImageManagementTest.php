@@ -14,6 +14,20 @@ class ImageManagementTest extends TestCase
     use RefreshDatabase;
     
     /**
+     * Test render image gallery view.
+     * 
+     * @return void
+     */
+    public function test_render_gallery_view()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->get('/gallery');
+
+        $response->assertViewIs('gallery.index');
+    }
+    
+    /**
      * Test an image can be uploaded by user with editor access.
      *
      * @return void
