@@ -18,50 +18,51 @@
             @csrf
 
             <div class="flex flex-wrap justify-between">
-            <!-- Title -->
-            <div>
-                <x-label for="title" :value="__('Cím')" />
+                
+                <!-- Title -->
+                <div>
+                    <x-label for="title" :value="__('Cím')" />
 
-                <x-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" required autofocus />
-            </div>
-
-            <!-- Title visibility-->
-            <div class="mt-4">
-                <x-label for="title_visibility" :value="__('Cím láthatósága')" />
-
-                <div class="flex ml-2">
-                    <x-input id="visibility_true" class="block mt-1" type="radio" name="title_visibility" :value=1 checked/>
-                    <x-label for="visibility_true" class="block p-1 text-xs" :value="__('Igen')" />
+                    <x-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" required autofocus />
                 </div>
 
-                <div class="flex ml-2">
-                    <x-input id="visibility_false" class="block mt-1" type="radio" name="title_visibility" :value=0 />
-                    <x-label for="visibility_false" class="block p-1 text-xs" :value="__('Nem')" />
+                <!-- Title visibility-->
+                <div class="mt-4">
+                    <x-label for="title_visibility" :value="__('Cím láthatósága')" />
+
+                    <div class="flex ml-2">
+                        <x-input id="visibility_true" class="block mt-1" type="radio" name="title_visibility" :value=1 checked/>
+                        <x-label for="visibility_true" class="block p-1 text-xs" :value="__('Igen')" />
+                    </div>
+
+                    <div class="flex ml-2">
+                        <x-input id="visibility_false" class="block mt-1" type="radio" name="title_visibility" :value=0 />
+                        <x-label for="visibility_false" class="block p-1 text-xs" :value="__('Nem')" />
+                    </div>
                 </div>
-            </div>
 
-            <!-- Description -->
-            <div class="mt-4">
-                <x-label for="description" :value="__('Rövid leírás')" />
+                <!-- Description -->
+                <div class="mt-4">
+                    <x-label for="description" :value="__('Rövid leírás')" />
 
-                <textarea name="description" rows="2" cols="40" maxlength="250" class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    {{ old('description') }}
-                </textarea>
-            </div>
+                    <textarea name="description" rows="2" cols="40" maxlength="250" class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        {{ old('description') }}
+                    </textarea>
+                </div>
 
-            <!-- Post image -->
-            <div class="mt-4">
-                <x-label for="post_image" :value="__('Bejegyzés kép (Megosztáshoz)')" />
+                <!-- Post image -->
+                <div class="mt-4">
+                    <x-label for="post_image" :value="__('Bejegyzés kép (Megosztáshoz)')" />
 
-                <input id="post_image" class="block mt-1" type="file" name="post_image" />
-            </div>
+                    <input id="post_image" class="block mt-1" type="file" name="post_image" />
+                </div>
 
-            <!-- Position -->
-            <div class="mt-4">
-                <x-label for="position" :value="__('Pozíció')" />
+                <!-- Position -->
+                <div class="mt-4">
+                    <x-label for="position" :value="__('Pozíció')" />
 
-                <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $next)" min="1" max="{{ $next }}" required />
-            </div>
+                    <x-input id="position" class="block mt-1" type="number" name="position" :value="old('position', $next)" min="1" max="{{ $next }}" required />
+                </div>
 
             </div>
 
@@ -91,5 +92,5 @@
     </x-post-editor>
 
     <x-scripts.tinymce/>
-    
+
 </x-guest-layout>
