@@ -56,7 +56,7 @@
                     </div>
 
                     @can('update', $post)
-                    <x-buttons.edit :link="url('/update-section/'.$post->id)" class="ml-5">
+                    <x-buttons.edit :link="url('/update-post/'.$post->id)" class="ml-5">
                         {{ __('Módosít') }}
                     </x-buttons.edit>
                     @endcan
