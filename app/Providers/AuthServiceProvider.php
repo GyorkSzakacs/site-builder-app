@@ -45,5 +45,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('image-delete', function(User $user){
             return $user->hasEditorAccess();;
         });
+
+        Gate::define('image-view', function(User $user){
+            return $user->hasEditorAccess();;
+        });
     }
 }

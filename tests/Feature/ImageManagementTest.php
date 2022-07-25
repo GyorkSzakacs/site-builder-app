@@ -20,12 +20,20 @@ class ImageManagementTest extends TestCase
      */
     public function test_render_gallery_view()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $response = $this->get('/gallery');
+        $response1 = $this->get('/gallery');
 
-        $response->assertViewIs('gallery.index');
-        $response->assertViewHas('images');
+        $user = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $response2 = $this->actingAs($user)->get('/gallery');
+
+        $response2->assertViewIs('gallery.index');
+        $response2->assertViewHas('images');
+
+        $response1->assertStatus(403);    
     }
     
     /**

@@ -21,6 +21,8 @@ class ImageController extends Controller
      */
     public function index()
     {
+        Gate::authorize('image-view');
+
         $images = Storage::disk('local')->files('images');
         
         return view('gallery.index', ['images' => $images]);

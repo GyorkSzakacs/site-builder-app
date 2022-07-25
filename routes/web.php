@@ -84,8 +84,9 @@ Route::delete('/post/{post}', [PostController::class, 'destroy'])->can('delete',
 
 //Image management routes
 Route::get('/gallery',[ImageController::class, 'index'])
-            ->name('gallery');
-            
+            ->name('gallery')
+            ->can('image-view');
+
 Route::post('/image', [ImageController::class, 'store'])
         ->name('upload-image')
         ->can('image-upload');
