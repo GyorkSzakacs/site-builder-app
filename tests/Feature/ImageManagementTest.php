@@ -198,7 +198,7 @@ class ImageManagementTest extends TestCase
         $response2 = $this->actingAs($user1)->delete('/image/'.$path);
 
         Storage::disk('local')->assertMissing('images/'.$image->hashName());
-        $response2->assertRedirect('/galery');
+        $response2->assertRedirect('/gallery');
     }
 
     /**
@@ -254,6 +254,58 @@ class ImageManagementTest extends TestCase
 
         Storage::disk('local')->assertExists('images/'.$image->hashName());
         $response->assertRedirect('/image/image.jpg');
+        $response->assertSessionHasErrors('delete');
+    }
+
+    /**
+     * Test that an image can't be deleted if it is serve as an post image.
+     * 
+     * @return void
+     */
+    public function test_a_post__image_can_not_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+        
+        $image = UploadedFile::fake()->image('image.jpg');
+
+        $user1 = User::factory()->create([
+            'access_level' => 3
+        ]);
+
+        $path = $image->hashName();
+
+        $user = User::factory()->create([
+            'access_level' => 2
+        ]);
+
+        $this->actingAs($user)->post('/page', [
+            'title' => 'Főoldal',
+            'title_visibility' => true,
+            'position' => 1,
+            'category_id' => 1
+        ]);
+
+        $this->post('/section', [
+            'title' => 'Szekció',
+            'title_visibility' => true,
+            'position' => 1,
+            'page_id' => 1
+        ]);
+
+        $this->post('/post', [
+            'title' => 'Első cikkem',
+            'title_visibility' => true,
+            'description' => 'Az első cikkem.',
+            'content' => 'Ez az első cikkem.',
+            'post_image' => $image,
+            'position' => 1,
+            'section_id' => 1
+        ]);
+    
+        $response = $this->from('/gallery')->delete('/image/'.$path);
+
+        Storage::disk('local')->assertExists('images/'.$path);
+        $response->assertRedirect('/gallery');
         $response->assertSessionHasErrors('delete');
     }
 }

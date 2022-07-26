@@ -83,7 +83,9 @@ class ImageController extends Controller
         
         $posts = Post::where('content', 'LIKE', '%'.$image.'%')->get();
 
-        if($posts->count() > 0)
+        $post_images = Post::where('post_image', 'LIKE', '%'.$image)->get();
+
+        if($posts->count() > 0 || $post_images->count() > 0)
         {
             return $this->redirectBackWithError('delete', 'A kiválasztot kép nem törölhető!');
         }
