@@ -90,6 +90,6 @@ class ImageController extends Controller
 
         Storage::disk('local')->delete('images/'.$image);
 
-        return redirect('/galery');
+        return redirect('/gallery');
     }
 }

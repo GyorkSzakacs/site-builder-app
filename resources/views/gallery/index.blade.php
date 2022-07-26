@@ -74,16 +74,19 @@
                                                 </div>
                                             </div>
                                             <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-row-reverse">
+                                                @can('image-delete')
+                                                <x-buttons.delete :action="__('/image/'.Str::after($path, '/'))" :question="__('Biztosan törölni szeretné a kiválasztott képet?')" class="ml-2"/>
+                                                @endcan
                                                 
-                                                <x-buttons.delete :action="__('/image/'.$image)" :question="__('Biztosan törölni szeretné a kiválasztott képet?')" class="ml-2"/>
-                                                              
-                                                <form method="POST" action="/image/{{ $image }}" >
+                                                @can('image-download')
+                                                <form method="POST" action="/image/{{ Str::after($path, '/') }}" >
                                                     @csrf
                                    
                                                     <button type="submit" class="inline-flex items-center px-2 py-1 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-blue-800 active:bg-blue-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
                                                         {{ __('Letöltés') }}
                                                     </button>
                                                 </form>
+                                                @endcan
                                             </div>
                                         </div>
                                     </div>
