@@ -36,6 +36,8 @@
       
             <!-- Page Content -->
             <main>
+                <!-- Validation Errors -->
+                <x-auth-validation-errors class="pl-4" :errors="$errors" />
 
                 <div class="py-12">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
