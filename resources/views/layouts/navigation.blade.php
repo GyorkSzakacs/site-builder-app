@@ -47,9 +47,11 @@
                         {{ __('Vezérlőpult') }}
                     </x-nav-link>
 
+                    @can('image-view')
                     <x-nav-link :href="route('gallery')" :active="request()->routeIs('gallery')">
                         {{ __('Galéria') }}
                     </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
