@@ -20,9 +20,9 @@ class DashboardTest extends TestCase
      */
     public function test_render_dashboard_screen()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $user = User::factory()->create([
+        $user1 = User::factory()->create([
             'name' => 'Admin01',
             'access_level' => 1
         ]);
@@ -45,10 +45,10 @@ class DashboardTest extends TestCase
             'category_id' => 1
         ]);
 
-        $response = $this->actingAs($user)->get('/dashboard');
+        $response1 = $this->actingAs($user1)->get('/dashboard');
 
-        $response->assertViewIs('dashboard');
-        $response->assertViewHas('users', function($users){
+        $response1->assertViewIs('dashboard');
+        $response1->assertViewHas('users', function($users){
             $name = '';
             
             foreach($users as $user)
@@ -58,7 +58,7 @@ class DashboardTest extends TestCase
             
             return $name == 'Admin01';
         });
-        $response->assertViewHas('categories', function($categories){
+        $response1->assertViewHas('categories', function($categories){
             $title = '';
             
             foreach($categories as $category)
@@ -68,7 +68,7 @@ class DashboardTest extends TestCase
             
             return $title == 'KapcsolatFőoldal';
         });
-        $response->assertViewHas('pages', function($pages){
+        $response1->assertViewHas('pages', function($pages){
             $title = '';
             
             foreach($pages as $page)
@@ -78,5 +78,13 @@ class DashboardTest extends TestCase
             
             return $title == 'Főoldal';
         });
+
+        $user2 = User::factory()->create([
+            'access_level' => 3
+        ]);
+        
+        $response2 = $this->actingAs($user2)->get('/dashboard');
+
+        $response2->assertStatus(403);
     }
 }

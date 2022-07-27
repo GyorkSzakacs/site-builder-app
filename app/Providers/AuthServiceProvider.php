@@ -49,5 +49,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('image-view', function(User $user){
             return $user->hasEditorAccess();;
         });
+
+        Gate::define('dashboard-view', function(User $user){
+            return $user->hasManagerAccess();;
+        });
     }
 }

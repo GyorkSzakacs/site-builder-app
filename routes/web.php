@@ -118,7 +118,7 @@ Route::get('/dashboard', function () {
                                 'categories' => $categories,
                                 'pages' => $pages
                             ]);
-})->middleware(['auth'])->name('dashboard');
+})->name('dashboard')->can('dashboard-view');
 
 require __DIR__.'/auth.php';
 
